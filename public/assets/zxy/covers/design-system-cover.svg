@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1066" viewBox="0 0 1600 1066">
+  <defs>
+    <linearGradient id="dsbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="55%" stop-color="#111a2e"/>
+      <stop offset="100%" stop-color="#0b1324"/>
+    </linearGradient>
+    <radialGradient id="dsg" cx="0.75" cy="0.25" r="0.6">
+      <stop offset="0%" stop-color="#f24e1e" stop-opacity="0.24"/>
+      <stop offset="50%" stop-color="#4263eb" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1066" fill="url(#dsbg)"/>
+  <rect width="1600" height="1066" fill="url(#dsg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <line x1="0" y1="200" x2="1600" y2="200"/><line x1="0" y1="400" x2="1600" y2="400"/>
+    <line x1="0" y1="600" x2="1600" y2="600"/><line x1="0" y1="800" x2="1600" y2="800"/>
+    <line x1="320" y1="0" x2="320" y2="1066"/><line x1="640" y1="0" x2="640" y2="1066"/>
+    <line x1="960" y1="0" x2="960" y2="1066"/><line x1="1280" y1="0" x2="1280" y2="1066"/>
+  </g>
+  <!-- Top bar -->
+  <rect x="96" y="84" width="1408" height="148" rx="26" fill="#162038" stroke="#334155" stroke-width="1.5"/>
+  <text x="144" y="142" fill="#94a3b8" font-family="Inter, PingFang SC, sans-serif" font-size="20" font-weight="600" letter-spacing="3">DESIGN SYSTEM ARCHITECTURE · WEB &amp; MOBILE</text>
+  <text x="144" y="194" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="38" font-weight="700">Figma 双端组件库与 Axure 原型资产体系</text>
+  <rect x="1080" y="116" width="180" height="84" rx="18" fill="#1e293b" stroke="#4263eb" stroke-width="1.5"/>
+  <text x="1170" y="156" text-anchor="middle" fill="#60a5fa" font-family="Inter, sans-serif" font-size="34" font-weight="800">92%</text>
+  <text x="1170" y="184" text-anchor="middle" fill="#cbd5e1" font-family="PingFang SC, sans-serif" font-size="16">业务组件覆盖率</text>
+  <rect x="1280" y="116" width="180" height="84" rx="18" fill="#1e293b" stroke="#2fc5c9" stroke-width="1.5"/>
+  <text x="1370" y="156" text-anchor="middle" fill="#2dd4bf" font-family="Inter, sans-serif" font-size="34" font-weight="800">+30%</text>
+  <text x="1370" y="184" text-anchor="middle" fill="#cbd5e1" font-family="PingFang SC, sans-serif" font-size="16">团队设计提效</text>
+
+  <!-- Layer 1: Design Tokens -->
+  <rect x="96" y="272" width="440" height="680" rx="26" fill="#131c31" stroke="#334155" stroke-width="1.5"/>
+  <text x="136" y="330" fill="#818cf8" font-family="Inter, sans-serif" font-size="18" font-weight="700" letter-spacing="2">01 · DESIGN TOKENS</text>
+  <text x="136" y="370" fill="#ffffff" font-family="PingFang SC, sans-serif" font-size="28" font-weight="700">基础语义变量</text>
+  <rect x="136" y="408" width="76" height="76" rx="16" fill="#4263eb"/><rect x="228" y="408" width="76" height="76" rx="16" fill="#2fc5c9"/>
+  <rect x="320" y="408" width="76" height="76" rx="16" fill="#10b981"/><rect x="412" y="408" width="84" height="76" rx="16" fill="#f59e0b"/>
+  <rect x="136" y="514" width="360" height="96" rx="16" fill="#1e293b"/>
+  <text x="162" y="556" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="22" font-weight="600">Typography 字阶规范</text>
+  <text x="162" y="588" fill="#94a3b8" font-family="Inter, sans-serif" font-size="16">12 / 14 / 16 / 20 / 24 / 32px · 行高与字重矩阵</text>
+  <rect x="136" y="634" width="360" height="96" rx="16" fill="#1e293b"/>
+  <text x="162" y="676" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="22" font-weight="600">Spacing &amp; Radius 栅格间距</text>
+  <text x="162" y="708" fill="#94a3b8" font-family="Inter, sans-serif" font-size="16">4px 基准模数 · 圆角与阴影层级统一</text>
+  <rect x="136" y="754" width="360" height="156" rx="16" fill="#1e293b"/>
+  <text x="162" y="796" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="22" font-weight="600">State Semantics 状态色规范</text>
+  <text x="162" y="832" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="16">默认 / 悬停 / 激活 / 禁用 / 校验告警</text>
+  <text x="162" y="866" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="16">跨产品线消除视觉分叉</text>
+
+  <!-- Layer 2: Atomic & Business Components -->
+  <rect x="576" y="272" width="468" height="680" rx="26" fill="#131c31" stroke="#4263eb" stroke-opacity="0.6" stroke-width="2"/>
+  <text x="616" y="330" fill="#38bdf8" font-family="Inter, sans-serif" font-size="18" font-weight="700" letter-spacing="2">02 · COMPONENT VARIANTS</text>
+  <text x="616" y="370" fill="#ffffff" font-family="PingFang SC, sans-serif" font-size="28" font-weight="700">Web + Mobile 双端组件库</text>
+  <rect x="616" y="408" width="388" height="120" rx="18" fill="#1e293b" stroke="#475569" stroke-dasharray="6 6"/>
+  <rect x="640" y="432" width="110" height="42" rx="10" fill="#4263eb"/>
+  <text x="695" y="459" text-anchor="middle" fill="#fff" font-family="PingFang SC, sans-serif" font-size="16" font-weight="600">主要操作</text>
+  <rect x="766" y="432" width="110" height="42" rx="10" fill="#0f172a" stroke="#64748b"/>
+  <text x="821" y="459" text-anchor="middle" fill="#e2e8f0" font-family="PingFang SC, sans-serif" font-size="16">次要按钮</text>
+  <rect x="892" y="432" width="90" height="42" rx="10" fill="#1e293b"/>
+  <text x="937" y="459" text-anchor="middle" fill="#64748b" font-family="PingFang SC, sans-serif" font-size="16">禁用态</text>
+  <text x="640" y="508" fill="#94a3b8" font-family="Inter, sans-serif" font-size="14">Auto Layout · Variants · Boolean &amp; Slot Props</text>
+
+  <rect x="616" y="552" width="388" height="168" rx="18" fill="#1e293b"/>
+  <text x="642" y="594" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="21" font-weight="600">高频 B 端复合组件</text>
+  <text x="642" y="632" fill="#cbd5e1" font-family="PingFang SC, sans-serif" font-size="17">• 多维筛选栏 / 高密度数据表格 / 分页器</text>
+  <text x="642" y="664" fill="#cbd5e1" font-family="PingFang SC, sans-serif" font-size="17">• 分步配置向导 / 抽屉详情 / 权限空状态</text>
+  <text x="642" y="696" fill="#cbd5e1" font-family="PingFang SC, sans-serif" font-size="17">• AI 识别加载态 / 候选核对卡片</text>
+
+  <rect x="616" y="744" width="388" height="166" rx="18" fill="#1e293b"/>
+  <text x="642" y="786" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="21" font-weight="600">Axure 原型组件库同步</text>
+  <text x="642" y="824" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">将交互规则前置到产品原型阶段，缩短</text>
+  <text x="642" y="856" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">需求评审 → 视觉设计 → 前端走查链路</text>
+
+  <!-- Layer 3: Governance -->
+  <rect x="1084" y="272" width="420" height="680" rx="26" fill="#131c31" stroke="#334155" stroke-width="1.5"/>
+  <text x="1124" y="330" fill="#2dd4bf" font-family="Inter, sans-serif" font-size="18" font-weight="700" letter-spacing="2">03 · COLLABORATION</text>
+  <text x="1124" y="370" fill="#ffffff" font-family="PingFang SC, sans-serif" font-size="28" font-weight="700">规范落地与团队治理</text>
+  <rect x="1124" y="408" width="340" height="150" rx="18" fill="#1e293b"/>
+  <text x="1150" y="452" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="21" font-weight="600">命名与变体标准</text>
+  <text x="1150" y="490" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">统一层级结构、组件使用说明文档与</text>
+  <text x="1150" y="522" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">新增/废弃维护流程</text>
+  <rect x="1124" y="582" width="340" height="150" rx="18" fill="#1e293b"/>
+  <text x="1150" y="626" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="21" font-weight="600">团队宣讲与实战接入</text>
+  <text x="1150" y="664" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">覆盖平台、消费品、智能 AI 三条核心</text>
+  <text x="1150" y="696" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="17">业务线日常迭代</text>
+  <rect x="1124" y="756" width="340" height="154" rx="18" fill="#172554" stroke="#3b82f6" stroke-opacity="0.5"/>
+  <text x="1150" y="802" fill="#93c5fd" font-family="PingFang SC, sans-serif" font-size="21" font-weight="700">走查验收闭环</text>
+  <text x="1150" y="840" fill="#dbeafe" font-family="PingFang SC, sans-serif" font-size="17">显著减少跨页面样式与交互不一致，</text>
+  <text x="1150" y="872" fill="#dbeafe" font-family="PingFang SC, sans-serif" font-size="17">建立可持续演进的设计资产</text>
+</svg>

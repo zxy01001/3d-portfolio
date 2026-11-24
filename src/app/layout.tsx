@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Unbounded } from "next/font/google";
 import "./globals.css";
 import { config } from "@/data/config";
 
@@ -10,23 +9,7 @@ import { Providers } from "@/components/providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { UMAMI_SRC } from "@/lib/umami";
 
-/* Body/base font — Space Grotesk, bound to --font-sans (applied as `font-sans`
- * on <html>). Everything that isn't a heading inherits this. */
-const spaceGroteskSans = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-/* Heading font — Unbounded, bound to --font-display and applied to h1–h6. */
-const unbounded = Unbounded({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  // pins every relative/OG url to the .dev origin so nothing canonicalises back to .site
   metadataBase: new URL(config.site),
   alternates: { canonical: "./" },
   title: config.title,
@@ -40,9 +23,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: config.ogImg,
-        width: 800,
-        height: 600,
-        alt: "Portfolio preview",
+        width: 1200,
+        height: 630,
+        alt: "朱星宇｜UX 交互设计师作品集",
       },
     ],
     type: "website",
@@ -65,15 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={[
-        spaceGroteskSans.variable,
-        unbounded.variable,
-        "font-sans",
-      ].join(" ")}
-      suppressHydrationWarning
-    >
+    <html lang="zh-CN" className="font-sans" suppressHydrationWarning>
       <head>
         {process.env.UMAMI_SITE_ID && (
           <Script

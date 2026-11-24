@@ -145,7 +145,7 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
       visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
     return id;
   };
-  const defaultLabelId = label("Explore my skills", "Hover, tap, or press a key");
+  const defaultLabelId = label("UX & AI Design", "悬停、点击键帽或敲击键盘按键探索能力栈");
   doc.nodes[defaultLabelId].visible = true;
   const keys = skills.map((skill, index): KeyboardKey => {
     // separate groups let placement, motion, and presses compose
@@ -198,18 +198,36 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
 export const resolveKeyboardAsset = async (asset: ChibiDocument["assets"][string]): Promise<string> =>
   asset.name === "keycaps.glb" ? KEYBOARD_MODEL_URL : asset.name;
 
-/** Rasterized by the texture loader, then rendered on a scene mesh. */
+/** Rasterized by the texture loader, then rendered on a scene mesh. Supports CJK + Latin wrapping. */
 function descriptionArtwork(text: string): string {
   const lines: string[] = [];
   const caption = text.replace(/\p{Extended_Pictographic}|[\uFE0F\u200D]/gu, "").trim();
-  for (const word of caption.split(/\s+/)) {
-    if (!lines.length || lines[lines.length - 1].length + word.length > 28) lines.push(word);
-    else lines[lines.length - 1] += ` ${word}`;
+  const hasCjk = /[\u4e00-\u9fff]/.test(caption);
+  if (hasCjk) {
+    let current = "";
+    let width = 0;
+    for (const ch of caption) {
+      const w = /[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]/.test(ch) ? 2 : 1.1;
+      if (width + w > 34 && current) {
+        lines.push(current.trim());
+        current = ch;
+        width = w;
+      } else {
+        current += ch;
+        width += w;
+      }
+    }
+    if (current.trim()) lines.push(current.trim());
+  } else {
+    for (const word of caption.split(/\s+/)) {
+      if (!lines.length || lines[lines.length - 1].length + word.length > 28) lines.push(word);
+      else lines[lines.length - 1] += ` ${word}`;
+    }
   }
   const escape = (line: string) => line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const size = Math.min(68, 250 / Math.max(lines.length, 1));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="300" viewBox="0 0 1024 300"><g fill="white" font-family="Arial, sans-serif" font-size="${size}" text-anchor="start">${lines.map((line, index) => `<text x="0" y="${78 + index * size * 1.2}">${escape(line)}</text>`).join("")}</g></svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  const size = Math.min(56, 230 / Math.max(lines.length, 1));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="300" viewBox="0 0 1024 300"><g fill="white" font-family="'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif" font-weight="600" font-size="${size}" text-anchor="start">${lines.map((line, index) => `<text x="0" y="${78 + index * size * 1.32}">${escape(line)}</text>`).join("")}</g></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 function headingBounds(text: string): { width: number; left: number } {

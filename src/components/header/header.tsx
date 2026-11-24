@@ -81,10 +81,10 @@ const Header = ({ loader, githubStars }: HeaderProps) => {
               variants={opacity}
               animate={!isActive ? "open" : "closed"}
             >
-              Menu
+              导航
             </motion.p>
             <motion.p variants={opacity} animate={isActive ? "open" : "closed"}>
-              Close
+              收起
             </motion.p>
           </div>
           <div

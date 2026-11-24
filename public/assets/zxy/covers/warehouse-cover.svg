@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1066" viewBox="0 0 1600 1066">
+  <defs>
+    <linearGradient id="whbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1528"/>
+      <stop offset="55%" stop-color="#0f2439"/>
+      <stop offset="100%" stop-color="#091322"/>
+    </linearGradient>
+    <radialGradient id="whg" cx="0.3" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#2fc5c9" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0b1528" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1066" fill="url(#whbg)"/>
+  <rect width="1600" height="1066" fill="url(#whg)"/>
+  <rect x="96" y="84" width="1408" height="148" rx="26" fill="#12243a" stroke="#2dd4bf" stroke-opacity="0.35" stroke-width="1.5"/>
+  <text x="144" y="142" fill="#5eead4" font-family="Inter, sans-serif" font-size="20" font-weight="700" letter-spacing="3">0 → 1 B2B WAREHOUSE SYSTEM · OBJECT &amp; STATE MODELING</text>
+  <text x="144" y="194" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="38" font-weight="700">易仓配｜仓储全链路作业与库存状态体系设计</text>
+  <rect x="1230" y="118" width="230" height="80" rx="18" fill="#0f172a" stroke="#2dd4bf" stroke-opacity="0.5"/>
+  <text x="1345" y="156" text-anchor="middle" fill="#2dd4bf" font-family="PingFang SC, sans-serif" font-size="24" font-weight="700">已正式上线</text>
+  <text x="1345" y="183" text-anchor="middle" fill="#94a3b8" font-family="PingFang SC, sans-serif" font-size="15">核心作业线上化闭环</text>
+
+  <!-- 4 Domain Objects -->
+  <g font-family="PingFang SC, sans-serif">
+    <rect x="96" y="276" width="328" height="210" rx="22" fill="#13263e" stroke="#334155"/>
+    <text x="132" y="328" fill="#38bdf8" font-size="18" font-weight="700">OBJECT 01</text>
+    <text x="132" y="370" fill="#ffffff" font-size="28" font-weight="700">仓库与库位</text>
+    <text x="132" y="414" fill="#94a3b8" font-size="18">多仓层级、库区划分与</text>
+    <text x="132" y="444" fill="#94a3b8" font-size="18">移库调拨空间映射</text>
+
+    <rect x="456" y="276" width="328" height="210" rx="22" fill="#13263e" stroke="#334155"/>
+    <text x="492" y="328" fill="#2dd4bf" font-size="18" font-weight="700">OBJECT 02</text>
+    <text x="492" y="370" fill="#ffffff" font-size="28" font-weight="700">实时库存账本</text>
+    <text x="492" y="414" fill="#94a3b8" font-size="18">可用库存、锁定库存与</text>
+    <text x="492" y="444" fill="#94a3b8" font-size="18">批次变动可追溯机制</text>
+
+    <rect x="816" y="276" width="328" height="210" rx="22" fill="#13263e" stroke="#334155"/>
+    <text x="852" y="328" fill="#818cf8" font-size="18" font-weight="700">OBJECT 03</text>
+    <text x="852" y="370" fill="#ffffff" font-size="28" font-weight="700">业务单据流</text>
+    <text x="852" y="414" fill="#94a3b8" font-size="18">入库单、出库单、盘点单</text>
+    <text x="852" y="444" fill="#94a3b8" font-size="18">与调拨单统一页面骨架</text>
+
+    <rect x="1176" y="276" width="328" height="210" rx="22" fill="#13263e" stroke="#334155"/>
+    <text x="1212" y="328" fill="#fbbf24" font-size="18" font-weight="700">OBJECT 04</text>
+    <text x="1212" y="370" fill="#ffffff" font-size="28" font-weight="700">现场作业执行</text>
+    <text x="1212" y="414" fill="#94a3b8" font-size="18">拣货、核验、差异录入与</text>
+    <text x="1212" y="444" fill="#94a3b8" font-size="18">异常拦截状态提示</text>
+
+    <!-- Task Flows -->
+    <rect x="96" y="526" width="1408" height="430" rx="26" fill="#102035" stroke="#2dd4bf" stroke-opacity="0.3"/>
+    <text x="144" y="588" fill="#5eead4" font-size="18" font-weight="700" letter-spacing="2">UNIFIED TASK &amp; STATE ENGINE · 三大核心任务流统一交互模型</text>
+
+    <rect x="144" y="626" width="280" height="130" rx="18" fill="#172d47"/>
+    <text x="176" y="672" fill="#ffffff" font-size="24" font-weight="700">1. 单据创建</text>
+    <text x="176" y="712" fill="#94a3b8" font-size="17">关联源单 / 商品批次校验</text>
+
+    <rect x="488" y="626" width="280" height="130" rx="18" fill="#172d47"/>
+    <text x="520" y="672" fill="#ffffff" font-size="24" font-weight="700">2. 作业执行</text>
+    <text x="520" y="712" fill="#94a3b8" font-size="17">实收实发录入 / 盘盈盘亏</text>
+
+    <rect x="832" y="626" width="280" height="130" rx="18" fill="#172d47"/>
+    <text x="864" y="672" fill="#ffffff" font-size="24" font-weight="700">3. 审核确认</text>
+    <text x="864" y="712" fill="#94a3b8" font-size="17">库存变动预览 / 权限复核</text>
+
+    <rect x="1176" y="626" width="280" height="130" rx="18" fill="#172d47" stroke="#f59e0b" stroke-opacity="0.5"/>
+    <text x="1208" y="672" fill="#fcd34d" font-size="24" font-weight="700">4. 异常与冲红</text>
+    <text x="1208" y="712" fill="#cbd5e1" font-size="17">部分出入库 / 作废回滚机制</text>
+
+    <rect x="144" y="792" width="1312" height="116" rx="18" fill="#0b1727"/>
+    <text x="180" y="842" fill="#e2e8f0" font-size="21" font-weight="600">核心设计价值：让“单据流转状态”与“实际库存增减”在任何操作节点都清晰可预期</text>
+    <text x="180" y="880" fill="#94a3b8" font-size="17">覆盖入库 · 出库 · 库存查询 · 盘点 · 调拨 · 移库六大模块，降低一线仓管培训与误操作成本</text>
+  </g>
+</svg>

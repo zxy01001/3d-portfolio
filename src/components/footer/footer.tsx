@@ -18,7 +18,7 @@ function Footer() {
         <Suspense fallback={null}>
           <CopyrightYear />
         </Suspense>{" "}
-        {config.author}. All rights reserved.
+        {config.author} · UX 交互设计师 · 保留所有权利
       </p>
       <SocialMediaButtons />
       <nav className="flex gap-4 sm:gap-6 z-10">

@@ -188,22 +188,20 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
         onEvent={onEvent}
       />
       {section === "skills" && ready && (
-        <div className="pointer-events-none fixed inset-x-4 bottom-8 z-20 text-center text-foreground">
-          <p className="sr-only">{available ? `${total.toLocaleString("en-US")} keyboard presses by all visitors` : "Shared keyboard count unavailable"}</p>
-          <div aria-live="polite" className="sr-only">
-            <p className="text-xl font-semibold">{selected?.label ?? "Explore my skills"}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {selected?.shortDescription ?? "Hover, tap, or press a key"}
+        <div className="pointer-events-none fixed inset-x-4 bottom-7 z-20 flex justify-center text-center text-foreground">
+          <div
+            aria-live="polite"
+            className="max-w-xl rounded-2xl border border-border/70 bg-background/80 px-5 py-3 shadow-lg backdrop-blur-md"
+          >
+            <p className="text-sm md:text-base font-bold text-foreground">
+              {(selected as (KeyboardSkill & { labelZh?: string }) | null)?.labelZh ??
+                selected?.label ??
+                "探索我的设计能力栈"}
+            </p>
+            <p className="mt-1 text-xs md:text-sm text-muted-foreground">
+              {selected?.shortDescription ?? "移动鼠标悬停、点击 3D 键帽，或直接敲击物理键盘按键"}
             </p>
           </div>
-          <a
-            href="https://www.npmjs.com/package/@chibi3d/runtime"
-            target="_blank"
-            rel="noreferrer"
-            className="pointer-events-auto text-xs text-muted-foreground underline underline-offset-4"
-          >
-            Rendered with Chibi
-          </a>
         </div>
       )}
     </>

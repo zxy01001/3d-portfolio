@@ -13,7 +13,6 @@ export function RightClickHint({ dismissed }: { dismissed: boolean }) {
 
     const timer = setTimeout(() => {
       setVisible(true);
-      // Auto-hide after 6s
       setTimeout(() => {
         setVisible(false);
         localStorage.setItem(STORAGE_KEY, '1');
@@ -23,7 +22,6 @@ export function RightClickHint({ dismissed }: { dismissed: boolean }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Dismiss permanently when user opens the radial menu
   useEffect(() => {
     if (dismissed && visible) {
       setVisible(false);
@@ -32,7 +30,7 @@ export function RightClickHint({ dismissed }: { dismissed: boolean }) {
   }, [dismissed, visible]);
 
   return (
-    <div className='hidden md:flex'>
+    <div className="hidden md:flex">
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -43,8 +41,8 @@ export function RightClickHint({ dismissed }: { dismissed: boolean }) {
             className="fixed top-16 left-1/2 z-[50] pointer-events-none"
           >
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900/80 backdrop-blur-md border border-white/10 shadow-lg">
-              <span className="text-sm text-white/70">Right-click anywhere to react</span>
-              <span className="text-xs text-white/40">✨</span>
+              <span className="text-sm text-white/80">按住鼠标右键拖拽，发射互动表情</span>
+              <span className="text-xs text-white/50">✨</span>
             </div>
           </motion.div>
         )}

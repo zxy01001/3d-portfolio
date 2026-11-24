@@ -1,29 +1,27 @@
 ---
-title: "Achieving Milestone: Adding Blogs Section"
-publishedAt: "2024-05-27"
-summary: "A humorous take on the monumental task of adding a blog section to my portfolio."
-author: "Naresh Khatri"
-tags: ["milestone", "humor", "portfolio"]
+title: "复杂 B 端与 AI 产品体验：如何把不确定性转化为可理解的秩序"
+publishedAt: "2026-08-15"
+summary: "结合智能体平台、语音抄单助手与历史系统重构实践，总结复杂业务建模与 AI 容错体验的三条核心原则。"
+author: "朱星宇"
+tags: ["UX设计", "AI产品体验", "信息架构", "B端系统"]
 ---
 
-# Achieving Milestone: Adding Blogs Section
+# 复杂 B 端与 AI 产品体验：如何把不确定性转化为可理解的秩序
 
-Finally! The day has come. The stars have aligned, the code has compiled, and I have successfully added a blog section to my portfolio. It's a small step for a developer, but a giant leap for my procrastination.
+在企业级系统与 AI 产品的设计实践中，真正的难点往往不在单张界面的视觉修饰，而在于**对象关系、状态流转与异常恢复路径**。
 
-## The Journey
+## 1. 先建立对象秩序，再谈页面布局
 
-It started with a simple thought: "I should have a blog." That thought was immediately followed by a year of overthinking the design, 3 months of debating between a CMS and Markdown, and 2 weeks of actually writing code.
+无论是从 0 到 1 搭建仓储作业系统，还是设计企业智能体库，如果直接平铺参数和功能，用户很快就会在跨页面跳转中迷失。通过先梳理核心业务对象（如：仓库—库存—单据—作业，或分组—智能体—维度—结论），页面结构会自然长出稳定的骨架。
 
-### Why Space Theme?
+## 2. AI 体验的可信度来自“可核对”与“可恢复”
 
-Because why not? If I'm going to write about code, I might as well do it while floating in the void of the internet. Plus, dark mode is default in space.
+AI 能极大缩短任务路径（例如一句话录入多商品订单），但识别与生成天然带有不确定性。好的 AI 交互不应该做替用户拍板的黑盒，而应当做到：
 
-## What to Expect?
+- **过程可感知**：明确区分录音中、解析中、匹配完成等阶段反馈；
+- **结果可核对**：按原文、解析条件、推荐结果分层呈现，支持低成本微调；
+- **异常有退路**：针对未命中、候选不足提供清晰的回退与手动兜底方案。
 
-- **Tech Rants**: Opinions on frameworks I barely use.
-- **Tutorials**: How to center a div (spoiler: use flexbox).
-- **Life Updates**: Mostly about how much coffee I consumed.
+## 3. 设计规范的价值在于前置协作
 
-## Conclusion
-
-Stay tuned for more content. Or don't. I'm just happy this page renders without errors. 🚀
+当 Figma 双端组件库与 Axure 原型组件库同步运转时，交互规则在需求与原型阶段就已经对齐，大幅减少了跨角色沟通损耗与上线走查返工。

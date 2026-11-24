@@ -57,18 +57,17 @@ export default function MotionNudge() {
         <X className="size-4" />
       </button>
       <p className="pr-6 text-sm font-medium text-foreground">
-        Reduced motion is on
+        已开启精简动效模式
       </p>
       <p className="mt-1 text-xs text-muted-foreground">
-        The interactive 3D scene and animations are turned off. Want the full
-        experience?
+        当前已默认关闭 3D 交互键盘与粒子动效。是否开启完整 3D 交互体验？
       </p>
       <div className="mt-3 flex gap-2">
         <Button size="sm" onClick={enableMotion}>
-          Enable 3D
+          开启 3D 体验
         </Button>
         <Button size="sm" variant="ghost" onClick={dismiss}>
-          No thanks
+          保持现状
         </Button>
       </div>
     </div>

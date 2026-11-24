@@ -12,12 +12,12 @@ import { usePerfProfile } from '@/hooks/use-perf-profile';
 
 // Define our menu items
 const MENU_ITEMS: MenuItem[] = [
-  { id: 'love', emoji: '❤️', label: 'Love', color: '#ef4444' },
-  { id: 'laugh', emoji: '😂', label: 'Haha', color: '#fbbf24' },
-  { id: 'wow', emoji: '😮', label: 'Wow', color: '#3b82f6' },
-  { id: 'sad', emoji: '😢', label: 'Sad', color: '#60a5fa' },
-  { id: 'angry', emoji: '😡', label: 'Angry', color: '#f97316' },
-  { id: 'fire', emoji: '🔥', label: 'Lit', color: '#f59e0b' },
+  { id: 'love', emoji: '❤️', label: '喜欢', color: '#ef4444' },
+  { id: 'laugh', emoji: '👏', label: '赞赏', color: '#fbbf24' },
+  { id: 'wow', emoji: '😮', label: '惊艳', color: '#3b82f6' },
+  { id: 'idea', emoji: '💡', label: '巧思', color: '#60a5fa' },
+  { id: 'star', emoji: '✨', label: '精致', color: '#a855f7' },
+  { id: 'fire', emoji: '🔥', label: '超棒', color: '#f59e0b' },
 ];
 
 const DEAD_ZONE = 20;

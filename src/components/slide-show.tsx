@@ -48,13 +48,14 @@ const Frame = ({
   >
     <Image
       src={image}
-      alt="Project screenshot"
+      alt="设计稿预览"
       width={1600}
       height={1000}
+      unoptimized={image.endsWith(".svg")}
       priority={priority}
       onLoad={onImageLoad}
-      sizes="(max-width: 768px) 100vw, 720px"
-      className="block h-auto w-full"
+      sizes="(max-width: 768px) 100vw, 760px"
+      className="mx-auto block h-auto max-h-[68vh] w-auto max-w-full object-contain"
     />
 
     {/* zoom affordance — revealed on hover only, never blurs the image */}
@@ -67,7 +68,7 @@ const Frame = ({
       className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full border border-white/15 bg-black/55 px-3 py-1.5 text-xs font-mono text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-md"
     >
       <Maximize2 className="h-3.5 w-3.5" strokeWidth={2} />
-      Expand
+      放大查看
     </motion.span>
   </motion.button>
 );
@@ -187,9 +188,10 @@ const SlideShow = ({ images }: { images: string[] }) => {
                 {isOpen && (
                   <Image
                     src={images[selectedIndex]}
-                    alt="Project screenshot"
+                    alt="设计稿大图"
                     width={1920}
                     height={1200}
+                    unoptimized={images[selectedIndex].endsWith(".svg")}
                     className="h-auto max-h-[88vh] w-auto max-w-full rounded-xl ring-1 ring-white/10 shadow-2xl"
                   />
                 )}

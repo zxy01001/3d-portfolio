@@ -33,8 +33,8 @@ const SkillsSection = () => {
     >
       <SectionHeader
         id="skills"
-        title="Tech Stack"
-        desc={showGrid ? "Tools I build with" : "(hint: press a key)"}
+        title="设计能力栈"
+        desc={showGrid ? "支撑复杂业务与 AI 产品落地的工具与方法论" : "（提示：悬停、点击 3D 键帽，或直接敲击物理键盘）"}
         className={showGrid ? "static mb-14" : undefined}
       />
       <ul className={showGrid ? "mx-auto grid w-full max-w-5xl grid-cols-2 gap-3 px-4 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5" : "sr-only"}>
@@ -70,7 +70,7 @@ const SkillsSection = () => {
               className="relative size-9 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-110 md:size-11"
             />
             <span className="relative text-center text-xs font-medium text-foreground/80 transition-colors group-hover:text-foreground md:text-sm">
-              {skill.label}
+              {skill.labelZh ?? skill.label}
             </span>
           </li>
         ))}

@@ -1,16 +1,12 @@
-import AceTernityLogo from "@/components/logos/aceternity";
 import SlideShow from "@/components/slide-show";
 import { Button } from "@/components/ui/button";
-import { TypographyH3, TypographyP } from "@/components/ui/typography";
-import { ArrowUpRight, ExternalLink, Link2, MoveUpRight } from "lucide-react";
-import Image from "next/image";
+import { TypographyH3 } from "@/components/ui/typography";
+import { ArrowUpRight, CheckCircle2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
-const BASE_PATH = "/assets/projects-screenshots";
 
-// Renders a brand SVG from /public as a monochrome glyph that inherits the
-// surrounding text color (the skill dock styles every icon via currentColor),
-// so full-color marks like Mistral flatten to match the rest of the set.
+const ZXY_PATH = "/assets/zxy";
+
 const MaskIcon = ({ src, title }: { src: string; title?: string }) => (
   <span
     role="img"
@@ -31,38 +27,59 @@ const MaskIcon = ({ src, title }: { src: string; title?: string }) => (
   />
 );
 
-const ProjectsLinks = ({ live, repo }: { live?: string; repo?: string }) => {
+const CaseStudyCTA = ({
+  live,
+  label = "打开完整交互案例页（含可操作原型）",
+}: {
+  live?: string;
+  label?: string;
+}) => {
+  if (!live || live === "#") return null;
   return (
-    <div className="flex flex-col md:flex-row items-center justify-start gap-3 my-3 mb-8">
-      {live && live !== "#" && (
-        <Link
-          className="font-mono underline flex gap-2"
-          rel="noopener"
-          target="_new"
-          href={live}
-        >
-          <Button variant={"default"} size={"sm"}>
-            Visit Website
-            <ArrowUpRight className="ml-3 w-5 h-5" />
-          </Button>
-        </Link>
-      )}
-      {repo && repo !== "#" && (
-        <Link
-          className="font-mono underline flex gap-2"
-          rel="noopener"
-          target="_new"
-          href={repo}
-        >
-          <Button variant={"default"} size={"sm"}>
-            Github
-            <ArrowUpRight className="ml-3 w-5 h-5" />
-          </Button>
-        </Link>
-      )}
+    <div className="my-5 flex flex-wrap items-center gap-3">
+      <Link href={live} target="_blank" rel="noopener">
+        <Button size="default" className="gap-2 rounded-full px-6 shadow-md">
+          <Sparkles className="h-4 w-4" />
+          {label}
+          <ArrowUpRight className="h-4 w-4" />
+        </Button>
+      </Link>
     </div>
   );
 };
+
+const MetaStrip = ({
+  items,
+}: {
+  items: { label: string; value: string }[];
+}) => (
+  <div className="my-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+    {items.map((item) => (
+      <div
+        key={item.label}
+        className="rounded-xl border border-border bg-secondary/35 px-4 py-3"
+      >
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+          {item.label}
+        </div>
+        <div className="mt-1 text-sm font-bold text-foreground">
+          {item.value}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const BulletGroup = ({ items }: { items: string[] }) => (
+  <ul className="my-3 space-y-2.5 text-sm md:text-base text-muted-foreground leading-relaxed">
+    {items.map((item, i) => (
+      <li key={i} className="flex items-start gap-2.5">
+        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-500" />
+        <span>{item}</span>
+      </li>
+    ))}
+  </ul>
+);
 
 export type Skill = {
   title: string;
@@ -70,219 +87,138 @@ export type Skill = {
   fg: string;
   icon: ReactNode;
 };
-// Brand chips sourced from thesvg CLI mono SVGs in /public/assets/logos,
-// rendered via MaskIcon so each one inherits the dock's currentColor.
-const brand = (title: string, file: string): Skill => ({
+
+const uxSkill = (title: string, file: string): Skill => ({
   title,
   bg: "black",
   fg: "white",
-  icon: <MaskIcon src={`/assets/logos/${file}`} title={title} />,
+  icon: <MaskIcon src={`/assets/logos/ux/${file}`} title={title} />,
 });
+
 const PROJECT_SKILLS = {
-  next: brand("Next.js", "nextdotjs-mono.svg"),
-  chakra: brand("Chakra UI", "chakra-ui-mono.svg"),
-  node: brand("Node.js", "nodedotjs-mono.svg"),
-  python: brand("Python", "python-mono.svg"),
-  prisma: brand("Prisma", "prisma-mono.svg"),
-  postgres: brand("PostgreSQL", "postgresql-mono.svg"),
-  mongo: brand("MongoDB", "mongodb-mono.svg"),
-  express: brand("Express", "express-mono.svg"),
-  reactQuery: brand("React Query", "react-query-mono.svg"),
-  shadcn: brand("shadcn/ui", "shadcn-ui-mono.svg"),
-  // Not in the thesvg registry — keep the existing custom logo.
-  aceternity: {
-    title: "Aceternity",
-    bg: "black",
-    fg: "white",
-    icon: <AceTernityLogo />,
-  },
-  tailwind: brand("Tailwind", "tailwind-css-mono.svg"),
-  docker: brand("Docker", "docker-mono.svg"),
-  // Not in the thesvg registry — keep the text mark.
-  yjs: {
-    title: "Y.js",
-    bg: "black",
-    fg: "white",
-    icon: (
-      <span>
-        <strong>Y</strong>js
-      </span>
-    ),
-  },
-  firebase: brand("Firebase", "firebase-mono.svg"),
-  sockerio: brand("Socket.io", "socketdotio-mono.svg"),
-  js: brand("JavaScript", "javascript-mono.svg"),
-  ts: brand("TypeScript", "typescript-mono.svg"),
-  vue: brand("Vue.js", "vuedotjs-mono.svg"),
-  react: brand("React.js", "react-mono.svg"),
-  sanity: brand("Sanity", "sanity-mono.svg"),
-  gsap: brand("GSAP", "gsap-mono.svg"),
-  motion: brand("Motion", "motion.svg"),
-  supabase: brand("Supabase", "supabase-mono.svg"),
-  trpc: brand("tRPC", "trpc-mono.svg"),
-  drizzle: brand("Drizzle ORM", "drizzle-mono.svg"),
-  hono: brand("Hono", "hono-mono.svg"),
-  redis: brand("Redis / BullMQ", "redis-mono.svg"),
-  cloudflare: brand("Cloudflare", "cloudflare-mono.svg"),
-  // React Native reuses the React mark.
-  reactNative: brand("React Native", "react-mono.svg"),
-  betterAuth: brand("Better Auth", "better-auth-mono.svg"),
-  // Not in the thesvg registry — keep the text marks.
-  zustand: {
-    title: "Zustand",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-xs font-bold">Zu</span>,
-  },
-  partykit: {
-    title: "PartyKit",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-base">🎈</span>,
-  },
-  hocuspocus: {
-    title: "Hocuspocus",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-xs font-bold">Hp</span>,
-  },
-  // React Flow ships under the xyflow brand.
-  reactFlow: brand("React Flow", "xyflow-mono.svg"),
-  codemirror: brand("CodeMirror", "codemirror-mono.svg"),
-  // "Satori / sharp" — uses the sharp mark.
-  satori: brand("Satori / sharp", "sharp-mono.svg"),
-  turborepo: brand("Turborepo", "turborepo-mono.svg"),
-  // Vercel AI SDK uses the Vercel mark.
-  aiSDK: brand("Vercel AI SDK", "vercel-mono.svg"),
-  anthropic: brand("Anthropic Claude", "anthropic-mono.svg"),
-  mistral: brand("Mistral AI", "mistral-ai-mono.svg"),
-  electron: brand("Electron", "electron-mono.svg"),
-  vite: brand("Vite", "vite-mono.svg"),
-  astro: brand("Astro", "astro-mono.svg"),
-  sqlite: brand("SQLite", "sqlite-mono.svg"),
-  ffmpeg: brand("FFmpeg", "ffmpeg-mono.svg"),
-  ollama: brand("Ollama", "ollama-mono.svg"),
-  // Not in the thesvg registry — keep the text mark.
-  nextIntl: {
-    title: "next-intl",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-xs font-bold">i18n</span>,
-  },
-  // Not in the thesvg registry — keep the text marks.
-  expo: {
-    title: "Expo",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-xs font-bold">Expo</span>,
-  },
-  mcp: {
-    title: "MCP",
-    bg: "black",
-    fg: "white",
-    icon: <span className="text-xs font-bold">MCP</span>,
-  },
+  figma: uxSkill("Figma", "figma.svg"),
+  axure: uxSkill("Axure RP", "axure.svg"),
+  protopie: uxSkill("ProtoPie", "protopie.svg"),
+  ae: uxSkill("After Effects", "ae.svg"),
+  htmlcss: uxSkill("HTML / CSS", "htmlcss.svg"),
+  designSystem: uxSkill("设计系统", "designsystem.svg"),
+  responsive: uxSkill("双端响应式", "responsive.svg"),
+  aiUx: uxSkill("AI 产品体验", "aiux.svg"),
+  codex: uxSkill("AI 交互原型", "codex.svg"),
+  chatgpt: uxSkill("ChatGPT", "chatgpt.svg"),
+  domain: uxSkill("复杂业务建模", "domain.svg"),
+  ia: uxSkill("信息架构", "ia.svg"),
+  state: uxSkill("状态与异常闭环", "state.svg"),
+  research: uxSkill("需求拆解与调研", "research.svg"),
+  dataviz: uxSkill("BI 数据看板", "dataviz.svg"),
+  qa: uxSkill("PRD 与设计走查", "qa.svg"),
 };
+
+export type ProjectFilterGroup = "all" | "ai" | "business" | "system";
+
 export type Project = {
   id: string;
   category: string;
+  filterGroup: Exclude<ProjectFilterGroup, "all">;
+  featuredSpan?: boolean;
+  badge?: string;
   title: string;
+  subtitle: string;
   src: string;
   screenshots: string[];
   skills: { frontend: Skill[]; backend: Skill[] };
-  content: React.ReactNode | any;
+  content: React.ReactNode;
   github?: string;
   live: string;
+  liveLabel?: string;
 };
+
 const projects: Project[] = [
   {
-    id: "storekit",
-    category: "Commerce platform",
-    title: "StoreKit",
-    src: "/assets/projects-screenshots/storekit/landing.png",
-    screenshots: ["landing.png"],
+    id: "agent-platform",
+    category: "企业 AI 中台 · 0→1 上线",
+    filterGroup: "ai",
+    featuredSpan: true,
+    badge: "核心案例",
+    title: "智能体库搭建",
+    subtitle: "把模型、知识库与诊断规则转化为企业可理解、可配置的零代码工作台",
+    src: `${ZXY_PATH}/agent-platform/library/library-overview.png`,
+    screenshots: ["library-overview.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.reactNative,
-        PROJECT_SKILLS.tailwind,
+        PROJECT_SKILLS.aiUx,
+        PROJECT_SKILLS.ia,
+        PROJECT_SKILLS.domain,
+        PROJECT_SKILLS.state,
       ],
       backend: [
-        PROJECT_SKILLS.hono,
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.redis,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.docker,
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.axure,
+        PROJECT_SKILLS.codex,
+        PROJECT_SKILLS.qa,
       ],
     },
-    live: "https://storekit.app/",
-    // Private repo (commercial product) — intentionally no public source link
+    live: "/cases/agent-platform.html",
+    liveLabel: "进入智能体平台交互案例页",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A production-grade, multi-tenant commerce platform — Shopify-class,
-            built solo.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            Architected and built end-to-end as a single engineer: a
-            pnpm/Turborepo monorepo spanning 6 applications and 11 shared
-            packages — merchant dashboard, customer storefront, headless REST
-            API, and two React Native apps (customer + POS) — with a shared
-            type-safe core (54-table Drizzle/Postgres schema, 33 tRPC v11
-            routers, end-to-end inference). ~238K lines of TypeScript powering 4
-            storefront verticals: e-commerce, food delivery, quick-commerce, and
-            digital goods.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">Payments &amp; reliability</TypographyH3>
-          <p className="font-mono mb-2">
-            A PhonePe payment integration with OAuth2 token exchange, Redis-cached
-            per-store tokens, and idempotency keys on orders/transactions/refunds
-            so checkout survives refreshes and duplicate webhooks without
-            double-charging. Payment credentials are encrypted at rest and webhook
-            signatures verified to prevent tampering, with a BullMQ/Redis async
-            layer (5 retries, exponential backoff) driving notifications and order
-            jobs — every webhook event logged for replay.
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            从智能体生命周期管理到客户诊断业务编排，将底层模型、Prompt、知识库与条件规则转化为业务人员<strong>零代码即可配置、调试与发布</strong>的企业级 AI 工作台。
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/storekit/orders.png`,
-              `${BASE_PATH}/storekit/login.png`,
+
+          <MetaStrip
+            items={[
+              { label: "项目类型", value: "企业 AI 中台（0 → 1）" },
+              { label: "我的角色", value: "项目设计负责人" },
+              { label: "项目周期", value: "2026.02 — 2026.04" },
+              { label: "落地状态", value: "已正式上线 · 持续迭代" },
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">AI storefront generation</TypographyH3>
-          <p className="font-mono mb-2">
-            <em>In progress.</em> An agentic generator where an LLM writes real
-            storefront code inside isolated container sandboxes, gated by a
-            type-check + lint pass so broken code never lands — then deploys each
-            store programmatically as its own Cloudflare Worker through a
-            queue-driven pipeline, with a fleet health monitor that auto-rolls-back
-            failing deployments within minutes.
-          </p>
+          <CaseStudyCTA live={this.live} label="打开完整交互案例页（支持模块切换预览）" />
 
-          <TypographyH3 className="my-4 mt-8">Domain modeling &amp; breadth</TypographyH3>
-          <p className="font-mono mb-2">
-            An explicit order state-machine spans the 4 verticals with
-            illegal-transition guards, fronted by a typed event bus and a
-            per-store plugin registry for pluggable lifecycle behavior without
-            touching core code. The merchant dashboard ships a visual theme
-            builder, analytics, inventory, coupons, abandoned-cart recovery, and
-            Pixie — an in-product AI agent that manages the store via tool-calling
-            over live data. The POS app does Bluetooth ESC/POS thermal printing,
-            mDNS/TCP printer discovery, and barcode scanning.
-          </p>
+          <TypographyH3 className="mt-6">01 · 核心设计挑战</TypographyH3>
+          <BulletGroup
+            items={[
+              "规模化资产管理：随着企业智能体数量增长，需要支持自定义文件夹分组、搜索、批量选择与跨组移动归类。",
+              "高复杂度规则表达：客户诊断涉及分类树、多维条件组及 AND / OR 逻辑嵌套，直接平铺参数极易迷失。",
+              "配置与结果割裂：洞察维度、诊断结论与真实对话表现之间需要建立即时可验证的前后反馈关系。",
+            ]}
+          />
+
           <SlideShow
             images={[
-              `${BASE_PATH}/storekit/storefront.png`,
-              `${BASE_PATH}/storekit/themes.png`,
+              `${ZXY_PATH}/agent-platform/library/library-overview.png`,
+              `${ZXY_PATH}/agent-platform/library/group-card.png`,
+              `${ZXY_PATH}/agent-platform/library/library-selection.png`,
+              `${ZXY_PATH}/agent-platform/library/move-item.png`,
+            ]}
+          />
+
+          <TypographyH3 className="mt-6">02 · 关键架构与交互决策</TypographyH3>
+          <BulletGroup
+            items={[
+              "统一对象卡片骨架：同一套卡片网格同时承载“分组文件夹”与“单个智能体”，用数量与类型标签保持一致的浏览节奏。",
+              "四步渐进式披露：将复杂客户诊断拆解为「定义洞察维度 → 圈定客户范围 → 配置结论建议 → 预览与调试」四步稳定闭环。",
+              "左配置 · 右实时预览：分类树、条件表单与真实对话预览保持同屏，无需离开当前上下文即可检验欢迎语与诊断路径。",
+            ]}
+          />
+
+          <SlideShow
+            images={[
+              `${ZXY_PATH}/agent-platform/diagnosis/overview.png`,
+              `${ZXY_PATH}/agent-platform/diagnosis/scope-rules.png`,
+              `${ZXY_PATH}/agent-platform/diagnosis/dimension-config.png`,
+              `${ZXY_PATH}/agent-platform/diagnosis/conclusion-config.png`,
+            ]}
+          />
+
+          <TypographyH3 className="mt-6">03 · 上线验证与价值</TypographyH3>
+          <BulletGroup
+            items={[
+              "2026 年 4 月完成从 0 到 1 产品化上线，补齐 AI 中台的智能体资产管理与业务编排能力。",
+              "支持业务团队零代码自主完成多场景智能体的搭建、调试与发布。",
             ]}
           />
         </div>
@@ -290,102 +226,82 @@ const projects: Project[] = [
     },
   },
   {
-    id: "unottr",
-    category: "Local-first desktop app",
-    title: "unottr",
-    src: "/assets/projects-screenshots/unottr/landing.webp",
-    screenshots: ["landing.webp"],
+    id: "voice-order",
+    category: "AI 语音交互 · 准确率 80%+",
+    filterGroup: "ai",
+    featuredSpan: true,
+    badge: "核心案例",
+    title: "智能抄单助手",
+    subtitle: "把自然语言多商品订货需求转化为可核对、可修正、可恢复的结构化订单",
+    src: `${ZXY_PATH}/covers/voice-order-cover.svg`,
+    screenshots: ["09-match-result.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.electron,
-        PROJECT_SKILLS.vite,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.astro,
+        PROJECT_SKILLS.aiUx,
+        PROJECT_SKILLS.state,
+        PROJECT_SKILLS.ia,
+        PROJECT_SKILLS.research,
       ],
       backend: [
-        PROJECT_SKILLS.node,
-        PROJECT_SKILLS.sqlite,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.ffmpeg,
-        PROJECT_SKILLS.aiSDK,
-        PROJECT_SKILLS.ollama,
-        PROJECT_SKILLS.cloudflare,
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.protopie,
+        PROJECT_SKILLS.codex,
+        PROJECT_SKILLS.qa,
       ],
     },
-    live: "https://unottr.pages.dev",
-    github: "https://github.com/Naresh-Khatri/unottr",
+    live: "/cases/voice-order.html",
+    liveLabel: "体验语音下单完整交互流程",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            Private meeting memory — &quot;your meetings stay yours.&quot;
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A desktop app that watches a folder for meeting recordings and turns
-            them into searchable, speaker-labelled transcripts with the video
-            playing beside them. No account, no sign-in, no background upload:
-            transcription, speaker separation and search all run on your own
-            machine. Built with Electron, React 19 and TypeScript, it ships
-            natively for Linux x64 and Apple Silicon and sells as a one-time
-            $79 license instead of a subscription.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Drop a file, get a transcript
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Any new file in a watched folder is probed, transcribed and diarized
-            on its own, with no import step or start button. Every pipeline stage
-            (discover → probe → extract → detect speech → transcribe → diarize →
-            merge → index) is a persisted queue state, so a crash resumes at a
-            stage boundary instead of starting over. Whisper runs on Vulkan or
-            Metal in ~30s VAD-aligned chunks, each written to SQLite as it lands,
-            inside a forked utility process, so a native crash kills one job and
-            not the app. Speaker identification uses Sortformer on a Vulkan GPU
-            (a five-minute sample in under 6 seconds) with sherpa-onnx as the CPU
-            fallback, and named speakers are recognised in later meetings by
-            voiceprint.
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            用“说清楚或粘贴一段订货需求”替代传统的“逐一搜索商品、选规格、填数量”，围绕<strong>效率、信任、容错</strong>三大原则处理 AI 识别的不确定性。
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/unottr/transcript.png`,
-              `${BASE_PATH}/unottr/library.png`,
+
+          <MetaStrip
+            items={[
+              { label: "项目类型", value: "移动端 AI 效率工具" },
+              { label: "我的角色", value: "项目设计负责人" },
+              { label: "核心指标", value: "下单准确率 80%+" },
+              { label: "线上表现", value: "日活企业 10+ 稳定运行" },
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">
-            Search every word, land on the exact second
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Full-text search (SQLite FTS5) across every transcript, summary and
-            note opens the recording at the matching timestamp. A command palette,
-            a player with speaker bands on the scrub bar and frame previews on
-            hover, and reversible glossary rules for names and acronyms all make
-            the library quicker to work with. Transcripts export as
-            TXT/JSON/SRT/VTT and mirror to Markdown notes.
-          </p>
+          <CaseStudyCTA live={this.live} label="打开完整交互案例页（体验分步下单流程）" />
 
-          <TypographyH3 className="my-4 mt-8">
-            Optional AI with citations that cannot lie
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Nothing touches a model until you ask. Overviews and Ask threads run
-            on a connection you choose: Ollama or LM Studio on the same machine,
-            your own OpenAI/Anthropic/Mistral key, or an installed Claude Code,
-            Codex or Antigravity CLI sandboxed in a temp directory. The model only
-            sees segment IDs, which resolve to timestamps in one place, and any
-            citation that doesn&apos;t resolve is dropped, so it can never invent
-            a confident link into the wrong minute. Before the first send, a
-            consent panel shows the exact payload; audio, video and frames never
-            leave the device.
-          </p>
+          <TypographyH3 className="mt-6">01 · 关键交互判断：不替用户做黑盒决策</TypographyH3>
+          <BulletGroup
+            items={[
+              "建立「语音/文本输入 → 实时识别 → 商品匹配 → 候选核对 → 提交下单」五步清晰反馈链路。",
+              "分层呈现置信度：按“需求原文、解析关键词、首选匹配商品与候选展开”分层排布，支持一键切换相近规格商品。",
+              "完整设计异常恢复分支：针对未识别出有效需求、未命中商品库存、全部取消等边缘状态提供明确原因说明与重试入口。",
+            ]}
+          />
+
           <SlideShow
             images={[
-              `${BASE_PATH}/unottr/overview.png`,
-              `${BASE_PATH}/unottr/ai-connection.png`,
+              `${ZXY_PATH}/voice-order/02-voice-assistant.png`,
+              `${ZXY_PATH}/voice-order/04-recording-live-1.png`,
+              `${ZXY_PATH}/voice-order/06-text-paste.png`,
+              `${ZXY_PATH}/voice-order/07-matching-loading-1.png`,
+              `${ZXY_PATH}/voice-order/09-match-result.png`,
+              `${ZXY_PATH}/voice-order/10-match-expanded.png`,
+            ]}
+          />
+
+          <TypographyH3 className="mt-6">02 · 异常边界与业务验证</TypographyH3>
+          <BulletGroup
+            items={[
+              "覆盖未命中需求、未命中商品等真实长尾场景，避免用户卡死在空白报错页。",
+              "上线后稳定服务 10+ 日活批发订货企业，多商品混合下单准确率达 80%+，显著降低人工抄单漏单与错单率。",
+            ]}
+          />
+
+          <SlideShow
+            images={[
+              `${ZXY_PATH}/voice-order/15-empty-unrecognized.png`,
+              `${ZXY_PATH}/voice-order/16-empty-unmatched.png`,
+              `${ZXY_PATH}/voice-order/13-order-success.png`,
             ]}
           />
         </div>
@@ -393,187 +309,80 @@ const projects: Project[] = [
     },
   },
   {
-    id: "codingducks",
-    category: "Real-time coding platform",
-    title: "Coding Ducks",
-    src: "/assets/projects-screenshots/codingducks/landing.png",
-    screenshots: ["landing.png"],
+    id: "sales-coaching",
+    category: "跨端 AI 陪练 · Web + Mobile",
+    filterGroup: "ai",
+    badge: "双端闭环",
+    title: "AI 销售陪练系统",
+    subtitle: "打通管理者 Web 任务配置端与销售人员移动端对练复盘的完整体验闭环",
+    src: `${ZXY_PATH}/sales-coaching/04-scene-setup.png`,
+    screenshots: ["04-scene-setup.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.codemirror,
-        PROJECT_SKILLS.reactFlow,
+        PROJECT_SKILLS.aiUx,
+        PROJECT_SKILLS.domain,
+        PROJECT_SKILLS.state,
+        PROJECT_SKILLS.responsive,
       ],
       backend: [
-        PROJECT_SKILLS.node,
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.yjs,
-        PROJECT_SKILLS.hocuspocus,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.docker,
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.axure,
+        PROJECT_SKILLS.chatgpt,
+        PROJECT_SKILLS.qa,
       ],
     },
-    live: "https://www.codingducks.xyz/",
-    github: "https://github.com/Naresh-Khatri/Coding-Ducks",
+    live: "/cases/sales-coaching.html",
+    liveLabel: "查看 Web + 移动端双端案例",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A multi-language judge, a CRDT collaborative editor, and a
-            system-design simulation game — in one platform.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            Coding Ducks is a full-stack, real-time coding platform built as a
-            production-grade Turborepo monorepo (2 apps, 7 shared packages) in
-            strict TypeScript — Next.js 16 / React 19, a tRPC v11 type-safe API,
-            PostgreSQL + Drizzle ORM (18 tables), and a standalone real-time
-            Node service, with enforced one-way apps → packages dependency
-            boundaries.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Ducklets — real-time collaborative editor
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A multiplayer code editor built on Y.js CRDTs and a standalone
-            Hocuspocus WebSocket server — concurrent editing, live cursor
-            presence, and conflict-free merging persisted to Postgres as
-            versioned binary state. Secured by a custom HMAC-SHA256 signed-token
-            scheme (constant-time verification, 1-hour TTL) with owner / editor
-            / viewer RBAC re-verified live against the DB so permission
-            revocation takes effect mid-session. Includes room forking,
-            point-in-time snapshots, idempotent chat, and throttled live
-            previews (Puppeteer + Cloudflare R2, coalesced to ≤1 render/60s).
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            同时服务“培训管理者（Web 配置端）”与“一线销售（移动端对练端）”两类角色，把知识材料、AI 陪练角色、对话情境与评分标准组织成可检查、可演练、可复盘的任务闭环。
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/codingducks/ducklets-editor.png`,
-              `${BASE_PATH}/codingducks/ducklets.png`,
+
+          <MetaStrip
+            items={[
+              { label: "项目类型", value: "跨端企业 AI 培训系统" },
+              { label: "我的角色", value: "项目设计负责人" },
+              { label: "项目周期", value: "2026.07 — 至今" },
+              { label: "覆盖终端", value: "Web 配置端 + 移动练习端" },
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">
-            CD Judge — in-house code execution engine
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A free, self-hostable, Judge0-class execution engine supporting 10
-            languages (Python, JS, TS, Java, C, C++, Rust, Go, Ruby, PHP) with per-language
-            driver/harness generation that injects test cases, parses typed
-            arguments, and redacts hidden-test output. An asynchronous submit →
-            poll → verdict pipeline uses an optimistic-locking finalizer
-            (UPDATE … WHERE status=&apos;running&apos;) to guarantee exactly-once
-            streak/scoring under concurrent polling, plus &quot;beats X%&quot;
-            runtime-percentile ranking via SQL window aggregates.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/codingducks/problems.png`,
-              `${BASE_PATH}/codingducks/problem.png`,
-              `${BASE_PATH}/codingducks/machine-coding.png`,
+          <CaseStudyCTA live={this.live} label="打开完整双端切换案例页" />
+
+          <TypographyH3 className="mt-6">01 · Web 配置端：三步向导与 AI 生成核对</TypographyH3>
+          <BulletGroup
+            items={[
+              "将散乱对象收敛为「定知识 → 配场景与角色 → 设评分并发任务」三步向导，每一步均有明确阶段产出。",
+              "显性化 AI 生成状态：知识解析中、生成完成、角色微调与发布前完整性校验全链路可见可控。",
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">
-            System Design — simulation game
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            An interactive puzzle game where users assemble architectures from
-            16 typed building blocks on a React Flow canvas, then run them
-            through a pure-TypeScript, client-side traffic-simulation engine —
-            topological propagation, capacity/latency modeling, cache-warmth
-            EMA, SPOF detection, and DDoS &amp; chaos-fault injection. A 3-star
-            scoring model across reliability / performance / efficiency spans 10
-            progressively harder levels, guarded by a calibration suite
-            (node&nbsp;--test) that runs reference designs 15× through the real
-            engine to assert each level stays beatable-but-hard (optimal ⇒ 3★,
-            naive ⇒ ≤2★, broken ⇒ fail).
-          </p>
-          <SlideShow images={[`${BASE_PATH}/codingducks/sysdesign.png`]} />
-        </div>
-      );
-    },
-  },
-  {
-    id: "gumbalup",
-    category: "Real-time quiz platform",
-    title: "Gumbalup",
-    src: "/assets/projects-screenshots/gumbalup/landing.png",
-    screenshots: ["landing.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
-      ],
-      backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.partykit,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.docker,
-      ],
-    },
-    live: "https://gumbalup.com/",
-    // Private repo (commercial product) — intentionally no public source link
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A live, interactive quiz &amp; audience-engagement platform — built
-            solo, end-to-end.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A production-grade, multi-tenant SaaS where organizations build
-            quizzes (manually or with AI) and run live, host-driven games —
-            players join from any device via room code / QR and compete on a
-            real-time, server-authoritative leaderboard. Also supports async
-            self-paced quizzes, team mode, anti-cheat monitoring, analytics,
-            billing, and white-labeling. ~43.5K lines of TypeScript across 257
-            files.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Server-authoritative game engine
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A real-time game engine on PartyKit (Cloudflare Durable Objects +
-            WebSockets): a per-room in-memory state machine with an authoritative
-            1-second timer, speed-rank + streak scoring, deterministic
-            tie-broken leaderboards, team mode, and graceful reconnect/replay —
-            ~2,800 lines of game logic behind a typed message protocol (42
-            discriminated-union variants). Correctness is never sent to clients
-            during an active question, so players can&apos;t sniff answers or
-            game the clock.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/gumbalup/dashboard.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Edge-to-DB security boundary &amp; AI authoring
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            The edge worker never connects to Postgres directly — it proxies all
-            persistence through a shared-secret internal HTTPS API on Next.js,
-            keeping the database unreachable from the public internet while the
-            worker stays stateless and edge-deployed. A fully type-safe layer (17
-            tRPC routers, 5 authorization tiers, Zod) backs it, with LLM-powered
-            quiz authoring (Groq / Llama) from topics or uploaded PDFs, quota-
-            metered per org, plus analytics with CSV/Excel/PDF export.
-          </p>
           <SlideShow
             images={[
-              `${BASE_PATH}/gumbalup/editor.png`,
-              `${BASE_PATH}/gumbalup/library.png`,
+              `${ZXY_PATH}/sales-coaching/01-knowledge-step.png`,
+              `${ZXY_PATH}/sales-coaching/03-knowledge-ready.png`,
+              `${ZXY_PATH}/sales-coaching/04-scene-setup.png`,
+              `${ZXY_PATH}/sales-coaching/07-score-rules.png`,
+              `${ZXY_PATH}/sales-coaching/11-ai-dialog.png`,
+              `${ZXY_PATH}/sales-coaching/15-task-overview.png`,
+            ]}
+          />
+
+          <TypographyH3 className="mt-6">02 · 移动练习端：语音对练与多维评分复盘</TypographyH3>
+          <BulletGroup
+            items={[
+              "沿着同一条业务主线串联课前知识速览、AI 拟真语音对练、实时提示与课后评分逐句回溯。",
+            ]}
+          />
+
+          <SlideShow
+            images={[
+              `${ZXY_PATH}/sales-coaching/mobile/01-task-list.png`,
+              `${ZXY_PATH}/sales-coaching/mobile/07-practice-chat.png`,
+              `${ZXY_PATH}/sales-coaching/mobile/08-practice-voice.png`,
+              `${ZXY_PATH}/sales-coaching/mobile/12-result-overview.png`,
             ]}
           />
         </div>
@@ -581,276 +390,242 @@ const projects: Project[] = [
     },
   },
   {
-    id: "peakposts",
-    category: "AI social SaaS",
-    title: "PeakPosts",
-    src: "/assets/projects-screenshots/peakposts/landing.png",
-    screenshots: ["landing.png"],
+    id: "profile-settings",
+    category: "体验重构 · 新旧对比",
+    filterGroup: "system",
+    badge: "架构治理",
+    title: "个人设置与系统信息优化",
+    subtitle: "拆解历史叠加超长表单，重构信息架构、查看/编辑分离与权限边界",
+    src: `${ZXY_PATH}/covers/profile-settings-cover.svg`,
+    screenshots: ["settings-index.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
-        PROJECT_SKILLS.nextIntl,
+        PROJECT_SKILLS.ia,
+        PROJECT_SKILLS.state,
+        PROJECT_SKILLS.designSystem,
+        PROJECT_SKILLS.research,
       ],
       backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.aiSDK,
-        PROJECT_SKILLS.anthropic,
-        PROJECT_SKILLS.mistral,
-        PROJECT_SKILLS.cloudflare,
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.codex,
+        PROJECT_SKILLS.qa,
       ],
     },
-    // Private repo (commercial product) — intentionally no public source link
-    live: "https://peakposts.ai/",
+    live: "/cases/profile-settings.html",
+    liveLabel: "体验新旧版本拖拽对比原型",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A multi-tenant SaaS that turns QR-scanned diner reviews into
-            AI-generated, multi-language social posts — built solo, end-to-end.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A production-grade, multi-tenant SaaS (~50K lines of TypeScript) on
-            the Next.js 15 App Router with end-to-end type safety from PostgreSQL
-            → Drizzle ORM → tRPC v11 → React, serving five distinct audiences —
-            diners, brand owners, counter staff, platform admins, and public
-            marketing — from a single application. 208 React components, 14 tRPC
-            routers, a normalized 19-table schema, and 5 AI subsystems across 5
-            languages.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Peakie — agentic AI analytics assistant
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A hand-rolled tool-calling loop on the Vercel AI SDK (Mistral) over 10
-            brand-scoped tools — no agent framework — hardened against
-            small-model failure modes: spin-detection, hallucinated-tool-name
-            repair, per-tool and total over-fetch caps, exact-call de-duplication,
-            a token-budget history trimmer, and forced tool-choice on the final
-            step to guarantee termination within 6 steps. A terminal{" "}
-            <code>present_actions</code> tool forces structured, deep-linkable
-            answers, and every AI-produced link is re-validated against the
-            user&apos;s accessible scope so a hallucinated or out-of-scope
-            resource ID can never leak across tenant boundaries.
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            针对长期迭代堆叠导致的入口混杂、超长编辑表单与组件割裂问题，通过全量历史页面走查建立六大模块映射，让用户每一步都清楚<strong>“我在看什么、能改什么、修改会影响什么”</strong>。
           </p>
-          <SlideShow images={[`${BASE_PATH}/peakposts/dashboard.png`]} />
 
-          <TypographyH3 className="my-4 mt-8">
-            AI content-generation pipeline
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            An Anthropic Claude pipeline converts a star rating + photo + note
-            into platform-tailored social captions across 6 platforms and 5
-            languages using Zod-schema-enforced structured output, brand-voice
-            configuration, content moderation, and deterministic fallbacks so
-            generation never hard-fails. The diner&apos;s locale does double duty
-            — selecting both the UI catalog and the language the AI writes in
-            (e.g. picking Chinese yields a Xiaohongshu-style caption). A
-            retrieval-augmented help center pairs Mistral embeddings + cosine
-            similarity with a weighted-TF lexical fallback for API outages.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/peakposts/posts.png`]} />
+          <MetaStrip
+            items={[
+              { label: "项目类型", value: "历史系统体验重构" },
+              { label: "我的角色", value: "问题审查 / 架构 / UIUX" },
+              { label: "重构范围", value: "6 大设置与组织模块" },
+              { label: "特色交互", value: "支持 Before/After 滑块对比" },
+            ]}
+          />
 
-          <TypographyH3 className="my-4 mt-8">
-            In-browser video editor &amp; multi-tenant security
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Diners generate H.264 MP4 video and images entirely client-side via
-            the WebCodecs <code>VideoEncoder</code> + mp4-muxer and Canvas 2D,
-            inside a direct-manipulation post editor (pinch/rotate/drag gestures,
-            caption presets, CJK font subsetting) — zero server-side render cost.
-            The multi-step diner flow persists to IndexedDB via a custom Zustand
-            adapter, with client-side image compression and presigned
-            direct-to-R2 uploads. Underneath sits a five-tier tRPC authorization
-            layer with brand- vs. outlet-scoped grants, existence-masking
-            (<code>NOT_FOUND</code> over <code>FORBIDDEN</code>), and two-factor
-            counter auth — a hashed device token plus per-staff PIN with
-            brute-force lockout.
-          </p>
+          <CaseStudyCTA live={this.live} label="打开新旧版本交互对比案例页" />
+
+          <TypographyH3 className="mt-6">01 · 核心重构策略</TypographyH3>
+          <BulletGroup
+            items={[
+              "按任务心智重组入口：划分账户信息、身份安全、消息提醒、设备系统能力、组织通讯录与需求反馈六大模块。",
+              "查看态与编辑态解耦：告别一进页面就是几十个输入框的混合长表单，默认只读浏览，主动触发编辑，降低误触风险。",
+              "规则与权限前置：协同产研补齐不可编辑字段说明、日期逻辑校验与异常状态统一反馈。",
+            ]}
+          />
+
+          <SlideShow
+            images={[
+              `${ZXY_PATH}/profile-settings/new/account/settings-index.png`,
+              `${ZXY_PATH}/profile-settings/old/account/settings-index.png`,
+              `${ZXY_PATH}/profile-settings/new/account/profile-view.png`,
+              `${ZXY_PATH}/profile-settings/new/account/profile-edit.png`,
+              `${ZXY_PATH}/profile-settings/new/reminders/order-reminder.png`,
+              `${ZXY_PATH}/profile-settings/new/organization/contact-list.png`,
+            ]}
+          />
         </div>
       );
     },
   },
   {
-    id: "kanbi",
-    category: "Realtime project tracker",
-    title: "Kanbi",
-    src: "/assets/projects-screenshots/kanbi/landing.png",
-    screenshots: ["landing.png"],
+    id: "business-overview",
+    category: "BI 数据看板 · 响应式重排",
+    filterGroup: "business",
+    badge: "可操作原型",
+    title: "经营概览优化设计",
+    subtitle: "围绕“看现状—找变化—做比较—查明细”构建连续的经营决策工作台",
+    src: `${ZXY_PATH}/business-overview/dashboard-full.png`,
+    screenshots: ["dashboard-full.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.reactNative,
-        PROJECT_SKILLS.expo,
-        PROJECT_SKILLS.tailwind,
+        PROJECT_SKILLS.dataviz,
+        PROJECT_SKILLS.ia,
+        PROJECT_SKILLS.responsive,
+        PROJECT_SKILLS.state,
       ],
       backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.mcp,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.turborepo,
-        PROJECT_SKILLS.docker,
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.htmlcss,
+        PROJECT_SKILLS.codex,
       ],
     },
-    live: "https://kanbi.nareshkhatri.dev",
-    github: "https://github.com/naresh-Khatri/kanbi",
+    live: "/cases/business-overview.html",
+    liveLabel: "体验可点击联动的经营看板原型",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A keyboard-first, realtime Kanban tracker — &quot;Linear, but small
-            enough to own.&quot;
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A full-stack TypeScript monorepo (pnpm + Turborepo) spanning three
-            deployable surfaces — a Next.js 15 web app, an OAuth-secured MCP
-            server for AI agents, and an Expo mobile companion — with end-to-end
-            type safety from Postgres → Drizzle → tRPC v11 → React, so a schema
-            change ripples to compile errors in the UI with zero codegen. ~21K
-            lines of TypeScript, 16 domain tRPC routers, a 25-table schema, and 8
-            scoped MCP agent tools.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Realtime collaboration &amp; fractional ordering
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Drag-and-drop boards with optimistic UI and live multi-user updates,
-            powered by tRPC subscriptions over Server-Sent Events. An in-process
-            event bus broadcasts <code>boardId</code>-scoped invalidation signals
-            that carry <em>no payload</em> — clients simply refetch through React
-            Query, keeping the realtime layer cheap and consistent. Mutations
-            snapshot-and-rollback (<code>onMutate</code>/<code>onError</code>/
-            <code>onSettled</code>) and deletes are undoable (6-second deferred
-            server call + toast). Columns and cards order via fractional indexing
-            — new items insert at the midpoint between neighbors, so a reorder
-            touches one row instead of re-sequencing the whole list, with collapse
-            detection and rebalancing.
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            经营看板不是静态报表的堆砌。设计围绕管理者的真实看数路径，将分散的核心指标、趋势折线与员工/商品排行串联成<strong>可扫描、可联动对比、可继续下钻</strong>的分析闭环。
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/kanbi/board.png`,
-              `${BASE_PATH}/kanbi/dashboard.png`,
+
+          <MetaStrip
+            items={[
+              { label: "项目类型", value: "B 端商业智能看板" },
+              { label: "核心方法", value: "四步渐进式决策路径" },
+              { label: "多端策略", value: "Web 双栏 + 移动端优先级重排" },
+              { label: "交付亮点", value: "高保真 + 可交互数据原型" },
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">
-            One auth model, three clients &amp; an MCP server for AI agents
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A layered, type-safe authorization model encodes access control at the
-            procedure level — <code>protectedProcedure</code> →{" "}
-            <code>projectProcedure</code> → <code>boardProcedure</code> →{" "}
-            <code>publicBoardProcedure</code> (share token, no auth) — with role
-            checks gating every mutation. The same model is reused across three
-            entry points so ACLs can&apos;t drift: browser cookies, hashed
-            per-device bearer tokens for mobile (SHA-256 at rest), and OAuth-2.1
-            JWTs for AI agents. The spec-compliant MCP server (Streamable HTTP)
-            exposes 8 read/write tools through a full OAuth 2.1 flow — dynamic
-            client registration, a consent screen, JWKS-verified JWTs — each tool a
-            thin wrapper over the existing tRPC procedures via a JWT→session
-            bridge, so permissions, validation, ordering, and the realtime bus are
-            all reused; agent-authored HTML is server-side sanitized.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/kanbi/profile.png`]} />
+          <CaseStudyCTA live={this.live} label="打开经营看板交互原型页" />
 
-          <TypographyH3 className="my-4 mt-8">
-            Native Android dock dashboard &amp; AI task drafting
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A custom native Android Expo module written in Kotlin implements
-            Android&apos;s <code>DreamService</code> (the system daydream): dock
-            the phone and the OS launches a React Native root view rendering the
-            active task and a Pomodoro timer — a genuine focus dashboard, with{" "}
-            <code>showWhenLocked</code>, screen-on, and keyguard dismissal handled
-            natively. Devices pair by QR with secure token storage
-            (<code>expo-secure-store</code>). On the web, paste a raw client
-            message and a Groq-backed LLM extracts structured, actionable issues
-            (title, description, label, priority); rich-text descriptions use Tiptap
-            with <code>@mention</code> and <code>#ticket</code> cross-reference
-            extensions.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/kanbi/ai-draft.png`]} />
+          <TypographyH3 className="mt-6">01 · 阅读动线与跨端规则</TypographyH3>
+          <BulletGroup
+            items={[
+              "指标与趋势同屏联动：首屏关键指标卡点击即可切换下方主趋势图，避免重复堆叠多张同质化图表。",
+              "视觉分析与精确数值并置：左列图形化呈现占比与波动，右列保留可排序、可排除异常项的精确排行表。",
+              "移动端重排而非缩小：窄屏下按决策优先级改为「横向滑动指标卡 → 核心趋势 → 单列专项分析 → 独立横向滚动表格」。",
+            ]}
+          />
+
+          <SlideShow
+            images={[
+              `${ZXY_PATH}/business-overview/chart-default.png`,
+              `${ZXY_PATH}/business-overview/chart-selected.png`,
+              `${ZXY_PATH}/business-overview/chart-scrolled.png`,
+              `${ZXY_PATH}/business-overview/dashboard-full.png`,
+            ]}
+          />
         </div>
       );
     },
   },
   {
-    id: "portfolio",
-    category: "Portfolio",
-    title: "My Portfolio",
-    src: "/assets/projects-screenshots/portfolio/landing.png",
-    screenshots: ["1.png"],
-    live: "https://nareshkhatri.dev",
-    github: "https://github.com/Naresh-Khatri/Portfolio",
+    id: "design-system",
+    category: "设计系统 · 覆盖率 92%",
+    filterGroup: "system",
+    featuredSpan: true,
+    badge: "提效 +30%",
+    title: "Figma 双端组件库迁移与搭建",
+    subtitle: "从语义 Token 到 Web/移动端复合组件及 Axure 原型库的全链路资产标准化",
+    src: `${ZXY_PATH}/covers/design-system-cover.svg`,
+    screenshots: ["design-system-cover.svg"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
+        PROJECT_SKILLS.designSystem,
+        PROJECT_SKILLS.responsive,
+        PROJECT_SKILLS.ia,
       ],
-      backend: [],
+      backend: [
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.axure,
+        PROJECT_SKILLS.htmlcss,
+        PROJECT_SKILLS.qa,
+      ],
     },
+    live: "/cases/resume.html#projects",
+    liveLabel: "在完整简历中查看项目详情",
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono ">
-            Welcome to my digital playground, where creativity meets code in the
-            dopest way possible.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-          <TypographyH3 className="my-4 mt-8">
-            Beautiful 3D Objects{" "}
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Did you see that 3D keyboard modal? Yeah! I made that. That
-            interactive keyboard is being rendered in 3D on a webpage 🤯, and
-            pressing each keycap reveals a skill in a goofy way. It&apos;s like
-            typing, but make it art.
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            主导团队设计工具迁移过程中的双端组件资产重建，打通<strong>产品原型（Axure）— 视觉交互（Figma）— 研发走查</strong>的一致性标准。
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/portfolio/landing.png`,
-              `${BASE_PATH}/portfolio/skills.png`,
-            ]}
-          />
-          <TypographyH3 className="my-4 ">Space Theme</TypographyH3>
-          <p className="font-mono mb-2">
-            Dark background + floating particles = out-of-this-world cool.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/portfolio/navbar.png`]} />
-          <TypographyH3 className="my-4 mt-8">Projects</TypographyH3>
 
-          <p className="font-mono mb-2">
-            My top personal and freelance projects — no filler, all killer.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/portfolio/projects.png`,
-              `${BASE_PATH}/portfolio/project.png`,
+          <MetaStrip
+            items={[
+              { label: "项目角色", value: "项目负责人" },
+              { label: "持续周期", value: "2025.06 — 至今" },
+              { label: "组件覆盖率", value: "92% 业务场景覆盖" },
+              { label: "协作收益", value: "团队设计效率提升约 30%" },
             ]}
           />
-          <p className="font-mono mb-2 mt-8 text-center">
-            This site&apos;s not just a portfolio — it&apos;s a whole vibe.
+
+          <SlideShow images={[`${ZXY_PATH}/covers/design-system-cover.svg`]} />
+
+          <TypographyH3 className="mt-6">01 · 体系搭建与团队落地</TypographyH3>
+          <BulletGroup
+            items={[
+              "基础语义变量（Tokens）：从品牌色、功能状态色、字阶行高到 4px 间距模数，逐层构建 Web 与移动端原子及业务复合组件。",
+              "双库同步前置：同步输出标准化 Axure 原型组件库，让产品经理在画原型阶段即可复用统一交互模式。",
+              "治理与宣讲机制：制定组件命名、Auto Layout 变体规范与新增维护流程，跨三条业务线显著消除样式分叉。",
+            ]}
+          />
+        </div>
+      );
+    },
+  },
+  {
+    id: "warehouse",
+    category: "B2B 仓储系统 · 0→1 上线",
+    filterGroup: "business",
+    featuredSpan: true,
+    badge: "复杂业务建模",
+    title: "易仓配｜仓储全链路作业体系",
+    subtitle: "从零构建覆盖入库、出库、盘点、调拨与移库的单据状态与实时库存交互模型",
+    src: `${ZXY_PATH}/covers/warehouse-cover.svg`,
+    screenshots: ["warehouse-cover.svg"],
+    skills: {
+      frontend: [
+        PROJECT_SKILLS.domain,
+        PROJECT_SKILLS.state,
+        PROJECT_SKILLS.ia,
+      ],
+      backend: [
+        PROJECT_SKILLS.figma,
+        PROJECT_SKILLS.axure,
+        PROJECT_SKILLS.qa,
+      ],
+    },
+    live: "/cases/resume.html#projects",
+    liveLabel: "在完整简历中查看项目详情",
+    get content() {
+      return (
+        <div className="space-y-6">
+          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
+            面向企业供应链场景从 0 到 1 建立完整仓储作业模块，解决多仓、多批次作业中<strong>“单据流转状态”与“库存可用量增减”难以对应</strong>的核心痛点。
           </p>
+
+          <MetaStrip
+            items={[
+              { label: "项目角色", value: "核心 UX 设计师" },
+              { label: "项目周期", value: "2025.11 — 2025.12" },
+              { label: "核心模块", value: "入库 / 出库 / 盘点 / 调拨 / 移库" },
+              { label: "落地进展", value: "2025 年 12 月正式上线" },
+            ]}
+          />
+
+          <SlideShow images={[`${ZXY_PATH}/covers/warehouse-cover.svg`]} />
+
+          <TypographyH3 className="mt-6">01 · 对象建模与关键流程</TypographyH3>
+          <BulletGroup
+            items={[
+              "建立「仓库库位 — 实时库存账本 — 业务单据 — 现场作业」四维对象模型，统一六类仓储单据的列表、详情与审核骨架。",
+              "重点打磨入库、出库与盘点三大高频任务流，覆盖创建校验、实收实发差异录入、部分出入库及冲红回滚等异常分支。",
+              "2025 年 12 月按期上线稳定运行，实现核心仓储作业全流程线上化闭环。",
+            ]}
+          />
         </div>
       );
     },
   },
 ];
+
 export default projects;
