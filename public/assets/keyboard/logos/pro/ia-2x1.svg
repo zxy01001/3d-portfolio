@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560">
+  <g transform="translate(88, 130) scale(12.5)" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="3" width="8" height="5" rx="1" fill="#ffffff" fill-opacity="0.25"/>
+    <rect x="2" y="16" width="8" height="5" rx="1"/>
+    <rect x="14" y="16" width="8" height="5" rx="1"/>
+    <path d="M12 8v4M6 16v-4h12v4"/>
+  </g>
+  <text x="430" y="256" fill="#ffffff" font-family="PingFang SC, Microsoft YaHei, Arial, sans-serif" font-weight="800" font-size="108" letter-spacing="2">信息架构治理</text>
+  <text x="434" y="368" fill="#cffafe" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="54" letter-spacing="5">INFO ARCH</text>
+</svg>

@@ -1,11 +1,29 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ChibiScene, type ChibiSceneApi, type ScenePointerEvent, type RuntimeEvent } from "@chibi3d/runtime";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+import {
+  ChibiScene,
+  type ChibiSceneApi,
+  type ScenePointerEvent,
+  type RuntimeEvent,
+} from "@chibi3d/runtime";
 import { SKILLS } from "@/data/constants";
 import { setSceneStatus } from "@/lib/scene-health";
 import { usePreloader } from "../preloader";
-import { createKeyboardScene, resolveKeyboardAsset, type KeyboardKey, type KeyboardSkill } from "./scene";
+import {
+  createKeyboardScene,
+  resolveKeyboardAsset,
+  type KeyboardKey,
+  type KeyboardSkill,
+} from "./scene";
 import { createKeyInput, isTypingTarget } from "./input";
 import { createKeyboardMotion, type KeyboardSection } from "./motion";
 import { useKeyboardSounds } from "./use-keyboard-sounds";
@@ -13,6 +31,7 @@ import { useAdaptiveGraphics } from "./use-adaptive-graphics";
 import { useKeyboardCounts } from "./use-keyboard-counts";
 import { keyWear } from "./wear";
 import { createCounterMotion } from "./counter-motion";
+import { applySharpKeyboardTextures } from "./sharp-textures";
 
 const SceneCanvas = memo(ChibiScene);
 const SCENE_STYLE: CSSProperties = {
@@ -27,135 +46,249 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   const api = useRef<ChibiSceneApi>(null);
   const failed = useRef(false);
   const motion = useRef<ReturnType<typeof createKeyboardMotion> | null>(null);
-  const counterMotion = useRef<ReturnType<typeof createCounterMotion> | null>(null);
+  const counterMotion = useRef<ReturnType<typeof createCounterMotion> | null>(
+    null
+  );
   const [loadVersion, setLoadVersion] = useState(0);
   const ready = loadVersion > 0;
   const [section, setSection] = useState<KeyboardSection>("hero");
   const [selected, setSelected] = useState<KeyboardSkill | null>(null);
   const playSound = useKeyboardSounds();
-  const scene = useMemo(() => createKeyboardScene(Object.values(SKILLS).map((skill) => ({
-    ...skill, icon: skill.keyboardIcon ?? skill.icon,
-  }))), []);
-  const { settings: graphics, markActive } = useAdaptiveGraphics(ready && !isLoading);
+
+  const scene = useMemo(
+    () =>
+      createKeyboardScene(
+        Object.values(SKILLS).map((skill) => ({
+          ...skill,
+          icon: skill.keyboardIcon ?? skill.icon,
+        }))
+      ),
+    []
+  );
+
+  const { settings: graphics, markActive } = useAdaptiveGraphics(
+    ready && !isLoading
+  );
   const { shadows, softShadows, ao, bloom, lighting } = graphics;
-  const environment = useMemo(() => ({
-    ...scene.document.environment,
-    shadows, softShadows, ao, bloom,
-    contactShadows: false,
-    vignette: false,
-    preset: lighting ? scene.document.environment.preset : null,
-  }), [scene, shadows, softShadows, ao, bloom, lighting]);
-  const dpr = useMemo<[number, number]>(() =>
-    [0.5, Math.min(graphics.dpr, maxDpr)], [maxDpr, graphics.dpr]);
+  const environment = useMemo(
+    () => ({
+      ...scene.document.environment,
+      shadows,
+      softShadows,
+      ao,
+      bloom,
+      contactShadows: false,
+      vignette: false,
+      preset: lighting ? scene.document.environment.preset : null,
+    }),
+    [scene, shadows, softShadows, ao, bloom, lighting]
+  );
+
+  const targetDpr = Math.min(graphics.dpr, maxDpr);
+  const dpr = useMemo<[number, number]>(
+    () => [targetDpr, maxDpr],
+    [maxDpr, targetDpr]
+  );
+
   const visibleLabel = useRef<string | null>(null);
   const heldKeys = useRef<KeyboardKey[]>([]);
-  const input = useMemo(() => createKeyInput(scene.keys, scene.columns), [scene]);
+  const input = useMemo(
+    () => createKeyInput(scene.keys, scene.columns),
+    [scene]
+  );
   const { counts, total, available, recordPress } = useKeyboardCounts();
+
   useEffect(() => {
     if (!ready || !api.current) return;
-    const controller = createCounterMotion(api.current, scene.counter, markActive);
-    counterMotion.current = controller;
-    return () => { controller.dispose(); counterMotion.current = null; };
+    let cancelled = false;
+    void applySharpKeyboardTextures(
+      api.current,
+      scene,
+      () => cancelled
+    ).then(() => {
+      if (!cancelled) markActive();
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [ready, loadVersion, scene, markActive]);
+
+  useEffect(() => {
+    if (!ready || !api.current) return;
+    const controller = createCounterMotion(
+      api.current,
+      scene.counter,
+      markActive
+    );
+    counterMotion.current = controller;
+    return () => {
+      controller.dispose();
+      counterMotion.current = null;
+    };
+  }, [ready, loadVersion, scene, markActive]);
+
   useEffect(() => {
     counterMotion.current?.update(total, available);
   }, [total, available, ready, loadVersion, scene]);
+
   useEffect(() => {
     if (!ready) return;
     for (const key of scene.keys) {
-      api.current?.setMaterial(key.materialId, keyWear(counts[key.skill.name] ?? 0));
+      api.current?.setMaterial(
+        key.materialId,
+        keyWear(counts[key.skill.name] ?? 0)
+      );
     }
     markActive();
   }, [counts, ready, loadVersion, scene, markActive]);
-  useEffect(() => input.subscribe((key, pressed) => {
-    markActive();
-    api.current?.transitionNodeTo(key.nodeId, pressed ? key.pressedStateId : "base", { duration: 0.1, ease: "easeInOut" });
-    api.current?.setMaterial(key.materialId, {
-      emissive: scene.document.materials[key.materialId].color,
-      emissiveIntensity: pressed ? 0.7 : 0,
-    });
-    heldKeys.current = heldKeys.current.filter((held) => held !== key);
-    if (pressed) {
-      if (ready && !isLoading && !document.hidden) recordPress(key.skill.name);
-      heldKeys.current.push(key);
-    }
-    // latest still-held key wins; none held -> back to default prompt
-    const shown = heldKeys.current.at(-1) ?? null;
-    const labelId = shown?.labelId ?? scene.defaultLabelId;
-    if (labelId !== (visibleLabel.current ?? scene.defaultLabelId)) {
-      api.current?.setNodeVisible(visibleLabel.current ?? scene.defaultLabelId, false);
-      api.current?.setNodeVisible(labelId, true);
-    }
-    visibleLabel.current = shown?.labelId ?? null;
-    setSelected(shown?.skill ?? null);
-    playSound(pressed);
-  }), [input, scene, playSound, markActive, ready, isLoading, recordPress]);
 
-  const onPointerEvent = useCallback((event: ScenePointerEvent) => {
-    const pointer = `pointer:${event.pointerId}`;
-    switch (event.type) {
-      case "hoverEnter":
-        if (event.pointerType === "mouse") input.press("hover", event.nodeId);
-        break;
-      case "hoverExit": input.release("hover", event.nodeId); break;
-      case "pointerDown": input.press(pointer, event.nodeId); break;
-      case "pointerUp":
-      case "pointerCancel": input.release(pointer); break;
-    }
-  }, [input]);
+  useEffect(
+    () =>
+      input.subscribe((key, pressed) => {
+        markActive();
+        api.current?.transitionNodeTo(
+          key.nodeId,
+          pressed ? key.pressedStateId : "base",
+          { duration: 0.1, ease: "easeInOut" }
+        );
+        api.current?.setMaterial(key.materialId, {
+          emissive: scene.document.materials[key.materialId].color,
+          emissiveIntensity: pressed ? 0.7 : 0,
+        });
+        heldKeys.current = heldKeys.current.filter((held) => held !== key);
+        if (pressed) {
+          if (ready && !isLoading && !document.hidden) {
+            recordPress(key.skill.name);
+          }
+          heldKeys.current.push(key);
+        }
+        const shown = heldKeys.current.at(-1) ?? null;
+        const labelId = shown?.labelId ?? scene.defaultLabelId;
+        if (labelId !== (visibleLabel.current ?? scene.defaultLabelId)) {
+          api.current?.setNodeVisible(
+            visibleLabel.current ?? scene.defaultLabelId,
+            false
+          );
+          api.current?.setNodeVisible(labelId, true);
+        }
+        visibleLabel.current = shown?.labelId ?? null;
+        setSelected(shown?.skill ?? null);
+        playSound(pressed);
+      }),
+    [input, scene, playSound, markActive, ready, isLoading, recordPress]
+  );
+
+  const onPointerEvent = useCallback(
+    (event: ScenePointerEvent) => {
+      const pointer = `pointer:${event.pointerId}`;
+      switch (event.type) {
+        case "hoverEnter":
+          if (event.pointerType === "mouse") input.press("hover", event.nodeId);
+          break;
+        case "hoverExit":
+          input.release("hover", event.nodeId);
+          break;
+        case "pointerDown":
+          input.press(pointer, event.nodeId);
+          break;
+        case "pointerUp":
+        case "pointerCancel":
+          input.release(pointer);
+          break;
+      }
+    },
+    [input]
+  );
+
   const onLoad = useCallback(() => {
     if (failed.current) return;
     setLoadVersion((version) => version + 1);
     setSceneStatus("ready");
     bypassLoading();
   }, [bypassLoading]);
-  const onError = useCallback((error: Error) => {
-    failed.current = true;
-    console.warn("Keyboard scene unavailable", error);
-    setSceneStatus("failed");
-    bypassLoading();
-  }, [bypassLoading]);
-  const onEvent = useCallback((event: RuntimeEvent) => {
-    if (event.type === "contextLost") onError(new Error("WebGL context lost"));
-  }, [onError]);
+
+  const onError = useCallback(
+    (error: Error) => {
+      failed.current = true;
+      console.warn("Keyboard scene unavailable", error);
+      setSceneStatus("failed");
+      bypassLoading();
+    },
+    [bypassLoading]
+  );
+
+  const onEvent = useCallback(
+    (event: RuntimeEvent) => {
+      if (event.type === "contextLost") {
+        onError(new Error("WebGL context lost"));
+      }
+    },
+    [onError]
+  );
 
   useEffect(() => {
     if (!ready || !api.current) return;
-    const controller = createKeyboardMotion(api.current, scene, (next) => {
-      setSection(next);
-      input.releaseAll();
-      const hash = next === "hero" ? "" : `#${next}`;
-      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search + hash);
-    }, markActive);
+    const controller = createKeyboardMotion(
+      api.current,
+      scene,
+      (next) => {
+        setSection(next);
+        input.releaseAll();
+        const hash = next === "hero" ? "" : `#${next}`;
+        window.history.replaceState(
+          window.history.state,
+          "",
+          window.location.pathname + window.location.search + hash
+        );
+      },
+      markActive
+    );
     motion.current = controller;
-    return () => { controller.dispose(); motion.current = null; };
+    return () => {
+      controller.dispose();
+      motion.current = null;
+    };
   }, [ready, loadVersion, scene, input, markActive]);
+
   useEffect(() => {
     motion.current?.setCounterEnabled(available);
   }, [available, ready, loadVersion, scene, input, markActive]);
-  // Rebind after each runtime load, once the replacement scene's nodes are mounted.
+
   useEffect(() => {
     if (ready && !isLoading) motion.current?.reveal();
   }, [ready, loadVersion, isLoading, scene, input]);
 
   useEffect(() => {
     if (!ready) return;
-    // Restore the selected label if the runtime remounts.
     const active = visibleLabel.current ?? scene.defaultLabelId;
-    for (const id of [scene.defaultLabelId, ...scene.keys.map((key) => key.labelId)]) {
+    for (const id of [
+      scene.defaultLabelId,
+      ...scene.keys.map((key) => key.labelId),
+    ]) {
       api.current?.setNodeVisible(id, id === active);
     }
   }, [ready, loadVersion, scene]);
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.repeat || event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return;
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        isTypingTarget(event.target)
+      ) {
+        return;
+      }
       const key = input.shortcuts.get(event.code);
       if (key) input.press(`key:${event.code}`, key.nodeId);
     };
     const up = (event: KeyboardEvent) => input.release(`key:${event.code}`);
     const release = () => input.releaseAll();
-    const visibility = () => { if (document.hidden) release(); };
+    const visibility = () => {
+      if (document.hidden) release();
+    };
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
     window.addEventListener("blur", release);
@@ -191,15 +324,14 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
         <div className="pointer-events-none fixed inset-x-4 bottom-7 z-20 flex justify-center text-center text-foreground">
           <div
             aria-live="polite"
-            className="max-w-xl rounded-2xl border border-border/70 bg-background/80 px-5 py-3 shadow-lg backdrop-blur-md"
+            className="max-w-xl rounded-2xl border border-border/75 bg-background/95 px-5 py-3 shadow-lg"
           >
             <p className="text-sm md:text-base font-bold text-foreground">
-              {(selected as (KeyboardSkill & { labelZh?: string }) | null)?.labelZh ??
-                selected?.label ??
-                "探索我的设计能力栈"}
+              {selected?.labelZh ?? selected?.label ?? "核心设计能力与工具体系"}
             </p>
             <p className="mt-1 text-xs md:text-sm text-muted-foreground">
-              {selected?.shortDescription ?? "移动鼠标悬停、点击 3D 键帽，或直接敲击物理键盘按键"}
+              {selected?.shortDescription ??
+                "支持鼠标悬停、点击 3D 键帽或按下键盘快捷键检视能力详情"}
             </p>
           </div>
         </div>

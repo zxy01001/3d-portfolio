@@ -1,630 +1,434 @@
-import SlideShow from "@/components/slide-show";
-import { Button } from "@/components/ui/button";
-import { TypographyH3 } from "@/components/ui/typography";
-import { ArrowUpRight, CheckCircle2, Sparkles } from "lucide-react";
-import Link from "next/link";
+import {
+  InteractiveCompareShowcase,
+  InteractiveFlowShowcase,
+} from "@/components/case-showcase";
 import { ReactNode } from "react";
 
 const ZXY_PATH = "/assets/zxy";
 
-const MaskIcon = ({ src, title }: { src: string; title?: string }) => (
-  <span
-    role="img"
-    aria-label={title}
-    className="block bg-current"
-    style={{
-      width: "1em",
-      height: "1em",
-      WebkitMaskImage: `url(${src})`,
-      maskImage: `url(${src})`,
-      WebkitMaskRepeat: "no-repeat",
-      maskRepeat: "no-repeat",
-      WebkitMaskPosition: "center",
-      maskPosition: "center",
-      WebkitMaskSize: "contain",
-      maskSize: "contain",
-    }}
-  />
-);
-
-const CaseStudyCTA = ({
-  live,
-  label = "打开完整交互案例页（含可操作原型）",
-}: {
-  live?: string;
-  label?: string;
-}) => {
-  if (!live || live === "#") return null;
-  return (
-    <div className="my-5 flex flex-wrap items-center gap-3">
-      <Link href={live} target="_blank" rel="noopener">
-        <Button size="default" className="gap-2 rounded-full px-6 shadow-md">
-          <Sparkles className="h-4 w-4" />
-          {label}
-          <ArrowUpRight className="h-4 w-4" />
-        </Button>
-      </Link>
-    </div>
-  );
-};
-
-const MetaStrip = ({
-  items,
-}: {
-  items: { label: string; value: string }[];
-}) => (
-  <div className="my-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-    {items.map((item) => (
-      <div
-        key={item.label}
-        className="rounded-xl border border-border bg-secondary/35 px-4 py-3"
-      >
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-          {item.label}
-        </div>
-        <div className="mt-1 text-sm font-bold text-foreground">
-          {item.value}
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const BulletGroup = ({ items }: { items: string[] }) => (
-  <ul className="my-3 space-y-2.5 text-sm md:text-base text-muted-foreground leading-relaxed">
-    {items.map((item, i) => (
-      <li key={i} className="flex items-start gap-2.5">
-        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-500" />
-        <span>{item}</span>
-      </li>
-    ))}
-  </ul>
-);
-
-export type Skill = {
-  title: string;
-  bg: string;
-  fg: string;
-  icon: ReactNode;
-};
-
-const uxSkill = (title: string, file: string): Skill => ({
-  title,
-  bg: "black",
-  fg: "white",
-  icon: <MaskIcon src={`/assets/logos/ux/${file}`} title={title} />,
-});
-
-const PROJECT_SKILLS = {
-  figma: uxSkill("Figma", "figma.svg"),
-  axure: uxSkill("Axure RP", "axure.svg"),
-  protopie: uxSkill("ProtoPie", "protopie.svg"),
-  ae: uxSkill("After Effects", "ae.svg"),
-  htmlcss: uxSkill("HTML / CSS", "htmlcss.svg"),
-  designSystem: uxSkill("设计系统", "designsystem.svg"),
-  responsive: uxSkill("双端响应式", "responsive.svg"),
-  aiUx: uxSkill("AI 产品体验", "aiux.svg"),
-  codex: uxSkill("AI 交互原型", "codex.svg"),
-  chatgpt: uxSkill("ChatGPT", "chatgpt.svg"),
-  domain: uxSkill("复杂业务建模", "domain.svg"),
-  ia: uxSkill("信息架构", "ia.svg"),
-  state: uxSkill("状态与异常闭环", "state.svg"),
-  research: uxSkill("需求拆解与调研", "research.svg"),
-  dataviz: uxSkill("BI 数据看板", "dataviz.svg"),
-  qa: uxSkill("PRD 与设计走查", "qa.svg"),
-};
-
-export type ProjectFilterGroup = "all" | "ai" | "business" | "system";
+export type ProjectFilterGroup = "all" | "ai" | "b2b";
 
 export type Project = {
   id: string;
+  indexLabel: string;
   category: string;
   filterGroup: Exclude<ProjectFilterGroup, "all">;
   featuredSpan?: boolean;
-  badge?: string;
+  badge: string;
   title: string;
-  subtitle: string;
+  oneLiner: string;
+  metrics: string[];
   src: string;
-  screenshots: string[];
-  skills: { frontend: Skill[]; backend: Skill[] };
-  content: React.ReactNode;
-  github?: string;
   live: string;
-  liveLabel?: string;
+  liveLabel: string;
+  content: ReactNode;
 };
 
 const projects: Project[] = [
   {
     id: "agent-platform",
-    category: "企业 AI 中台 · 0→1 上线",
+    indexLabel: "01",
+    category: "企业 AI 中台",
     filterGroup: "ai",
     featuredSpan: true,
-    badge: "核心案例",
-    title: "智能体库搭建",
-    subtitle: "把模型、知识库与诊断规则转化为企业可理解、可配置的零代码工作台",
+    badge: "0→1 已上线",
+    title: "企业智能体工作台",
+    oneLiner: "零代码管理海量 Agent 与复杂客户诊断规则编排",
+    metrics: ["0→1 商业化上线", "双核心链路闭环", "配置与沙盒同屏"],
     src: `${ZXY_PATH}/agent-platform/library/library-overview.png`,
-    screenshots: ["library-overview.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.aiUx,
-        PROJECT_SKILLS.ia,
-        PROJECT_SKILLS.domain,
-        PROJECT_SKILLS.state,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.axure,
-        PROJECT_SKILLS.codex,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/agent-platform.html",
-    liveLabel: "进入智能体平台交互案例页",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            从智能体生命周期管理到客户诊断业务编排，将底层模型、Prompt、知识库与条件规则转化为业务人员<strong>零代码即可配置、调试与发布</strong>的企业级 AI 工作台。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目类型", value: "企业 AI 中台（0 → 1）" },
-              { label: "我的角色", value: "项目设计负责人" },
-              { label: "项目周期", value: "2026.02 — 2026.04" },
-              { label: "落地状态", value: "已正式上线 · 持续迭代" },
-            ]}
-          />
-
-          <CaseStudyCTA live={this.live} label="打开完整交互案例页（支持模块切换预览）" />
-
-          <TypographyH3 className="mt-6">01 · 核心设计挑战</TypographyH3>
-          <BulletGroup
-            items={[
-              "规模化资产管理：随着企业智能体数量增长，需要支持自定义文件夹分组、搜索、批量选择与跨组移动归类。",
-              "高复杂度规则表达：客户诊断涉及分类树、多维条件组及 AND / OR 逻辑嵌套，直接平铺参数极易迷失。",
-              "配置与结果割裂：洞察维度、诊断结论与真实对话表现之间需要建立即时可验证的前后反馈关系。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/agent-platform/library/library-overview.png`,
-              `${ZXY_PATH}/agent-platform/library/group-card.png`,
-              `${ZXY_PATH}/agent-platform/library/library-selection.png`,
-              `${ZXY_PATH}/agent-platform/library/move-item.png`,
-            ]}
-          />
-
-          <TypographyH3 className="mt-6">02 · 关键架构与交互决策</TypographyH3>
-          <BulletGroup
-            items={[
-              "统一对象卡片骨架：同一套卡片网格同时承载“分组文件夹”与“单个智能体”，用数量与类型标签保持一致的浏览节奏。",
-              "四步渐进式披露：将复杂客户诊断拆解为「定义洞察维度 → 圈定客户范围 → 配置结论建议 → 预览与调试」四步稳定闭环。",
-              "左配置 · 右实时预览：分类树、条件表单与真实对话预览保持同屏，无需离开当前上下文即可检验欢迎语与诊断路径。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/agent-platform/diagnosis/overview.png`,
-              `${ZXY_PATH}/agent-platform/diagnosis/scope-rules.png`,
-              `${ZXY_PATH}/agent-platform/diagnosis/dimension-config.png`,
-              `${ZXY_PATH}/agent-platform/diagnosis/conclusion-config.png`,
-            ]}
-          />
-
-          <TypographyH3 className="mt-6">03 · 上线验证与价值</TypographyH3>
-          <BulletGroup
-            items={[
-              "2026 年 4 月完成从 0 到 1 产品化上线，补齐 AI 中台的智能体资产管理与业务编排能力。",
-              "支持业务团队零代码自主完成多场景智能体的搭建、调试与发布。",
-            ]}
-          />
-        </div>
-      );
-    },
+    live: "/projects/agent-platform",
+    liveLabel: "审阅完整案例研究",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "library",
+            tab: "智能体资产库",
+            steps: [
+              {
+                label: "分组总览",
+                image: `${ZXY_PATH}/agent-platform/library/library-overview.png`,
+                note: "文件夹与单个智能体共享一套卡片栅格，用数量与类型色标降低扫描成本",
+              },
+              {
+                label: "卡片操作",
+                image: `${ZXY_PATH}/agent-platform/library/group-card.png`,
+                note: "固定图标、描述与更多操作热区，保持不同资产类型的浏览一致性",
+              },
+              {
+                label: "批量选择",
+                image: `${ZXY_PATH}/agent-platform/library/library-selection.png`,
+                note: "应对企业级大规模智能体维护，支持多选与快捷批量调度",
+              },
+              {
+                label: "移动归类",
+                image: `${ZXY_PATH}/agent-platform/library/move-item.png`,
+                note: "轻量弹窗目录树归类，不打断当前列表浏览上下文",
+              },
+            ],
+          },
+          {
+            id: "diagnosis",
+            tab: "客户诊断编排",
+            steps: [
+              {
+                label: "配置与实时预览",
+                image: `${ZXY_PATH}/agent-platform/diagnosis/overview.png`,
+                note: "左配置参数、右真实对话沙盒同屏并置，修改规则即时可见",
+              },
+              {
+                label: "条件树构造",
+                image: `${ZXY_PATH}/agent-platform/diagnosis/scope-rules.png`,
+                note: "左侧业务分类树 + 右侧 AND/OR 条件组，化解多层逻辑嵌套门槛",
+              },
+              {
+                label: "洞察维度",
+                image: `${ZXY_PATH}/agent-platform/diagnosis/dimension-config.png`,
+                note: "把底层模型变量翻译为订单、行为等业务人员熟悉的分析维度",
+              },
+              {
+                label: "结论映射",
+                image: `${ZXY_PATH}/agent-platform/diagnosis/conclusion-config.png`,
+                note: "将诊断结果、风险等级色与跟进建议绑定为确定性输出",
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · OBJECT ORDER",
+            title: "同构卡片骨架",
+            desc: "统一文件夹与智能体视觉结构，支撑百级 Agent 规模化检索与归类。",
+          },
+          {
+            tag: "02 · PROGRESSIVE",
+            title: "四步渐进式编排",
+            desc: "按「维度→范围→结论→调试」隐藏底层复杂度，实现业务零代码上手。",
+          },
+          {
+            tag: "03 · ZERO JUMP",
+            title: "配置与沙盒同屏",
+            desc: "消除保存后再跳页测试的割裂感，在单工作区内完成验证闭环。",
+          },
+        ]}
+      />
+    ),
   },
   {
     id: "voice-order",
-    category: "AI 语音交互 · 准确率 80%+",
+    indexLabel: "02",
+    category: "AI 多模态交互",
     filterGroup: "ai",
     featuredSpan: true,
-    badge: "核心案例",
-    title: "智能抄单助手",
-    subtitle: "把自然语言多商品订货需求转化为可核对、可修正、可恢复的结构化订单",
+    badge: "准确率 80%+",
+    title: "智能语音抄单助手",
+    oneLiner: "支持多模态自然语言批量录单，通过分层核对机制收敛识别不确定性",
+    metrics: ["下单准确率 80%+", "日活企业 10+", "全异常分支兜底"],
     src: `${ZXY_PATH}/covers/voice-order-cover.svg`,
-    screenshots: ["09-match-result.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.aiUx,
-        PROJECT_SKILLS.state,
-        PROJECT_SKILLS.ia,
-        PROJECT_SKILLS.research,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.protopie,
-        PROJECT_SKILLS.codex,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/voice-order.html",
-    liveLabel: "体验语音下单完整交互流程",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            用“说清楚或粘贴一段订货需求”替代传统的“逐一搜索商品、选规格、填数量”，围绕<strong>效率、信任、容错</strong>三大原则处理 AI 识别的不确定性。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目类型", value: "移动端 AI 效率工具" },
-              { label: "我的角色", value: "项目设计负责人" },
-              { label: "核心指标", value: "下单准确率 80%+" },
-              { label: "线上表现", value: "日活企业 10+ 稳定运行" },
-            ]}
-          />
-
-          <CaseStudyCTA live={this.live} label="打开完整交互案例页（体验分步下单流程）" />
-
-          <TypographyH3 className="mt-6">01 · 关键交互判断：不替用户做黑盒决策</TypographyH3>
-          <BulletGroup
-            items={[
-              "建立「语音/文本输入 → 实时识别 → 商品匹配 → 候选核对 → 提交下单」五步清晰反馈链路。",
-              "分层呈现置信度：按“需求原文、解析关键词、首选匹配商品与候选展开”分层排布，支持一键切换相近规格商品。",
-              "完整设计异常恢复分支：针对未识别出有效需求、未命中商品库存、全部取消等边缘状态提供明确原因说明与重试入口。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/voice-order/02-voice-assistant.png`,
-              `${ZXY_PATH}/voice-order/04-recording-live-1.png`,
-              `${ZXY_PATH}/voice-order/06-text-paste.png`,
-              `${ZXY_PATH}/voice-order/07-matching-loading-1.png`,
-              `${ZXY_PATH}/voice-order/09-match-result.png`,
-              `${ZXY_PATH}/voice-order/10-match-expanded.png`,
-            ]}
-          />
-
-          <TypographyH3 className="mt-6">02 · 异常边界与业务验证</TypographyH3>
-          <BulletGroup
-            items={[
-              "覆盖未命中需求、未命中商品等真实长尾场景，避免用户卡死在空白报错页。",
-              "上线后稳定服务 10+ 日活批发订货企业，多商品混合下单准确率达 80%+，显著降低人工抄单漏单与错单率。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/voice-order/15-empty-unrecognized.png`,
-              `${ZXY_PATH}/voice-order/16-empty-unmatched.png`,
-              `${ZXY_PATH}/voice-order/13-order-success.png`,
-            ]}
-          />
-        </div>
-      );
-    },
+    live: "/projects/voice-order",
+    liveLabel: "审阅完整案例研究",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "main",
+            tab: "语音与粘贴下单流",
+            steps: [
+              {
+                label: "唤起助手",
+                image: `${ZXY_PATH}/voice-order/02-voice-assistant.png`,
+                note: "提供自然语言示例引导，降低首次使用的表达门槛",
+                isMobile: true,
+              },
+              {
+                label: "实时收音转写",
+                image: `${ZXY_PATH}/voice-order/04-recording-live-1.png`,
+                note: "声波反馈与文字流实时上屏，让用户随时确认收音准确度",
+                isMobile: true,
+              },
+              {
+                label: "文本一键粘贴",
+                image: `${ZXY_PATH}/voice-order/06-text-paste.png`,
+                note: "兼容微信采购清单直接粘贴解析，贴合批发业务员高频场景",
+                isMobile: true,
+              },
+              {
+                label: "结构化核对",
+                image: `${ZXY_PATH}/voice-order/09-match-result.png`,
+                note: "按「原始输入 → 提取词项 → 匹配商品」分层呈现，避免黑盒自动提交导致的错单风险",
+                isMobile: true,
+              },
+              {
+                label: "相近候选切换",
+                image: `${ZXY_PATH}/voice-order/10-match-expanded.png`,
+                note: "一键展开同名不同规格候选品，纠错成本远低于重新搜索",
+                isMobile: true,
+              },
+            ],
+          },
+          {
+            id: "edge",
+            tab: "容错与完成态",
+            steps: [
+              {
+                label: "未识别需求兜底",
+                image: `${ZXY_PATH}/voice-order/15-empty-unrecognized.png`,
+                note: "未提取到有效商品实体时提供结构化输入范例与重试入口，消除阻断式报错",
+                isMobile: true,
+              },
+              {
+                label: "未命中库存引导",
+                image: `${ZXY_PATH}/voice-order/16-empty-unmatched.png`,
+                note: "明确告知解析成功但库内无匹配项，引导无缝转入人工搜品补录",
+                isMobile: true,
+              },
+              {
+                label: "提交成单",
+                image: `${ZXY_PATH}/voice-order/13-order-success.png`,
+                note: "核对无误后批量写入正式订货单，单据生成效率大幅提升",
+                isMobile: true,
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · AI TRUST",
+            title: "可解释的四层卡片",
+            desc: "原文、关键词、首选品与候选品逐层对应，建立人机核对信任感。",
+          },
+          {
+            tag: "02 · DUAL INPUT",
+            title: "语音 + 文本双模态",
+            desc: "同时覆盖仓库走动口述与微信文字转抄两大真实订货场景。",
+          },
+          {
+            tag: "03 · RECOVERY",
+            title: "全分支异常恢复机制",
+            desc: "明确区分“意图未识别”与“库存无匹配”两类异常状态，构建最短恢复路径。",
+          },
+        ]}
+      />
+    ),
   },
   {
     id: "sales-coaching",
-    category: "跨端 AI 陪练 · Web + Mobile",
+    indexLabel: "03",
+    category: "跨端 AI 陪练",
     filterGroup: "ai",
-    badge: "双端闭环",
+    badge: "Web + Mobile 闭环",
     title: "AI 销售陪练系统",
-    subtitle: "打通管理者 Web 任务配置端与销售人员移动端对练复盘的完整体验闭环",
+    oneLiner: "贯通管理者三步配课与一线销售拟真对练、逐句复盘闭环",
+    metrics: ["Web + 移动双端", "3 步向导配课", "证据化评分回溯"],
     src: `${ZXY_PATH}/sales-coaching/04-scene-setup.png`,
-    screenshots: ["04-scene-setup.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.aiUx,
-        PROJECT_SKILLS.domain,
-        PROJECT_SKILLS.state,
-        PROJECT_SKILLS.responsive,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.axure,
-        PROJECT_SKILLS.chatgpt,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/sales-coaching.html",
-    liveLabel: "查看 Web + 移动端双端案例",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            同时服务“培训管理者（Web 配置端）”与“一线销售（移动端对练端）”两类角色，把知识材料、AI 陪练角色、对话情境与评分标准组织成可检查、可演练、可复盘的任务闭环。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目类型", value: "跨端企业 AI 培训系统" },
-              { label: "我的角色", value: "项目设计负责人" },
-              { label: "项目周期", value: "2026.07 — 至今" },
-              { label: "覆盖终端", value: "Web 配置端 + 移动练习端" },
-            ]}
-          />
-
-          <CaseStudyCTA live={this.live} label="打开完整双端切换案例页" />
-
-          <TypographyH3 className="mt-6">01 · Web 配置端：三步向导与 AI 生成核对</TypographyH3>
-          <BulletGroup
-            items={[
-              "将散乱对象收敛为「定知识 → 配场景与角色 → 设评分并发任务」三步向导，每一步均有明确阶段产出。",
-              "显性化 AI 生成状态：知识解析中、生成完成、角色微调与发布前完整性校验全链路可见可控。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/sales-coaching/01-knowledge-step.png`,
-              `${ZXY_PATH}/sales-coaching/03-knowledge-ready.png`,
-              `${ZXY_PATH}/sales-coaching/04-scene-setup.png`,
-              `${ZXY_PATH}/sales-coaching/07-score-rules.png`,
-              `${ZXY_PATH}/sales-coaching/11-ai-dialog.png`,
-              `${ZXY_PATH}/sales-coaching/15-task-overview.png`,
-            ]}
-          />
-
-          <TypographyH3 className="mt-6">02 · 移动练习端：语音对练与多维评分复盘</TypographyH3>
-          <BulletGroup
-            items={[
-              "沿着同一条业务主线串联课前知识速览、AI 拟真语音对练、实时提示与课后评分逐句回溯。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/sales-coaching/mobile/01-task-list.png`,
-              `${ZXY_PATH}/sales-coaching/mobile/07-practice-chat.png`,
-              `${ZXY_PATH}/sales-coaching/mobile/08-practice-voice.png`,
-              `${ZXY_PATH}/sales-coaching/mobile/12-result-overview.png`,
-            ]}
-          />
-        </div>
-      );
-    },
-  },
-  {
-    id: "profile-settings",
-    category: "体验重构 · 新旧对比",
-    filterGroup: "system",
-    badge: "架构治理",
-    title: "个人设置与系统信息优化",
-    subtitle: "拆解历史叠加超长表单，重构信息架构、查看/编辑分离与权限边界",
-    src: `${ZXY_PATH}/covers/profile-settings-cover.svg`,
-    screenshots: ["settings-index.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ia,
-        PROJECT_SKILLS.state,
-        PROJECT_SKILLS.designSystem,
-        PROJECT_SKILLS.research,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.codex,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/profile-settings.html",
-    liveLabel: "体验新旧版本拖拽对比原型",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            针对长期迭代堆叠导致的入口混杂、超长编辑表单与组件割裂问题，通过全量历史页面走查建立六大模块映射，让用户每一步都清楚<strong>“我在看什么、能改什么、修改会影响什么”</strong>。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目类型", value: "历史系统体验重构" },
-              { label: "我的角色", value: "问题审查 / 架构 / UIUX" },
-              { label: "重构范围", value: "6 大设置与组织模块" },
-              { label: "特色交互", value: "支持 Before/After 滑块对比" },
-            ]}
-          />
-
-          <CaseStudyCTA live={this.live} label="打开新旧版本交互对比案例页" />
-
-          <TypographyH3 className="mt-6">01 · 核心重构策略</TypographyH3>
-          <BulletGroup
-            items={[
-              "按任务心智重组入口：划分账户信息、身份安全、消息提醒、设备系统能力、组织通讯录与需求反馈六大模块。",
-              "查看态与编辑态解耦：告别一进页面就是几十个输入框的混合长表单，默认只读浏览，主动触发编辑，降低误触风险。",
-              "规则与权限前置：协同产研补齐不可编辑字段说明、日期逻辑校验与异常状态统一反馈。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/profile-settings/new/account/settings-index.png`,
-              `${ZXY_PATH}/profile-settings/old/account/settings-index.png`,
-              `${ZXY_PATH}/profile-settings/new/account/profile-view.png`,
-              `${ZXY_PATH}/profile-settings/new/account/profile-edit.png`,
-              `${ZXY_PATH}/profile-settings/new/reminders/order-reminder.png`,
-              `${ZXY_PATH}/profile-settings/new/organization/contact-list.png`,
-            ]}
-          />
-        </div>
-      );
-    },
+    live: "/projects/sales-coaching",
+    liveLabel: "审阅完整案例研究",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "web",
+            tab: "Web 管理配置端",
+            steps: [
+              {
+                label: "定知识材料",
+                image: `${ZXY_PATH}/sales-coaching/01-knowledge-step.png`,
+                note: "第一步聚焦训练素材导入，通过三步向导降低五类对象的耦合复杂度",
+              },
+              {
+                label: "AI 萃取考点",
+                image: `${ZXY_PATH}/sales-coaching/03-knowledge-ready.png`,
+                note: "显性化解析进度与生成结果，支持管理员上线前人工校对微调",
+              },
+              {
+                label: "配客户场景",
+                image: `${ZXY_PATH}/sales-coaching/04-scene-setup.png`,
+                note: "结构化配置虚拟客户画像、核心异议场景与考核目标",
+              },
+              {
+                label: "设评分标准",
+                image: `${ZXY_PATH}/sales-coaching/07-score-rules.png`,
+                note: "按维度拆解权重与得分点，确保移动端 AI 判分有据可依",
+              },
+              {
+                label: "任务数据看板",
+                image: `${ZXY_PATH}/sales-coaching/15-task-overview.png`,
+                note: "发布后追踪团队完训率与薄弱维度，形成管理闭环",
+              },
+            ],
+          },
+          {
+            id: "mobile",
+            tab: "Mobile 销售练习端",
+            steps: [
+              {
+                label: "待练任务列表",
+                image: `${ZXY_PATH}/sales-coaching/mobile/01-task-list.png`,
+                note: "清晰区分待完成、练习中与已结束状态，直达核心动作",
+                isMobile: true,
+              },
+              {
+                label: "拟真对话演练",
+                image: `${ZXY_PATH}/sales-coaching/mobile/07-practice-chat.png`,
+                note: "还原真实客户抗拒点，提供低压力的沉浸式实战环境",
+                isMobile: true,
+              },
+              {
+                label: "按住语音应答",
+                image: `${ZXY_PATH}/sales-coaching/mobile/08-practice-voice.png`,
+                note: "适配单手移动场景的语音输入热区与实时应答策略辅助",
+                isMobile: true,
+              },
+              {
+                label: "多维评分复盘",
+                image: `${ZXY_PATH}/sales-coaching/mobile/12-result-overview.png`,
+                note: "评分结果直接映射至原始对话录音节点，实现有据可查的闭环复盘",
+                isMobile: true,
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · ENTITY FLOW",
+            title: "三步向导收敛复杂度",
+            desc: "将知识、角色、场景、评分、成员五大实体梳理为线性确定路径。",
+          },
+          {
+            tag: "02 · CROSS-END",
+            title: "双端体验同源映射",
+            desc: "后台配置的每一项权重，均精准映射为移动端的练习目标与复盘卡片。",
+          },
+          {
+            tag: "03 · EXPLAINABLE",
+            title: "证据化 AI 判分",
+            desc: "摒弃单一结果分值呈现，支持由扣分维度直接回溯原始对话上下文。",
+          },
+        ]}
+      />
+    ),
   },
   {
     id: "business-overview",
-    category: "BI 数据看板 · 响应式重排",
-    filterGroup: "business",
-    badge: "可操作原型",
-    title: "经营概览优化设计",
-    subtitle: "围绕“看现状—找变化—做比较—查明细”构建连续的经营决策工作台",
+    indexLabel: "04",
+    category: "BI 决策工作台",
+    filterGroup: "b2b",
+    badge: "含联动数据原型",
+    title: "经营概览看板重设计",
+    oneLiner: "围绕“看现状—找变化—做比较—查明细”重构高信噪比决策路径",
+    metrics: ["4 步阅读动线", "Web/移动响应式重排", "可点击代码原型"],
     src: `${ZXY_PATH}/business-overview/dashboard-full.png`,
-    screenshots: ["dashboard-full.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.dataviz,
-        PROJECT_SKILLS.ia,
-        PROJECT_SKILLS.responsive,
-        PROJECT_SKILLS.state,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.htmlcss,
-        PROJECT_SKILLS.codex,
-      ],
-    },
-    live: "/cases/business-overview.html",
-    liveLabel: "体验可点击联动的经营看板原型",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            经营看板不是静态报表的堆砌。设计围绕管理者的真实看数路径，将分散的核心指标、趋势折线与员工/商品排行串联成<strong>可扫描、可联动对比、可继续下钻</strong>的分析闭环。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目类型", value: "B 端商业智能看板" },
-              { label: "核心方法", value: "四步渐进式决策路径" },
-              { label: "多端策略", value: "Web 双栏 + 移动端优先级重排" },
-              { label: "交付亮点", value: "高保真 + 可交互数据原型" },
-            ]}
-          />
-
-          <CaseStudyCTA live={this.live} label="打开经营看板交互原型页" />
-
-          <TypographyH3 className="mt-6">01 · 阅读动线与跨端规则</TypographyH3>
-          <BulletGroup
-            items={[
-              "指标与趋势同屏联动：首屏关键指标卡点击即可切换下方主趋势图，避免重复堆叠多张同质化图表。",
-              "视觉分析与精确数值并置：左列图形化呈现占比与波动，右列保留可排序、可排除异常项的精确排行表。",
-              "移动端重排而非缩小：窄屏下按决策优先级改为「横向滑动指标卡 → 核心趋势 → 单列专项分析 → 独立横向滚动表格」。",
-            ]}
-          />
-
-          <SlideShow
-            images={[
-              `${ZXY_PATH}/business-overview/chart-default.png`,
-              `${ZXY_PATH}/business-overview/chart-selected.png`,
-              `${ZXY_PATH}/business-overview/chart-scrolled.png`,
-              `${ZXY_PATH}/business-overview/dashboard-full.png`,
-            ]}
-          />
-        </div>
-      );
-    },
+    live: "/projects/business-overview",
+    liveLabel: "审阅交互看板方案",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "bi",
+            tab: "数据阅读与交互状态",
+            steps: [
+              {
+                label: "首屏默认态",
+                image: `${ZXY_PATH}/business-overview/chart-default.png`,
+                note: "筛选器、核心指标卡与主趋势图建立稳定视觉动线，抑制数字噪音",
+              },
+              {
+                label: "选中高亮对比",
+                image: `${ZXY_PATH}/business-overview/chart-selected.png`,
+                note: "点击图例柔和聚焦单一对象，同时保留其余系列作为参照基准",
+              },
+              {
+                label: "排行下钻态",
+                image: `${ZXY_PATH}/business-overview/chart-scrolled.png`,
+                note: "左列视觉趋势 + 右列精确数值排行协同，支持剔除极值追查原因",
+              },
+              {
+                label: "完整看板架构",
+                image: `${ZXY_PATH}/business-overview/dashboard-full.png`,
+                note: "围绕销售、资金、采购三大核心经营域统筹布局，解决多源报表碎片化问题",
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · READING PATH",
+            title: "指标卡即趋势开关",
+            desc: "点击顶部 KPI 直接联动下方趋势图，消除多张相似折线图重复堆叠。",
+          },
+          {
+            tag: "02 · DUAL VIEW",
+            title: "左图形 · 右精确表",
+            desc: "兼顾管理者的宏观波动直觉与财务级的精确数值比对需求。",
+          },
+          {
+            tag: "03 · ADAPTIVE",
+            title: "移动端按优先级重排",
+            desc: "窄屏重构为横向指标流、单列图表与独立横滑数据表，避免简单等比缩放导致的可读性劣化。",
+          },
+        ]}
+      />
+    ),
   },
   {
-    id: "design-system",
-    category: "设计系统 · 覆盖率 92%",
-    filterGroup: "system",
-    featuredSpan: true,
-    badge: "提效 +30%",
-    title: "Figma 双端组件库迁移与搭建",
-    subtitle: "从语义 Token 到 Web/移动端复合组件及 Axure 原型库的全链路资产标准化",
-    src: `${ZXY_PATH}/covers/design-system-cover.svg`,
-    screenshots: ["design-system-cover.svg"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.designSystem,
-        PROJECT_SKILLS.responsive,
-        PROJECT_SKILLS.ia,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.axure,
-        PROJECT_SKILLS.htmlcss,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/resume.html#projects",
-    liveLabel: "在完整简历中查看项目详情",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            主导团队设计工具迁移过程中的双端组件资产重建，打通<strong>产品原型（Axure）— 视觉交互（Figma）— 研发走查</strong>的一致性标准。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目角色", value: "项目负责人" },
-              { label: "持续周期", value: "2025.06 — 至今" },
-              { label: "组件覆盖率", value: "92% 业务场景覆盖" },
-              { label: "协作收益", value: "团队设计效率提升约 30%" },
-            ]}
-          />
-
-          <SlideShow images={[`${ZXY_PATH}/covers/design-system-cover.svg`]} />
-
-          <TypographyH3 className="mt-6">01 · 体系搭建与团队落地</TypographyH3>
-          <BulletGroup
-            items={[
-              "基础语义变量（Tokens）：从品牌色、功能状态色、字阶行高到 4px 间距模数，逐层构建 Web 与移动端原子及业务复合组件。",
-              "双库同步前置：同步输出标准化 Axure 原型组件库，让产品经理在画原型阶段即可复用统一交互模式。",
-              "治理与宣讲机制：制定组件命名、Auto Layout 变体规范与新增维护流程，跨三条业务线显著消除样式分叉。",
-            ]}
-          />
-        </div>
-      );
-    },
-  },
-  {
-    id: "warehouse",
-    category: "B2B 仓储系统 · 0→1 上线",
-    filterGroup: "business",
-    featuredSpan: true,
-    badge: "复杂业务建模",
-    title: "易仓配｜仓储全链路作业体系",
-    subtitle: "从零构建覆盖入库、出库、盘点、调拨与移库的单据状态与实时库存交互模型",
-    src: `${ZXY_PATH}/covers/warehouse-cover.svg`,
-    screenshots: ["warehouse-cover.svg"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.domain,
-        PROJECT_SKILLS.state,
-        PROJECT_SKILLS.ia,
-      ],
-      backend: [
-        PROJECT_SKILLS.figma,
-        PROJECT_SKILLS.axure,
-        PROJECT_SKILLS.qa,
-      ],
-    },
-    live: "/cases/resume.html#projects",
-    liveLabel: "在完整简历中查看项目详情",
-    get content() {
-      return (
-        <div className="space-y-6">
-          <p className="text-base md:text-lg font-medium text-foreground leading-relaxed">
-            面向企业供应链场景从 0 到 1 建立完整仓储作业模块，解决多仓、多批次作业中<strong>“单据流转状态”与“库存可用量增减”难以对应</strong>的核心痛点。
-          </p>
-
-          <MetaStrip
-            items={[
-              { label: "项目角色", value: "核心 UX 设计师" },
-              { label: "项目周期", value: "2025.11 — 2025.12" },
-              { label: "核心模块", value: "入库 / 出库 / 盘点 / 调拨 / 移库" },
-              { label: "落地进展", value: "2025 年 12 月正式上线" },
-            ]}
-          />
-
-          <SlideShow images={[`${ZXY_PATH}/covers/warehouse-cover.svg`]} />
-
-          <TypographyH3 className="mt-6">01 · 对象建模与关键流程</TypographyH3>
-          <BulletGroup
-            items={[
-              "建立「仓库库位 — 实时库存账本 — 业务单据 — 现场作业」四维对象模型，统一六类仓储单据的列表、详情与审核骨架。",
-              "重点打磨入库、出库与盘点三大高频任务流，覆盖创建校验、实收实发差异录入、部分出入库及冲红回滚等异常分支。",
-              "2025 年 12 月按期上线稳定运行，实现核心仓储作业全流程线上化闭环。",
-            ]}
-          />
-        </div>
-      );
-    },
+    id: "profile-settings",
+    indexLabel: "05",
+    category: "存量架构治理",
+    filterGroup: "b2b",
+    badge: "Before / After 对比",
+    title: "个人与系统设置重构",
+    oneLiner: "拆解历史堆叠超长表单，建立六维心智分组与查看/编辑态解耦",
+    metrics: ["6 大职能模块重组", "读写状态分离", "新旧双屏/滑块对比"],
+    src: `${ZXY_PATH}/covers/profile-settings-cover.svg`,
+    live: "/projects/profile-settings",
+    liveLabel: "审阅重构对比方案",
+    content: (
+      <InteractiveCompareShowcase
+        pairs={[
+          {
+            label: "1. 设置入口架构",
+            beforeImg: `${ZXY_PATH}/profile-settings/old/account/settings-index.png`,
+            afterImg: `${ZXY_PATH}/profile-settings/new/account/settings-index.png`,
+            note: "从设备能力与账号信息混杂的长清单，重组为符合用户心智的分层卡片",
+          },
+          {
+            label: "2. 个人资料读写分离",
+            beforeImg: `${ZXY_PATH}/profile-settings/old/account/profile-long-form.png`,
+            afterImg: `${ZXY_PATH}/profile-settings/new/account/profile-view.png`,
+            note: "解耦高频查阅态与低频修改态：默认采用低噪只读视图，按需显式触发编辑",
+          },
+          {
+            label: "3. 自动订单提醒",
+            beforeImg: `${ZXY_PATH}/profile-settings/old/reminders/order-reminder.png`,
+            afterImg: `${ZXY_PATH}/profile-settings/new/reminders/order-reminder.png`,
+            note: "剔除无关干扰信息，统一开关、触发时间与底部保存动作的组件规范",
+          },
+          {
+            label: "4. 组织员工通讯录",
+            beforeImg: `${ZXY_PATH}/profile-settings/old/organization/staff-list.png`,
+            afterImg: `${ZXY_PATH}/profile-settings/new/organization/contact-list.png`,
+            note: "强化姓名、部门与在职状态主次层级，搜索与分组同屏高效定位",
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · IA GROUPING",
+            title: "六维任务心智分组",
+            desc: "厘清账户、认证、提醒、设备、组织与工单边界，大幅降低寻路成本。",
+          },
+          {
+            tag: "02 · STATE SPLIT",
+            title: "读写状态显性分离",
+            desc: "解耦信息查阅态与表单编辑态，明确系统锁定字段边界，有效规避误触修改风险。",
+          },
+          {
+            tag: "03 · GOVERNANCE",
+            title: "沉淀通用设置规范",
+            desc: "统一列表、开关与校验反馈，将单次改版转化为跨模块复用的设计资产。",
+          },
+        ]}
+      />
+    ),
   },
 ];
 

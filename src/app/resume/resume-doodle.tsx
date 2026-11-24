@@ -6,7 +6,7 @@ import { Pencil, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const COLORS = [
-  "hsl(20,100%,70%)", // accent
+  "hsl(199,89%,60%)", // accent
   "#ffffff",
   "#5cc8ff",
   "#ff6bb9",
@@ -193,8 +193,8 @@ export default function ResumeDoodle({
           className={cn(
             "group flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium shadow-lg transition-colors",
             active
-              ? "bg-[hsl(20,100%,70%)] text-black"
-              : "border border-border/60 bg-background/80 text-foreground backdrop-blur-md hover:border-[hsl(20,100%,70%)]/40"
+              ? "bg-[hsl(199,89%,60%)] text-black"
+              : "border border-border/60 bg-background/80 text-foreground backdrop-blur-md hover:border-[hsl(199,89%,60%)]/40"
           )}
         >
           <motion.span

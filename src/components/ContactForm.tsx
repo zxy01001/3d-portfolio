@@ -11,9 +11,9 @@ import { config } from "@/data/config";
 import { z } from "zod";
 
 const formSchema = z.object({
-  fullName: z.string().min(1, "请填写您的称呼或公司名称"),
-  email: z.string().email("请输入有效的邮箱地址"),
-  message: z.string().min(4, "请简单填写沟通内容（至少 4 个字）"),
+  fullName: z.string().min(1, "请填写您的姓名或所属团队"),
+  email: z.string().email("请输入有效的联系邮箱"),
+  message: z.string().min(4, "请简要说明沟通事项（不少于 4 个字符）"),
 });
 
 type FieldErrors = Partial<Record<keyof z.infer<typeof formSchema>, string>>;
@@ -53,8 +53,8 @@ const ContactForm = () => {
         throw new Error("fallback-to-mailto");
       }
       toast({
-        title: "消息已发送！",
-        description: "感谢您的来信，我会尽快回复您。",
+        title: "信息已提交",
+        description: "感谢您的联系，我将尽快通过邮件与您取得沟通。",
         variant: "default",
         className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
       });
@@ -62,14 +62,14 @@ const ContactForm = () => {
       setEmail("");
       setMessage("");
     } catch {
-      const subject = encodeURIComponent(`来自作品集的联系：${fullName}`);
+      const subject = encodeURIComponent(`作品集联系咨询：${fullName}`);
       const body = encodeURIComponent(
-        `称呼/公司：${fullName}\n联系邮箱：${email}\n\n留言内容：\n${message}`
+        `姓名/团队：${fullName}\n联系邮箱：${email}\n\n沟通事项：\n${message}`
       );
       window.location.href = `mailto:${config.email}?subject=${subject}&body=${body}`;
       toast({
-        title: "已为您唤起邮件客户端",
-        description: `您也可以直接发送邮件至 ${config.email}`,
+        title: "已调起邮件客户端",
+        description: `您亦可直接发送邮件至 ${config.email}`,
         variant: "default",
         className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
       });
@@ -82,10 +82,10 @@ const ContactForm = () => {
     <form className="min-w-7xl mx-auto sm:mt-2" onSubmit={handleSubmit} aria-busy={loading}>
       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
         <LabelInputContainer>
-          <Label htmlFor="fullname">您的称呼 / 团队</Label>
+          <Label htmlFor="fullname">姓名 / 所属机构</Label>
           <Input
             id="fullname"
-            placeholder="例如：张经理 / XX科技 UED 团队"
+            placeholder="例如：所属企业或设计团队名称"
             type="text"
             value={fullName}
             onChange={(e) => {
@@ -99,7 +99,7 @@ const ContactForm = () => {
           <Label htmlFor="email">联系邮箱</Label>
           <Input
             id="email"
-            placeholder="you@company.com"
+            placeholder="name@company.com"
             type="email"
             value={email}
             onChange={(e) => {
@@ -111,9 +111,9 @@ const ContactForm = () => {
         </LabelInputContainer>
       </div>
       <div className="grid w-full gap-1.5 mb-4">
-        <Label htmlFor="content">沟通内容</Label>
+        <Label htmlFor="content">沟通事项</Label>
         <Textarea
-          placeholder="欢迎简单介绍岗位方向、业务场景或交流意向..."
+          placeholder="请简要说明岗位职责方向、业务场景或交流意向..."
           id="content"
           value={message}
           onChange={(e) => {
@@ -131,11 +131,11 @@ const ContactForm = () => {
         {loading ? (
           <div className="flex items-center justify-center">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <p>发送中...</p>
+            <p>提交中...</p>
           </div>
         ) : (
           <div className="flex items-center justify-center">
-            发送留言 <ChevronRight className="w-4 h-4 ml-2" />
+            提交信息 <ChevronRight className="w-4 h-4 ml-2" />
           </div>
         )}
         <BottomGradient />
@@ -163,8 +163,8 @@ const LabelInputContainer = ({
 const BottomGradient = () => {
   return (
     <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-brand to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent orange-400 to-transparent" />
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
     </>
   );
 };

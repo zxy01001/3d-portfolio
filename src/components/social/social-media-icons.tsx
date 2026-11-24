@@ -27,9 +27,9 @@ const SocialMediaButtons = () => {
     },
     {
       name: "在线简历",
-      href: "/cases/resume.html",
+      href: "/resume",
       icon: <FileText className="h-5 w-5 text-foreground/80" />,
-      external: true,
+      external: false,
     },
   ];
 

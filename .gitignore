@@ -11,7 +11,9 @@
 
 # next.js
 /.next/
+/.next-*/
 /out/
+/.api-stash-during-static-build/
 
 # production
 /build

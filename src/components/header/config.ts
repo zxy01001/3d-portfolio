@@ -12,19 +12,19 @@ const links: Link[] = [
     thumbnail: "/assets/nav-link-previews/skills.png",
   },
   {
-    title: "履历",
-    href: "/#experience",
-    thumbnail: "/assets/nav-link-previews/landing.png",
-  },
-  {
-    title: "精选案例",
+    title: "精选代表作",
     href: "/#projects",
     thumbnail: "/assets/nav-link-previews/projects.png",
   },
   {
     title: "在线简历",
-    href: "/cases/resume.html",
+    href: "/resume",
     thumbnail: "/assets/zxy/covers/design-system-cover.svg",
+  },
+  {
+    title: "设计思考",
+    href: "/blogs",
+    thumbnail: "/assets/zxy/agent-platform/library/library-overview.png",
   },
   {
     title: "联系我",

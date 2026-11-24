@@ -25,11 +25,13 @@ const ScrollingPreview = ({
   src,
   alt,
   bg,
+  bgGradient,
   isHovered = false,
 }: {
   src: string;
   alt: string;
   bg?: string;
+  bgGradient?: string;
   isHovered?: boolean;
 }) => {
   const { reducedMotion: reduceMotion } = usePerfProfile();
@@ -93,7 +95,8 @@ const ScrollingPreview = ({
           position: "absolute",
           inset: 0,
           backgroundColor: "#0f172a",
-          backgroundImage: bgReady && bg ? `url("${bg}")` : FALLBACK_BG,
+          backgroundImage:
+            bgReady && bg ? `url("${bg}")` : bgGradient ?? FALLBACK_BG,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

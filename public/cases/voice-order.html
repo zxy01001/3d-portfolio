@@ -64,6 +64,23 @@
 }
 </style>
   <link rel="stylesheet" href="assets/styles/component-preview.css">
+
+    <style id="compact-case-override">
+      nav a[href="#overview"],
+      nav a[href="#modules"],
+      nav a[href="#strategy"],
+      nav a[href="#problem"],
+      nav a[href="#flow"],
+      nav a[href="#decisions"],
+      nav a[href="#states"],
+      nav a[href="#reflection"],
+      nav a[href="#outcome"] {
+        display: none !important;
+      }
+      .hero { margin-bottom: 24px !important; }
+      .section { padding-top: 32px !important; padding-bottom: 32px !important; }
+    </style>
+    
 </head>
 <body class="component-preview">
   <header class="toolbar">
@@ -98,7 +115,7 @@
       </header>
 
       <div class="content">
-        <section class="section reveal" id="overview">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="overview">
           <div class="section-head"><div class="section-kicker">01 / OVERVIEW</div><div><h2 class="section-title">让“说清楚需求”代替“逐个搜索商品”</h2><p class="section-intro">传统下单依赖逐一搜索、选择规格和填写数量。当一次需求包含多个商品、规格和包装单位时，操作成本与出错概率同步增加。本项目尝试让用户用更自然的语音或文本表达需求，再由系统完成拆解与匹配。</p></div></div>
           <div class="overview-grid">
             <div class="story-card">
@@ -121,7 +138,7 @@
           </div>
         </section>
 
-        <section class="section reveal" id="strategy">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="strategy">
           <div class="section-head"><div class="section-kicker">02 / STRATEGY</div><div><h2 class="section-title">围绕“效率、信任、容错”建立设计原则</h2><p class="section-intro">AI 能缩短任务路径，但也会带来识别不确定性。方案通过过程可见、结果可核对、失败可恢复，平衡智能效率与业务准确性。</p></div></div>
           <div class="principles">
             <div class="principle"><div class="principle-num">PRINCIPLE 01</div><h3>入口贴近任务</h3><p>将语音下单放在订单页面的核心操作区域，并用一次性引导说明价值，不改变用户原有任务上下文。</p></div>
@@ -131,7 +148,7 @@
         </section>
 
         <section class="section reveal" id="prototype">
-          <div class="section-head"><div class="section-kicker">03 / INTERACTIVE FLOW</div><div><h2 class="section-title">体验完整的语音下单流程</h2><p class="section-intro">点击左侧步骤或使用“上一步 / 下一步”，查看高保真界面与每一步的设计判断。这里展示的是实际方案流程，不是脱离业务的动效演示。</p></div></div>
+          <div class="section-head"><div class="section-kicker">01 / INTERACTIVE FLOW</div><div><h2 class="section-title">体验完整的语音下单流程</h2><p class="section-intro">点击左侧步骤或使用“上一步 / 下一步”，查看高保真界面与每一步的设计判断。这里展示的是实际方案流程，不是脱离业务的动效演示。</p></div></div>
           <div class="demo-shell">
             <div class="demo-top"><span class="demo-title">HIGH-FIDELITY PROTOTYPE</span><span class="demo-hint">点击步骤切换 · 支持键盘方向键</span></div>
             <div class="demo-grid">
@@ -164,7 +181,7 @@
         </section>
 
         <section class="section reveal" aria-labelledby="branch-title">
-          <div class="section-head"><div class="section-kicker">04 / EDGE CASES</div><div><h2 class="section-title" id="branch-title">不仅设计成功路径，也设计失败后的下一步</h2><p class="section-intro">真实业务中，自然语言不会始终准确命中商品。异常状态的目标不是只告诉用户“失败了”，而是帮助用户理解原因并快速恢复任务。</p></div></div>
+          <div class="section-head"><div class="section-kicker">02 / EDGE CASES</div><div><h2 class="section-title" id="branch-title">不仅设计成功路径，也设计失败后的下一步</h2><p class="section-intro">真实业务中，自然语言不会始终准确命中商品。异常状态的目标不是只告诉用户“失败了”，而是帮助用户理解原因并快速恢复任务。</p></div></div>
           <div class="branches">
             <button class="branch lightbox-trigger" data-image="assets/images/voice-order/订单页面-语音下单助手-粘贴.png" type="button"><div class="branch-visual"><img src="assets/images/voice-order/订单页面-语音下单助手-粘贴.png" alt="粘贴输入设计"></div><div class="branch-copy"><span class="branch-tag">ALTERNATIVE INPUT</span><h3>粘贴作为语音的补充</h3><p>在嘈杂或不便说话的环境中，用户仍可粘贴已有订单文本，延续同一套解析流程。</p></div></button>
             <button class="branch lightbox-trigger" data-image="assets/images/voice-order/空白页状态-未命中商品.png" type="button"><div class="branch-visual"><img src="assets/images/voice-order/空白页状态-未命中商品.png" alt="未命中商品状态"></div><div class="branch-copy"><span class="branch-tag">NO MATCH</span><h3>关键词存在但商品未命中</h3><p>按关键词保留结果结构，清楚指出缺失位置，并允许继续处理已识别内容。</p></div></button>
@@ -173,7 +190,7 @@
         </section>
 
         <section class="section reveal" id="details">
-          <div class="section-head"><div class="section-kicker">05 / DESIGN DETAILS</div><div><h2 class="section-title">把 AI 的不确定性，转化为可理解的界面结构</h2><p class="section-intro">结果页面承担了“解释系统判断”和“支持用户修正”两项任务。信息按照需求原文、解析关键词、匹配商品和最终操作分层，帮助用户快速完成核对。</p></div></div>
+          <div class="section-head"><div class="section-kicker">03 / DESIGN DETAILS</div><div><h2 class="section-title">把 AI 的不确定性，转化为可理解的界面结构</h2><p class="section-intro">结果页面承担了“解释系统判断”和“支持用户修正”两项任务。信息按照需求原文、解析关键词、匹配商品和最终操作分层，帮助用户快速完成核对。</p></div></div>
           <div class="detail-showcase">
             <div class="detail-card"><div class="detail-copy"><span class="detail-accent">结构化反馈</span><h3>用关键词组织识别结果</h3><p>把一段自然语言拆成多个关键词分组，用户可以将系统结果与原始需求逐项对应，减少遗漏。</p></div><button class="detail-phone lightbox-trigger" data-image="assets/images/voice-order/下单结果-1.png" type="button"><img src="assets/images/voice-order/下单结果-1.png" alt="关键词分组展示"></button></div>
             <div class="detail-card"><div class="detail-copy"><span class="detail-accent">渐进披露</span><h3>默认推荐，按需展开候选</h3><p>首屏优先展示最可能的商品，并将相似商品收起，既控制信息密度，也为识别偏差提供修正入口。</p></div><button class="detail-phone lightbox-trigger" data-image="assets/images/voice-order/下单结果-展开.png" type="button"><img src="assets/images/voice-order/下单结果-展开.png" alt="相似商品展开状态"></button></div>
@@ -181,7 +198,7 @@
           </div>
         </section>
 
-        <section class="section reveal" id="outcome">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="outcome">
           <div class="section-head"><div class="section-kicker">06 / OUTCOME</div><div><h2 class="section-title">从功能上线到持续验证</h2><p class="section-intro">项目完成从 0 到 1 设计并上线，通过真实使用反馈继续调整识别结果、商品推荐与操作路径。</p></div></div>
           <div class="results">
             <div class="result"><span class="result-value">10+</span><span class="result-label">日均活跃企业</span><p>功能上线后稳定运行，获得真实业务场景中的持续使用。</p></div>

@@ -1,11 +1,15 @@
 const footer: { title: string; href: string }[] = [
   {
-    title: "精选案例",
+    title: "精选代表作",
     href: "/#projects",
   },
   {
     title: "在线简历 / PDF",
-    href: "/cases/resume.html",
+    href: "/resume",
+  },
+  {
+    title: "设计思考",
+    href: "/blogs",
   },
   {
     title: "联系合作",

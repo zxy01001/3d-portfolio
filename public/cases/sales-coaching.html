@@ -327,6 +327,23 @@
 
     @media (prefers-reduced-motion: reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none} }
   </style>
+
+    <style id="compact-case-override">
+      nav a[href="#overview"],
+      nav a[href="#modules"],
+      nav a[href="#strategy"],
+      nav a[href="#problem"],
+      nav a[href="#flow"],
+      nav a[href="#decisions"],
+      nav a[href="#states"],
+      nav a[href="#reflection"],
+      nav a[href="#outcome"] {
+        display: none !important;
+      }
+      .hero { margin-bottom: 24px !important; }
+      .section { padding-top: 32px !important; padding-bottom: 32px !important; }
+    </style>
+    
 </head>
 <body class="component-preview">
   <div class="toolbar">
@@ -361,7 +378,7 @@
       </header>
 
       <div class="content">
-        <section class="section reveal" id="overview">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="overview">
           <div class="section-head"><div class="section-kicker">01 / OVERVIEW</div><div><h2>先把两端角色分清楚，再让体验形成闭环。</h2><p>销售陪练同时服务两类用户：管理者在 Web 端创建并发布任务，销售人员在移动端学习知识、完成 AI 对练并查看结果。设计不能只解决“怎么配置”，还要保证配置结果能够顺畅地被练习和复盘。</p></div></div>
           <div class="intro-grid">
             <div class="statement"><div class="statement__label">DESIGN CHALLENGE</div><h3>如何把“管理者配置”与“销售练习”连接成一条完整任务链？</h3><p>我将 Web 端的复杂配置收敛为“定知识 → 配场景 → 发任务”，再把移动端串成“选任务 → 学知识 → AI 对练 → 看评分”的练习闭环，让前端配置不止停在发布，而是能被实际使用和反馈。</p></div>
@@ -369,14 +386,14 @@
           </div>
         </section>
 
-        <section class="section reveal" id="problem">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="problem">
           <div class="section-head"><div class="section-kicker">02 / COMPLEXITY</div><div><h2>这个项目的难点，不在页面数量，而在对象关系。</h2><p>如果只把每张页面分别做漂亮，用户仍可能在流程中迷失。先建立对象和任务关系，才能判断哪些内容应该合并、哪些动作应该使用弹窗、哪些状态必须被明确表达。</p></div></div>
           <div class="problem-grid"><article class="problem"><div class="problem__num">A</div><h3>内容准备存在多种来源</h3><p>用户可以上传本地文件，也可以从知识库选择已有内容；两种方式都需要统一展示、删除和生成状态。</p></article><article class="problem"><div class="problem__num">B</div><h3>AI 生成不是瞬时结果</h3><p>解析、生成、成功和失败都需要反馈。结果必须允许查看、编辑与重新生成，而不是用一个模糊的“完成”结束。</p></article><article class="problem"><div class="problem__num">C</div><h3>任务配置天然跨页面</h3><p>角色、场景、评分和发布对象彼此关联，页面需要保持上下文，避免用户反复返回确认前置条件。</p></article></div>
           <div class="relationship" style="margin-top:16px"><div class="relationship__top"><h3>训练任务的对象关系</h3><div class="relationship__hint">从中心任务向外展开配置对象，页面顺序也围绕这条关系组织。</div></div><div class="object-map"><div class="object object--primary"><div class="object__type">CORE</div><strong>训练任务</strong><small>统一承载配置与发布</small></div><div class="object"><div class="object__type">CONTENT</div><strong>知识内容</strong><small>文件 / 知识库 / AI 生成</small></div><div class="object"><div class="object__type">ROLE</div><strong>陪练角色</strong><small>身份 / 性格 / 基础信息</small></div><div class="object"><div class="object__type">SCENE</div><strong>对话场景</strong><small>目标 / 话术 / 剧本</small></div><div class="object"><div class="object__type">RULE</div><strong>评分标准</strong><small>维度 / 权重 / 反馈</small></div><div class="object"><div class="object__type">MEMBER</div><strong>发布对象</strong><small>成员 / 角色 / 权限</small></div><div class="object"><div class="object__type">STATE</div><strong>任务状态</strong><small>草稿 / 生成中 / 已发布</small></div><div class="object"><div class="object__type">FEEDBACK</div><strong>练习反馈</strong><small>对话记录 / 评分解释</small></div></div></div>
         </section>
 
         <section class="section reveal" id="loop">
-          <div class="section-head"><div class="section-kicker">03 / EXPERIENCE LOOP</div><div><h2>从 Web 配置到移动端复盘，体验要能走完整一圈。</h2><p>我把跨端体验拆成五个可验证节点：每一个节点都有清晰的输入、输出和反馈，避免 Web 和 Mobile 只是两组孤立页面。</p></div></div>
+          <div class="section-head"><div class="section-kicker">01 / EXPERIENCE LOOP</div><div><h2>从 Web 配置到移动端复盘，体验要能走完整一圈。</h2><p>我把跨端体验拆成五个可验证节点：每一个节点都有清晰的输入、输出和反馈，避免 Web 和 Mobile 只是两组孤立页面。</p></div></div>
           <div class="loop">
             <div class="loop__nav" role="tablist" aria-label="销售陪练跨端体验流程">
               <div class="loop__intro">选择流程节点，查看该阶段的用户任务、端侧职责和关键界面。</div>
@@ -396,14 +413,14 @@
           </div>
         </section>
 
-        <section class="section reveal" id="flow">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="flow">
           <div class="section-head"><div class="section-kicker">04 / TASK FLOW</div><div><h2>三步完成配置，把“下一步”变成确定的动作。</h2><p>用向导结构降低认知负担，同时让每一步都有明确产出：知识内容可用、场景可以演练、任务可以被正确发布。</p></div></div>
           <div class="flow" role="tablist" aria-label="训练任务配置流程"><button class="flow-step is-active" id="flow-tab-0" type="button" role="tab" aria-selected="true" aria-controls="flow-panel" tabindex="0" data-step="0"><div class="flow-step__top"><span class="flow-step__index">1</span><span class="flow-step__status">当前重点</span></div><h3>定知识</h3><p>准备学习对象、内容来源，并生成陪练考核点。</p><ul><li>上传文件 / 从知识库选择</li><li>解析与生成状态反馈</li></ul></button><button class="flow-step" id="flow-tab-1" type="button" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1" data-step="1"><div class="flow-step__top"><span class="flow-step__index">2</span><span class="flow-step__status">搭建结构</span></div><h3>配场景</h3><p>设置陪练角色、对话目标和评分规则。</p><ul><li>角色和剧本配置</li><li>评分维度可检查</li></ul></button><button class="flow-step" id="flow-tab-2" type="button" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1" data-step="2"><div class="flow-step__top"><span class="flow-step__index">3</span><span class="flow-step__status">发布执行</span></div><h3>发任务</h3><p>确认参与对象、权限和发布规则，完成任务交付。</p><ul><li>成员范围与权限</li><li>完整性检查后发布</li></ul></button></div>
           <div class="flow-panel" id="flow-panel" role="tabpanel" aria-labelledby="flow-tab-0" aria-live="polite"><div class="flow-panel__aside"><h3 id="flow-aside-title">先让知识变成可用的训练素材</h3><p id="flow-aside-desc">第一步不急着配置复杂剧本，而是先确认训练对象和知识来源，给后续 AI 生成建立可靠输入。</p><div class="flow-progress" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div></div><div class="flow-panel__body"><div class="flow-panel__label" id="flow-label">STEP 01 · DEFINE KNOWLEDGE</div><h3 id="flow-title">定知识：把输入内容变成可确认的训练基础</h3><p id="flow-desc">在同一个上下文里完成学习对象、陪练场景和内容来源的配置；当 AI 正在解析或生成时，右侧保留过程反馈，不遮挡用户对输入内容的检查。</p></div></div>
         </section>
 
         <section class="section reveal" id="showcase">
-          <div class="section-head"><div class="section-kicker">05 / CROSS-PLATFORM SCREENS</div><div><h2>分别看 Web 和 Mobile，但始终沿着同一条任务链理解。</h2><p>不把所有截图平铺，而是按“配置端 / 练习端”切换，选择能够说明任务输入、交互状态和结果反馈的关键页面。点击页面可放大查看细节。</p></div></div>
+          <div class="section-head"><div class="section-kicker">02 / CROSS-PLATFORM SCREENS</div><div><h2>分别看 Web 和 Mobile，但始终沿着同一条任务链理解。</h2><p>不把所有截图平铺，而是按“配置端 / 练习端”切换，选择能够说明任务输入、交互状态和结果反馈的关键页面。点击页面可放大查看细节。</p></div></div>
           <div class="showcase">
             <nav class="showcase__nav" aria-label="关键页面切换">
               <div class="showcase__nav-intro">先选择端侧，再选择关键节点。Web 讲清楚“怎么配置”，Mobile 讲清楚“怎么练习和复盘”。</div>
@@ -427,17 +444,17 @@
           </div>
         </section>
 
-        <section class="section reveal" id="decisions">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="decisions">
           <div class="section-head"><div class="section-kicker">06 / DECISIONS</div><div><h2>把“看起来能用”，推进到“知道为什么这样用”。</h2><p>这些设计判断贯穿配置端：既参考成熟的企业级组件逻辑，也针对 AI 生成和复杂任务做了更明确的反馈与校验。</p></div></div>
           <div class="design-grid"><article class="decision"><div class="decision__icon">↳</div><div><h3>用弹窗承载选择，不拉长主页面</h3><p>知识库文件、角色和成员选择都使用聚焦式弹窗，完成选择后将结果回填到当前步骤，保留任务上下文。</p></div></article><article class="decision"><div class="decision__icon">◌</div><div><h3>把 AI 生成拆成可感知状态</h3><p>解析中、生成中、成功、失败和重新生成都采用不同反馈，让等待有解释、结果可检查、问题可恢复。</p></div></article><article class="decision"><div class="decision__icon">✓</div><div><h3>评分规则先结构化，再允许细化</h3><p>将评分维度、说明、权重和反馈组织为可扫描的结构，降低一长段规则文本带来的理解成本。</p></div></article><article class="decision"><div class="decision__icon">⊙</div><div><h3>发布前检查完整性和权限</h3><p>没有知识、场景、评分或对象时，不让用户在最后一步才发现问题；关键动作的可用状态应与前置条件一致。</p></div></article></div>
         </section>
 
-        <section class="section reveal" id="states">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="states">
           <div class="section-head"><div class="section-kicker">07 / AI STATES</div><div><h2>AI 体验的可信度，来自状态和恢复路径。</h2><p>在企业场景里，AI 不应该被包装成一个不可解释的黑盒。用户需要知道系统正在做什么、结果从哪里来，以及不满意时如何继续。</p></div></div>
           <div class="state-grid"><article class="state-card state-card--loading"><div class="state-card__label">LOADING</div><h3>生成中：解释等待，而不是只转圈</h3><p>右侧保留输入内容的结构，并使用骨架屏与阶段文案告诉用户系统正在解析哪一部分。</p><div class="state-card__rule">交互规则 · 禁止重复提交；允许返回上一步检查输入。</div></article><article class="state-card state-card--success"><div class="state-card__label">SUCCESS</div><h3>完成后：结果可读、可编辑、可再次生成</h3><p>AI 生成的考核点回到结构化列表中，用户可以逐条核对，并保留手动调整的空间。</p><div class="state-card__rule">交互规则 · 成功状态必须有明确的下一步动作。</div></article><article class="state-card state-card--error"><div class="state-card__label">ERROR / EMPTY</div><h3>异常时：给出原因和替代路径</h3><p>文件解析失败、知识内容为空或角色未匹配时，直接说明原因，并提供重新上传、重新选择或手动补充。</p><div class="state-card__rule">交互规则 · 错误信息要靠近问题对象，不用全局提示替代。</div></article><article class="state-card state-card--guard"><div class="state-card__label">GUARD</div><h3>发布前：把缺失条件提前暴露</h3><p>发布按钮的可用状态与知识、场景、评分和对象条件绑定，避免“点击后才发现不能发布”的挫败。</p><div class="state-card__rule">交互规则 · 既提示缺少什么，也告诉用户去哪里补齐。</div></article></div>
         </section>
 
-        <section class="section reveal" id="reflection">
+        <section style="display:none !important" aria-hidden="true" class="section reveal" id="reflection">
           <div class="section-head"><div class="section-kicker">08 / REFLECTION</div><div><h2>当前不是“项目结束”，而是进入业务验证阶段。</h2><p>在不虚构效果数据的前提下，我更关注这套配置体验是否真的支持不同训练主题、不同角色和不同评分规则，并持续从使用反馈中校正设计。</p></div></div>
           <div class="closing"><div class="closing-card closing-card--dark"><h3>已完成的设计产出</h3><p>形成 Web 配置端的核心流程和高保真方案，为后续开发与业务验证提供统一的交互依据。</p><ul><li>三步任务配置框架</li><li>知识 / 角色 / 场景 / 评分对象模型</li><li>AI 生成与异常状态方案</li><li>面向发布完整性的前置检查思路</li></ul></div><div class="closing-card closing-card--light"><h3>接下来继续验证</h3><p>通过真实任务和不同类型的培训内容，继续观察流程覆盖、评分表达和 AI 结果可信度。</p><ul><li>任务创建完成率与中断节点</li><li>生成结果的编辑与采纳方式</li><li>评分规则的理解与维护成本</li><li>发布后的练习与复盘闭环</li></ul></div></div>
         </section>

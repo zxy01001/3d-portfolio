@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { Button } from "../ui/button";
-import { FileText, Mail, Sparkles, ArrowDownRight, MapPin } from "lucide-react";
+import { FileText, Mail, ArrowDownRight, MapPin } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -17,13 +17,6 @@ import { config } from "@/data/config";
 
 import SectionWrapper from "../ui/section-wrapper";
 
-const HERO_TAGS = [
-  "复杂业务建模",
-  "信息架构重构",
-  "交互与状态设计",
-  "AI 产品体验",
-];
-
 const HeroSection = () => {
   const { isLoading } = usePreloader();
 
@@ -35,170 +28,147 @@ const HeroSection = () => {
             "min-h-[calc(100dvh-3rem)] md:min-h-[calc(100dvh-4rem)] z-[2]",
             "col-span-1",
             "flex flex-col justify-start md:justify-center items-center md:items-start",
-            "pt-24 pb-16 px-6 sm:px-10 md:p-16 lg:p-20 xl:p-24"
+            "pt-24 pb-14 px-6 sm:px-10 md:p-14 lg:p-20 xl:p-24"
           )}
         >
           {!isLoading && (
-            <div className="flex flex-col items-center md:items-start max-w-xl">
-              {/* Avatar + Open to work badge */}
-              <BlurIn delay={0.5}>
-                <div className="mb-5 flex items-center gap-3 rounded-full border border-border/70 bg-background/70 px-3 py-1.5 backdrop-blur-md shadow-sm">
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-emerald-500/40">
+            <div className="flex flex-col items-center md:items-start max-w-lg">
+              {/* Compact Avatar + Status Pill */}
+              <BlurIn delay={0.45}>
+                <div className="mb-5 inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-background/95 px-3 py-1.5 shadow-sm">
+                  <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-emerald-500/40">
                     <Image
                       src="/assets/zxy/avatar.jpg"
-                      alt="朱星宇头像"
-                      width={64}
-                      height={64}
+                      alt="朱星宇"
+                      width={48}
+                      height={48}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-xs font-medium text-foreground/90">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="font-mono text-[11px] font-bold text-foreground/90">
                     {config.status}
                   </span>
-                  <span className="hidden sm:inline-flex items-center gap-1 text-xs text-muted-foreground border-l border-border pl-2.5">
-                    <MapPin className="h-3 w-3" />
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground border-l border-border pl-2.5">
+                    <MapPin className="h-3 w-3 text-cyan-500" />
                     {config.location}
                   </span>
                 </div>
               </BlurIn>
 
               <div className="text-center md:text-left">
-                <BlurIn delay={0.7}>
-                  <p
+                <BlurIn delay={0.65}>
+                  <p className="font-mono text-xs font-semibold text-muted-foreground tracking-[0.22em] uppercase">
+                    {config.authorEn} · {config.role}
+                  </p>
+                </BlurIn>
+
+                <BlurIn delay={0.85}>
+                  <h1
                     className={cn(
-                      "font-medium text-sm sm:text-base text-slate-500 dark:text-zinc-400 tracking-wider uppercase"
+                      "mt-2 leading-none text-slate-900 dark:text-white",
+                      "font-extrabold text-6xl sm:text-7xl lg:text-8xl tracking-tight",
+                      "cursor-default font-display"
                     )}
                   >
-                    你好，我是 · {config.authorEn}
+                    {config.author}
+                  </h1>
+                </BlurIn>
+
+                <BlurIn delay={1.05}>
+                  <p className="mt-4 text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+                    {config.headline}
                   </p>
-                </BlurIn>
-
-                <BlurIn delay={0.95}>
-                  <Tooltip delayDuration={300}>
-                    <TooltipTrigger asChild>
-                      <h1
-                        className={cn(
-                          "mt-2 leading-tight text-slate-900 dark:text-white",
-                          "font-extrabold text-6xl sm:text-7xl lg:text-8xl tracking-tight",
-                          "cursor-default font-display"
-                        )}
-                      >
-                        {config.author}
-                      </h1>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="dark:bg-white dark:text-black"
-                    >
-                      向下滚动或点击右侧 3D 键盘探索我的能力栈 🎹
-                    </TooltipContent>
-                  </Tooltip>
-                </BlurIn>
-
-                <BlurIn delay={1.15}>
-                  <p className="mt-3 text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 bg-clip-text text-transparent">
-                    {config.role} · 复杂 B 端与 AI 产品体验
-                  </p>
-                </BlurIn>
-
-                <BlurIn delay={1.3}>
-                  <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-zinc-300 leading-relaxed">
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                     {config.tagline}
                   </p>
                 </BlurIn>
 
-                <BlurIn delay={1.45}>
-                  <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
-                    {HERO_TAGS.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-secondary/50 px-2.5 py-1 text-xs font-medium text-foreground/85 backdrop-blur-sm"
-                      >
-                        <Sparkles className="h-3 w-3 text-cyan-500" />
-                        {tag}
-                      </span>
+                {/* Tight Inline Metrics Bar */}
+                <BlurIn delay={1.2}>
+                  <div className="mt-6 inline-grid grid-cols-3 divide-x divide-border rounded-2xl border border-border/80 bg-background/95 shadow-sm w-full">
+                    {config.metrics.map((m) => (
+                      <div key={m.label} className="px-3.5 py-3 text-center md:text-left">
+                        <div className="font-display text-lg sm:text-xl font-extrabold text-foreground">
+                          {m.value}
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-muted-foreground whitespace-nowrap">
+                          {m.label}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </BlurIn>
               </div>
 
-              <div className="mt-7 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <Link href="#projects" className="w-full sm:w-auto">
-                  <BoxReveal delay={1.6} width="100%">
-                    <Button className="flex items-center justify-center gap-2 w-full px-6">
+              {/* Clean CTA Row */}
+              <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+                <Link href="#projects">
+                  <BoxReveal delay={1.35} width="100%">
+                    <Button className="gap-2 px-6 shadow-md">
                       <span>浏览精选案例</span>
-                      <ArrowDownRight size={18} />
+                      <ArrowDownRight size={17} />
                     </Button>
                   </BoxReveal>
                 </Link>
 
-                <Link
-                  href="/cases/resume.html"
-                  target="_blank"
-                  className="w-full sm:w-auto"
-                >
-                  <BoxReveal delay={1.75} width="100%">
+                <Link href="/resume">
+                  <BoxReveal delay={1.45} width="100%">
                     <Button
                       variant="outline"
-                      className="flex items-center justify-center gap-2 w-full px-5 bg-background/60 backdrop-blur-sm"
+                      className="gap-2 px-4 bg-background/90"
                     >
-                      <FileText size={18} />
-                      <span>在线简历 / 导出 PDF</span>
+                      <FileText size={16} />
+                      <span>在线简历 / PDF</span>
                     </Button>
                   </BoxReveal>
                 </Link>
 
-                <div className="flex items-center gap-2">
-                  <Tooltip delayDuration={250}>
-                    <TooltipTrigger asChild>
-                      <Link href={`mailto:${config.email}`}>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          aria-label="发送邮件"
-                          className="bg-background/60 backdrop-blur-sm"
-                        >
-                          <Mail size={18} />
-                        </Button>
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>{config.email}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip delayDuration={250}>
-                    <TooltipTrigger asChild>
-                      <Link
-                        href={config.social.github}
-                        target="_blank"
-                        aria-label="GitHub 主页"
+                <Tooltip delayDuration={250}>
+                  <TooltipTrigger asChild>
+                    <Link href={`mailto:${config.email}`}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        aria-label="发送邮件"
+                        className="bg-background/90"
                       >
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="bg-background/60 backdrop-blur-sm"
-                        >
-                          <SiGithub size={18} />
-                        </Button>
-                      </Link>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>GitHub 作品仓库</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                        <Mail size={16} />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{config.email}</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip delayDuration={250}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={config.social.github}
+                      target="_blank"
+                      aria-label="GitHub"
+                    >
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="bg-background/90"
+                      >
+                        <SiGithub size={16} />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>GitHub</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
         </div>
         <div className="grid col-span-1" />
       </div>
-      <div className="absolute bottom-8 left-[50%] translate-x-[-50%]">
+      <div className="absolute bottom-7 left-[50%] translate-x-[-50%]">
         <ScrollDownIcon />
       </div>
     </SectionWrapper>

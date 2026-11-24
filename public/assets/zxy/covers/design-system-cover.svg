@@ -6,7 +6,7 @@
       <stop offset="100%" stop-color="#0b1324"/>
     </linearGradient>
     <radialGradient id="dsg" cx="0.75" cy="0.25" r="0.6">
-      <stop offset="0%" stop-color="#f24e1e" stop-opacity="0.24"/>
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.24"/>
       <stop offset="50%" stop-color="#4263eb" stop-opacity="0.18"/>
       <stop offset="100%" stop-color="#090d16" stop-opacity="0"/>
     </radialGradient>
@@ -35,7 +35,7 @@
   <text x="136" y="330" fill="#818cf8" font-family="Inter, sans-serif" font-size="18" font-weight="700" letter-spacing="2">01 · DESIGN TOKENS</text>
   <text x="136" y="370" fill="#ffffff" font-family="PingFang SC, sans-serif" font-size="28" font-weight="700">基础语义变量</text>
   <rect x="136" y="408" width="76" height="76" rx="16" fill="#4263eb"/><rect x="228" y="408" width="76" height="76" rx="16" fill="#2fc5c9"/>
-  <rect x="320" y="408" width="76" height="76" rx="16" fill="#10b981"/><rect x="412" y="408" width="84" height="76" rx="16" fill="#f59e0b"/>
+  <rect x="320" y="408" width="76" height="76" rx="16" fill="#10b981"/><rect x="412" y="408" width="84" height="76" rx="16" fill="#06b6d4"/>
   <rect x="136" y="514" width="360" height="96" rx="16" fill="#1e293b"/>
   <text x="162" y="556" fill="#f8fafc" font-family="PingFang SC, sans-serif" font-size="22" font-weight="600">Typography 字阶规范</text>
   <text x="162" y="588" fill="#94a3b8" font-family="Inter, sans-serif" font-size="16">12 / 14 / 16 / 20 / 24 / 32px · 行高与字重矩阵</text>

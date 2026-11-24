@@ -3,8 +3,8 @@ import { getBlogPosts } from "@/lib/mdx";
 import BlogListClient from "./blog-list-client";
 
 export const metadata = {
-  title: "Blog | Portfolio",
-  description: "Thoughts, tutorials, and updates.",
+  title: "设计思考 | 朱星宇 UX 作品集",
+  description: "复杂 B 端业务建模、信息架构治理与 AI 原生体验设计复盘。",
 };
 
 export default function BlogPage() {

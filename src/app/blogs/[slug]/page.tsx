@@ -32,11 +32,10 @@ function estimateReadTime(content: string) {
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
+  return date.toLocaleDateString("zh-CN", {
+    year: "numeric",
     month: "long",
     day: "numeric",
-    year: "numeric",
   });
 }
 
@@ -78,17 +77,17 @@ const components = {
     />
   ),
   li: (props: any) => (
-    <li className="pl-2 relative before:content-['–'] before:absolute before:-left-5 before:text-[hsl(20,100%,70%)] before:font-medium" {...props} />
+    <li className="pl-2 relative before:content-['–'] before:absolute before:-left-5 before:text-[hsl(199,89%,60%)] before:font-medium" {...props} />
   ),
   blockquote: (props: any) => (
     <blockquote
-      className="border-l-2 border-[hsl(20,100%,70%)] pl-6 my-8 text-foreground/80 italic text-lg leading-relaxed font-sans"
+      className="border-l-2 border-[hsl(199,89%,60%)] pl-6 my-8 text-foreground/80 italic text-lg leading-relaxed font-sans"
       {...props}
     />
   ),
   code: (props: any) => (
     <code
-      className="bg-muted/50 text-[hsl(20,100%,65%)] px-1.5 py-0.5 rounded text-[15px] font-mono"
+      className="bg-muted/50 text-[hsl(199,89%,55%)] px-1.5 py-0.5 rounded text-[15px] font-mono"
       {...props}
     />
   ),
@@ -100,7 +99,7 @@ const components = {
   ),
   a: (props: any) => (
     <a
-      className="text-[hsl(20,100%,70%)] hover:text-[hsl(20,100%,80%)] underline decoration-[hsl(20,100%,70%)]/30 underline-offset-4 hover:decoration-[hsl(20,100%,70%)] transition-colors"
+      className="text-[hsl(199,89%,60%)] hover:text-[hsl(199,89%,72%)] underline decoration-[hsl(199,89%,60%)]/30 underline-offset-4 hover:decoration-[hsl(199,89%,60%)] transition-colors"
       {...props}
     />
   ),
@@ -120,11 +119,11 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="min-h-screen relative font-sans">
-      <ScrollProgress className="bg-gradient-to-r from-[hsl(20,100%,70%)] to-[hsl(30,100%,65%)]" />
+      <ScrollProgress className="bg-gradient-to-r from-[hsl(199,89%,60%)] to-[hsl(235,85%,68%)]" />
 
       {/* Decorative background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-[hsl(20,100%,70%)]/[0.03] blur-[100px]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-[hsl(199,89%,60%)]/[0.03] blur-[100px]" />
       </div>
 
       <div className="container mx-auto px-4 pt-32 pb-24 max-w-[720px]">
@@ -132,10 +131,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <RevealAnimation>
           <Link
             href="/blogs"
-            className="inline-flex items-center text-muted-foreground hover:text-[hsl(20,100%,70%)] transition-colors mb-12 group text-sm"
+            className="inline-flex items-center text-muted-foreground hover:text-[hsl(199,89%,60%)] transition-colors mb-12 group text-sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            All posts
+            返回设计思考列表
           </Link>
         </RevealAnimation>
 
@@ -148,7 +147,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="border-[hsl(20,100%,70%)]/20 text-[hsl(20,100%,70%)] bg-[hsl(20,100%,70%)]/5 rounded-full px-3 text-xs"
+                  className="border-[hsl(199,89%,60%)]/20 text-[hsl(199,89%,60%)] bg-[hsl(199,89%,60%)]/5 rounded-full px-3 text-xs"
                 >
                   {tag}
                 </Badge>
@@ -164,8 +163,8 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground pb-8 border-b border-border/50">
               {post.metadata.author && (
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-[hsl(20,100%,70%)]/10 flex items-center justify-center">
-                    <User className="w-3 h-3 text-[hsl(20,100%,70%)]" />
+                  <div className="w-6 h-6 rounded-full bg-[hsl(199,89%,60%)]/10 flex items-center justify-center">
+                    <User className="w-3 h-3 text-[hsl(199,89%,60%)]" />
                   </div>
                   {post.metadata.author}
                 </div>
@@ -176,7 +175,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                {readTime} min read
+                约 {readTime} 分钟阅读
               </div>
             </div>
           </header>
@@ -194,10 +193,10 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <div className="mt-20 pt-8 border-t border-border/50">
             <Link
               href="/blogs"
-              className="inline-flex items-center text-muted-foreground hover:text-[hsl(20,100%,70%)] transition-colors group text-sm"
+              className="inline-flex items-center text-muted-foreground hover:text-[hsl(199,89%,60%)] transition-colors group text-sm"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to all posts
+              返回全部文章
             </Link>
           </div>
         </RevealAnimation>

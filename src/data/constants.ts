@@ -1,29 +1,32 @@
-// 24 UX & AI Interaction Design skills — 6 per row × 4 rows on the 3D keyboard
+// 23 AI-Native UX Competencies & Frontier Engineering Toolset — 100% packed into an 8×4 (32-cell) 3D Mechanical Keyboard:
+// - 1 × [2×2] Flagship Hero Keycap: Figma Variables & MCP (4 cells)
+// - 6 × [2×1] Core UX & Agentic AI Architecture Wide Keycaps (12 cells)
+// - 16 × [1×1] AI-Native IDE, Generative UI, RAG/Eval, AIGC & Motion/3D Tool Keycaps (16 cells)
+// Total = 4 + 12 + 16 = 32 cells (8 columns × 4 rows, 100% edge-to-edge full, zero orange!).
 export enum SkillNames {
   FIGMA = "figma",
-  AXURE = "axure",
-  SKETCH = "sketch",
-  ADOBE_XD = "xd",
-  JISHI = "jishi",
-  MODAO = "modao",
-  PROTOPIE = "protopie",
-  AFTER_EFFECTS = "ae",
-  BLENDER = "blender",
-  HTML_CSS = "htmlcss",
-  DESIGN_SYSTEM = "designsystem",
-  RESPONSIVE = "responsive",
   AI_UX = "aiux",
-  CHATGPT = "chatgpt",
+  CURSOR = "cursor",
   CODEX = "codex",
-  MIDJOURNEY = "midjourney",
-  STABLE_DIFFUSION = "sd",
-  COMFYUI = "comfyui",
+  MCP = "mcp",
+  PROMPT_EVAL = "eval",
+  DESIGN_SYSTEM = "designsystem",
+  RAG_UX = "rag",
+  AXURE = "axure",
+  PROTOPIE = "protopie",
+  JISHI = "jishi",
   SYSTEM_MODEL = "domain",
   INFO_ARCH = "ia",
+  HTML_CSS = "htmlcss",
+  RESPONSIVE = "responsive",
+  AFTER_EFFECTS = "ae",
+  BLENDER = "blender",
   STATE_FLOW = "state",
-  USER_RESEARCH = "research",
   DATA_VIZ = "dataviz",
-  QA_WALKTHROUGH = "qa",
+  COMFYUI = "comfyui",
+  MIDJOURNEY = "midjourney",
+  STABLE_DIFFUSION = "sd",
+  USER_RESEARCH = "research",
 }
 
 export type Skill = {
@@ -31,291 +34,408 @@ export type Skill = {
   name: string;
   /** ASCII heading rendered as 3D extruded geometry above the keyboard. */
   label: string;
-  /** Chinese / bilingual label shown in UI badges, cards, and HUD. */
+  /** Authoritative Chinese/English professional label shown in UI badges, cards, and HUD. */
   labelZh: string;
+  category: string;
   shortDescription: string;
   color: string;
+  /** Clean 1x1 white icon used in HTML badges and fallback grid. */
   icon: string;
-  /** Optional local artwork for the 3D key; falls back to icon. */
+  /** HiDPI SVG artwork rendered onto the 3D keycap top plane. */
   keyboardIcon?: string;
-  /** Plastic color of the 3D keycap; independent of the HTML brand accent. */
+  /** Sculpted 3D keycap body color (zero orange). */
   keyboardColor?: string;
-  /** Browser KeyboardEvent.code, e.g. KeyJ. Defaults to the displayed key order. */
-  shortcut?: string;
+  /** Unique physical KeyboardEvent.code shortcut. */
+  shortcut: string;
+  colSpan?: 1 | 2;
+  rowSpan?: 1 | 2;
 };
 
 export const SKILLS: Record<SkillNames, Skill> = {
+  // ================= ROW 0 =================
+  // Col 0..1, Row 0..1: [2x2] Flagship Figma Hero Keycap (4x size)
   [SkillNames.FIGMA]: {
     id: 1,
     name: "figma",
-    label: "Figma",
-    labelZh: "Figma",
-    shortDescription: "主导 Web 与移动端双端组件库及高保真交付，组件覆盖率达 92%",
-    color: "#f24e1e",
+    label: "Figma & Variables",
+    labelZh: "Figma（Variables / MCP）",
+    category: "核心设计工程平台",
+    shortDescription:
+      "构建基于语义化 Variables 与 Auto Layout 的双端组件体系（覆盖率 92%），打通 Design-to-Code 交付管线",
+    color: "#5b4eff",
     icon: "/assets/keyboard/logos/ux/figma.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/figma.svg",
-    keyboardColor: "#f24e1e",
+    keyboardIcon: "/assets/keyboard/logos/pro/figma-2x2.svg",
+    keyboardColor: "#5b4eff",
+    shortcut: "KeyF",
+    colSpan: 2,
+    rowSpan: 2,
   },
-  [SkillNames.AXURE]: {
-    id: 2,
-    name: "axure",
-    label: "Axure RP",
-    labelZh: "Axure RP",
-    shortDescription: "搭建复杂 B 端业务流程与团队原型组件库，将交互规则前置",
-    color: "#0095d9",
-    icon: "/assets/keyboard/logos/ux/axure.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/axure.svg",
-    keyboardColor: "#008fd5",
-  },
-  [SkillNames.SKETCH]: {
-    id: 3,
-    name: "sketch",
-    label: "Sketch",
-    labelZh: "Sketch",
-    shortDescription: "熟练处理界面视觉规范制定与历史设计资产迁移重构",
-    color: "#f7b500",
-    icon: "/assets/keyboard/logos/ux/sketch.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/sketch.svg",
-    keyboardColor: "#f59f00",
-  },
-  [SkillNames.ADOBE_XD]: {
-    id: 4,
-    name: "xd",
-    label: "Adobe XD",
-    labelZh: "Adobe XD",
-    shortDescription: "快速完成多页面交互连线、界面探索与早期方案评审",
-    color: "#e64980",
-    icon: "/assets/keyboard/logos/ux/xd.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/xd.svg",
-    keyboardColor: "#d6336c",
-  },
-  [SkillNames.JISHI]: {
-    id: 5,
-    name: "jishi",
-    label: "MasterGo / JS",
-    labelZh: "即时设计",
-    shortDescription: "支持产研团队云端实时协同评审、标注切图与规范管理",
-    color: "#4263eb",
-    icon: "/assets/keyboard/logos/ux/jishi.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/jishi.svg",
-    keyboardColor: "#3b5bdb",
-  },
-  [SkillNames.MODAO]: {
-    id: 6,
-    name: "modao",
-    label: "Modao",
-    labelZh: "墨刀",
-    shortDescription: "敏捷需求拆解、低保真线框推演与快速业务流程对齐",
-    color: "#e03131",
-    icon: "/assets/keyboard/logos/ux/modao.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/modao.svg",
-    keyboardColor: "#e03131",
-  },
-  [SkillNames.PROTOPIE]: {
-    id: 7,
-    name: "protopie",
-    label: "ProtoPie",
-    labelZh: "ProtoPie",
-    shortDescription: "制作带条件变量与真实手势反馈的高保真交互原型",
-    color: "#ff5364",
-    icon: "/assets/keyboard/logos/ux/protopie.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/protopie.svg",
-    keyboardColor: "#fa5252",
-  },
-  [SkillNames.AFTER_EFFECTS]: {
-    id: 8,
-    name: "ae",
-    label: "After Effects",
-    labelZh: "After Effects",
-    shortDescription: "制作产品功能操作演示视频与细腻的界面转场微动效",
-    color: "#7950f2",
-    icon: "/assets/keyboard/logos/ux/ae.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/ae.svg",
-    keyboardColor: "#5f3dc4",
-  },
-  [SkillNames.BLENDER]: {
-    id: 9,
-    name: "blender",
-    label: "Blender",
-    labelZh: "Blender 3D",
-    shortDescription: "三维空间建模、材质灯光渲染与立体视觉资产探索",
-    color: "#ea7600",
-    icon: "/assets/keyboard/logos/ux/blender.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/blender.svg",
-    keyboardColor: "#e8590c",
-  },
-  [SkillNames.HTML_CSS]: {
-    id: 10,
-    name: "htmlcss",
-    label: "HTML / CSS",
-    labelZh: "HTML / CSS",
-    shortDescription: "理解前端盒模型、栅格与响应式断点，高效推进开发还原走查",
-    color: "#22b8cf",
-    icon: "/assets/keyboard/logos/ux/htmlcss.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/htmlcss.svg",
-    keyboardColor: "#1098ad",
-  },
-  [SkillNames.DESIGN_SYSTEM]: {
-    id: 11,
-    name: "designsystem",
-    label: "Design System",
-    labelZh: "设计系统",
-    shortDescription: "从 Token 变量到组件变体规范，推动团队设计效率提升约 30%",
-    color: "#4c6ef5",
-    icon: "/assets/keyboard/logos/ux/designsystem.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/designsystem.svg",
-    keyboardColor: "#4263eb",
-  },
-  [SkillNames.RESPONSIVE]: {
-    id: 12,
-    name: "responsive",
-    label: "Multi-Device",
-    labelZh: "双端响应式规范",
-    shortDescription: "Web 宽屏与移动端按任务决策优先级重新编排，而非简单等比缩放",
-    color: "#12b886",
-    icon: "/assets/keyboard/logos/ux/responsive.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/responsive.svg",
-    keyboardColor: "#0ca678",
-  },
+  // Col 2..3, Row 0: [2x1] Core Competency #1 — Agentic UX
   [SkillNames.AI_UX]: {
-    id: 13,
+    id: 2,
     name: "aiux",
-    label: "AI Product UX",
-    labelZh: "AI 产品体验",
-    shortDescription: "处理 AI 识别不确定性，围绕过程可感知、结果可核对与异常恢复建立信任",
-    color: "#845ef7",
+    label: "Agentic UX",
+    labelZh: "Agentic UX 智能体体验",
+    category: "AI 原生核心架构",
+    shortDescription:
+      "构建多智能体编排（Multi-Agent）、置信度外显与人机回环（HITL）核验机制，收敛生成式模型的不确定性",
+    color: "#7c3aed",
     icon: "/assets/keyboard/logos/ux/aiux.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/aiux.svg",
-    keyboardColor: "#7048e8",
+    keyboardIcon: "/assets/keyboard/logos/pro/aiux-2x1.svg",
+    keyboardColor: "#7c3aed",
+    shortcut: "KeyU",
+    colSpan: 2,
+    rowSpan: 1,
   },
-  [SkillNames.CHATGPT]: {
-    id: 14,
-    name: "chatgpt",
-    label: "ChatGPT",
-    labelZh: "ChatGPT",
-    shortDescription: "辅助复杂业务规则推演、边缘场景语料构造与界面微文案打磨",
-    color: "#10a37f",
-    icon: "/assets/keyboard/logos/ux/chatgpt.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/chatgpt.svg",
-    keyboardColor: "#10a37f",
+  // Col 4..7, Row 0: 4 × [1x1] Frontier AI-Native Engineering Stack
+  [SkillNames.CURSOR]: {
+    id: 3,
+    name: "cursor",
+    label: "Vibe Coding",
+    labelZh: "Cursor / Claude Code",
+    category: "AI 原生研发工作流",
+    shortDescription:
+      "践行 Vibe Coding 工作流，直接构建含真实状态机与数据联动的前端可运行交互原型，跨越静态画布局限",
+    color: "#4f46e5",
+    icon: "/assets/keyboard/logos/ux/cursor.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/cursor.svg",
+    keyboardColor: "#4338ca",
+    shortcut: "KeyV",
   },
   [SkillNames.CODEX]: {
-    id: 15,
+    id: 4,
     name: "codex",
-    label: "AI Prototyping",
-    labelZh: "Codex 交互原型",
-    shortDescription: "结合 AI 编程直接构建可点击真实数据联动原型，验证复杂交互逻辑",
-    color: "#d97757",
+    label: "Generative UI",
+    labelZh: "Generative UI 原型工程",
+    category: "动态界面生成",
+    shortDescription:
+      "探索意图驱动的动态组件装配（Generative UI）与流式渲染交互，高效验证高复杂度 AI 场景",
+    color: "#2563eb",
     icon: "/assets/keyboard/logos/ux/codex.svg",
     keyboardIcon: "/assets/keyboard/logos/ux/codex.svg",
-    keyboardColor: "#d97757",
+    keyboardColor: "#1d4ed8",
+    shortcut: "KeyC",
   },
-  [SkillNames.MIDJOURNEY]: {
-    id: 16,
-    name: "midjourney",
-    label: "Midjourney",
-    labelZh: "Midjourney",
-    shortDescription: "用于概念情绪板探索、智能体角色形象及视觉辅助素材生成",
-    color: "#495057",
-    icon: "/assets/keyboard/logos/ux/midjourney.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/midjourney.svg",
-    keyboardColor: "#343a40",
+  [SkillNames.MCP]: {
+    id: 5,
+    name: "mcp",
+    label: "Design MCP",
+    labelZh: "Figma MCP 工程闭环",
+    category: "AI 设计工程化",
+    shortDescription:
+      "基于 Model Context Protocol 贯通设计语义 Token、组件结构与前端代码生成，降低跨端还原损耗",
+    color: "#0284c7",
+    icon: "/assets/keyboard/logos/ux/mcp.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/mcp.svg",
+    keyboardColor: "#0369a1",
+    shortcut: "KeyN",
   },
-  [SkillNames.STABLE_DIFFUSION]: {
-    id: 17,
-    name: "sd",
-    label: "Stable Diff",
-    labelZh: "Stable Diffusion",
-    shortDescription: "可控风格化图形资产生成，统一多场景运营与产品配图调性",
-    color: "#9775fa",
-    icon: "/assets/keyboard/logos/ux/sd.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/sd.svg",
-    keyboardColor: "#7950f2",
+  [SkillNames.PROMPT_EVAL]: {
+    id: 6,
+    name: "eval",
+    label: "Prompt & Eval",
+    labelZh: "结构化 Prompt 与评测",
+    category: "模型协同与归因",
+    shortDescription:
+      "设计思维链（CoT）系统提示词契约，构建边缘场景测试集与 Badcase 归因闭环，反哺交互容错设计",
+    color: "#10a37f",
+    icon: "/assets/keyboard/logos/ux/eval.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/eval.svg",
+    keyboardColor: "#059669",
+    shortcut: "KeyG",
   },
-  [SkillNames.COMFYUI]: {
-    id: 18,
-    name: "comfyui",
-    label: "ComfyUI",
-    labelZh: "ComfyUI",
-    shortDescription: "搭建节点式 AIGC 生成工作流，实现高一致性批量视觉产出",
-    color: "#fab005",
-    icon: "/assets/keyboard/logos/ux/comfyui.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/comfyui.svg",
-    keyboardColor: "#f08c00",
+
+  // ================= ROW 1 =================
+  // (Col 0..1 occupied by Figma 2x2)
+  // Col 2..3, Row 1: [2x1] Core Competency #2 — Design System
+  [SkillNames.DESIGN_SYSTEM]: {
+    id: 7,
+    name: "designsystem",
+    label: "Design System",
+    labelZh: "双端设计系统与 Token",
+    category: "核心体系工程",
+    shortDescription:
+      "统筹三级语义化 Design Tokens、多态组件变体契约与跨端治理标准，推动产研协同效率提升约 30%",
+    color: "#3b5bdb",
+    icon: "/assets/keyboard/logos/ux/designsystem.svg",
+    keyboardIcon: "/assets/keyboard/logos/pro/designsystem-2x1.svg",
+    keyboardColor: "#3b5bdb",
+    shortcut: "KeyD",
+    colSpan: 2,
+    rowSpan: 1,
   },
+  // Col 4..7, Row 1: 4 × [1x1] RAG UX & Professional Prototyping Stack
+  [SkillNames.RAG_UX]: {
+    id: 8,
+    name: "rag",
+    label: "RAG & Grounding",
+    labelZh: "RAG 知识溯源与防幻觉",
+    category: "可解释 AI 体验",
+    shortDescription:
+      "针对企业知识库检索增强（RAG）场景，设计文档解析状态外显、原文证据链锚定与低置信度兜底机制",
+    color: "#6d28d9",
+    icon: "/assets/keyboard/logos/ux/rag.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/rag.svg",
+    keyboardColor: "#5b21b6",
+    shortcut: "KeyK",
+  },
+  [SkillNames.AXURE]: {
+    id: 9,
+    name: "axure",
+    label: "Axure RP",
+    labelZh: "Axure RP 逻辑建模",
+    category: "复杂业务推演",
+    shortDescription:
+      "构建企业级多分支业务流程图与团队标准化原型规范库，在立项早期前置锁定业务规则",
+    color: "#0ea5e9",
+    icon: "/assets/keyboard/logos/ux/axure.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/axure.svg",
+    keyboardColor: "#0284c7",
+    shortcut: "KeyA",
+  },
+  [SkillNames.PROTOPIE]: {
+    id: 10,
+    name: "protopie",
+    label: "ProtoPie",
+    labelZh: "ProtoPie 条件微交互",
+    category: "高保真动态验证",
+    shortDescription:
+      "结合传感器输入、条件变量与跨屏通信机制，构建设备级高保真语音及手势交互验证原型",
+    color: "#db2777",
+    icon: "/assets/keyboard/logos/ux/protopie.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/protopie.svg",
+    keyboardColor: "#be185d",
+    shortcut: "KeyP",
+  },
+  [SkillNames.JISHI]: {
+    id: 11,
+    name: "jishi",
+    label: "Design Ops",
+    labelZh: "云端协同与 DesignOps",
+    category: "团队工程协同",
+    shortDescription:
+      "依托云端协同平台建立跨职能评审、标注交付与组件版本演进机制，保障大规模需求敏捷并行",
+    color: "#3b82f6",
+    icon: "/assets/keyboard/logos/ux/jishi.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/jishi.svg",
+    keyboardColor: "#2563eb",
+    shortcut: "KeyJ",
+  },
+
+  // ================= ROW 2 =================
+  // Col 0..1, Row 2: [2x1] Core Competency #3 — Domain Modeling
   [SkillNames.SYSTEM_MODEL]: {
-    id: 19,
+    id: 12,
     name: "domain",
     label: "Domain Model",
-    labelZh: "复杂业务建模",
-    shortDescription: "梳理对象关系、单据流转与权限边界，避免设计只停留在单张页面",
-    color: "#364fc7",
+    labelZh: "复杂业务领域建模",
+    category: "系统架构核心能力",
+    shortDescription:
+      "运用面向对象（OOUX）方法抽象实体关系、单据生命周期与 RBAC 权限矩阵，确立可扩展的产品底层骨架",
+    color: "#4338ca",
     icon: "/assets/keyboard/logos/ux/domain.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/domain.svg",
-    keyboardColor: "#364fc7",
+    keyboardIcon: "/assets/keyboard/logos/pro/domain-2x1.svg",
+    keyboardColor: "#4338ca",
+    shortcut: "KeyM",
+    colSpan: 2,
+    rowSpan: 1,
   },
+  // Col 2..3, Row 2: [2x1] Core Competency #4 — Information Architecture
   [SkillNames.INFO_ARCH]: {
-    id: 20,
+    id: 13,
     name: "ia",
     label: "Info Arch",
-    labelZh: "信息架构重构",
-    shortDescription: "运用任务分组与渐进式披露，治理历史叠加系统的深层层级混乱",
-    color: "#2fc5c9",
+    labelZh: "信息架构与认知降维",
+    category: "系统架构核心能力",
+    shortDescription:
+      "基于心智模型重组与渐进式披露（Progressive Disclosure），系统性治理多轮迭代堆叠的高耦合存量模块",
+    color: "#0891b2",
     icon: "/assets/keyboard/logos/ux/ia.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/ia.svg",
-    keyboardColor: "#0c8599",
+    keyboardIcon: "/assets/keyboard/logos/pro/ia-2x1.svg",
+    keyboardColor: "#0891b2",
+    shortcut: "KeyI",
+    colSpan: 2,
+    rowSpan: 1,
   },
+  // Col 4..7, Row 2: 4 × [1x1] Frontend, Cross-End, Motion & Spatial 3D
+  [SkillNames.HTML_CSS]: {
+    id: 14,
+    name: "htmlcss",
+    label: "Frontend Spec",
+    labelZh: "HTML / CSS / React 认知",
+    category: "前端工程协同",
+    shortDescription:
+      "深入理解现代组件树、Flex/Grid 布局及响应式断点机制，以工程化思维保障高还原度研发交付",
+    color: "#06b6d4",
+    icon: "/assets/keyboard/logos/ux/htmlcss.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/htmlcss.svg",
+    keyboardColor: "#0e7490",
+    shortcut: "KeyH",
+  },
+  [SkillNames.RESPONSIVE]: {
+    id: 15,
+    name: "responsive",
+    label: "Adaptive UI",
+    labelZh: "跨端自适应信息编排",
+    category: "多端体验架构",
+    shortDescription:
+      "依据桌面高密度工作台与移动单手作业场景重构信息优先级，建立同源异构的跨端交互规范",
+    color: "#0d9488",
+    icon: "/assets/keyboard/logos/ux/responsive.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/responsive.svg",
+    keyboardColor: "#0f766e",
+    shortcut: "KeyR",
+  },
+  [SkillNames.AFTER_EFFECTS]: {
+    id: 16,
+    name: "ae",
+    label: "Motion System",
+    labelZh: "After Effects 动态编排",
+    category: "状态转场与叙事",
+    shortDescription:
+      "设计符合空间物理直觉的阻尼缓动曲线、AI 流式推理微动效与企业级产品全链路视觉演示",
+    color: "#7c3aed",
+    icon: "/assets/keyboard/logos/ux/ae.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/ae.svg",
+    keyboardColor: "#5b21b6",
+    shortcut: "KeyE",
+  },
+  [SkillNames.BLENDER]: {
+    id: 17,
+    name: "blender",
+    label: "Blender 3D",
+    labelZh: "Blender 三维空间视觉",
+    category: "三维建模与光影",
+    shortDescription:
+      "掌握三维硬表面建模、PBR 材质系统与全局光影渲染，赋能高辨识度的品牌与空间交互表达",
+    color: "#0284c7",
+    icon: "/assets/keyboard/logos/ux/blender.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/blender.svg",
+    keyboardColor: "#0369a1",
+    shortcut: "KeyL",
+  },
+
+  // ================= ROW 3 =================
+  // Col 0..1, Row 3: [2x1] Core Competency #5 — Multimodal & State Machine
   [SkillNames.STATE_FLOW]: {
-    id: 21,
+    id: 18,
     name: "state",
-    label: "State & Edge",
-    labelZh: "交互与状态设计",
-    shortDescription: "完整覆盖主路径、加载反馈、空状态、查看编辑分离与异常恢复路径",
-    color: "#f76707",
+    label: "Multimodal HITL",
+    labelZh: "多模态交互与状态机",
+    category: "AI 原生核心架构",
+    shortDescription:
+      "贯通语音/文本多模态输入、流式转写反馈、读写态分离与全分支异常自愈路径，确保零断路闭环",
+    color: "#059669",
     icon: "/assets/keyboard/logos/ux/state.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/state.svg",
-    keyboardColor: "#e8590c",
+    keyboardIcon: "/assets/keyboard/logos/pro/state-2x1.svg",
+    keyboardColor: "#0d9488",
+    shortcut: "KeyS",
+    colSpan: 2,
+    rowSpan: 1,
+  },
+  // Col 2..3, Row 3: [2x1] Core Competency #6 — AI + BI Decision Workbench
+  [SkillNames.DATA_VIZ]: {
+    id: 19,
+    name: "dataviz",
+    label: "AI + BI Studio",
+    labelZh: "智能经营决策看板",
+    category: "数据架构核心能力",
+    shortDescription:
+      "围绕“态势感知—异动归因—多维对比—明细下钻”重构高信噪比 BI 工作台，支持极值降噪与实时联动",
+    color: "#0284c7",
+    icon: "/assets/keyboard/logos/ux/dataviz.svg",
+    keyboardIcon: "/assets/keyboard/logos/pro/dataviz-2x1.svg",
+    keyboardColor: "#0284c7",
+    shortcut: "KeyB",
+    colSpan: 2,
+    rowSpan: 1,
+  },
+  // Col 4..7, Row 3: 4 × [1x1] Parametric AIGC Workflows & UX Audit
+  [SkillNames.COMFYUI]: {
+    id: 20,
+    name: "comfyui",
+    label: "ComfyUI Flow",
+    labelZh: "ComfyUI 节点式管线",
+    category: "参数化 AIGC 工程",
+    shortDescription:
+      "搭建模块化节点式生成管线（Workflow），实现可控风格、高一致性的批量化产品视觉资产生产",
+    color: "#0ea5e9",
+    icon: "/assets/keyboard/logos/ux/comfyui.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/comfyui.svg",
+    keyboardColor: "#0369a1",
+    shortcut: "KeyW",
+  },
+  [SkillNames.MIDJOURNEY]: {
+    id: 21,
+    name: "midjourney",
+    label: "Midjourney",
+    labelZh: "Midjourney 视觉推演",
+    category: "AIGC 概念设定",
+    shortDescription:
+      "用于高效率视觉方向探索、企业数字员工/智能体形象设定及高质感场景化辅助素材构建",
+    color: "#475569",
+    icon: "/assets/keyboard/logos/ux/midjourney.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/midjourney.svg",
+    keyboardColor: "#334155",
+    shortcut: "KeyO",
+  },
+  [SkillNames.STABLE_DIFFUSION]: {
+    id: 22,
+    name: "sd",
+    label: "ControlNet / SD",
+    labelZh: "Stable Diffusion 可控生成",
+    category: "精准视觉控制",
+    shortDescription:
+      "结合 ControlNet 构图约束与 LoRA 微调权重，产出严格契合品牌调性的结构化图形资产",
+    color: "#8b5cf6",
+    icon: "/assets/keyboard/logos/ux/sd.svg",
+    keyboardIcon: "/assets/keyboard/logos/ux/sd.svg",
+    keyboardColor: "#6d28d9",
+    shortcut: "KeyT",
   },
   [SkillNames.USER_RESEARCH]: {
-    id: 22,
+    id: 23,
     name: "research",
-    label: "UX Research",
-    labelZh: "需求分析与调研",
-    shortDescription: "从业务目标、真实用户任务与历史问题审查中提炼可解释的设计决策",
-    color: "#e64980",
+    label: "UX Audit & QA",
+    labelZh: "体验度量与还原验收",
+    category: "全周期质量闭环",
+    shortDescription:
+      "运用启发式评估、任务完成率度量与全量边界走查清单，驱动设计方案从文档定义到线上指标闭环",
+    color: "#14b8a6",
     icon: "/assets/keyboard/logos/ux/research.svg",
     keyboardIcon: "/assets/keyboard/logos/ux/research.svg",
-    keyboardColor: "#c2255c",
-  },
-  [SkillNames.DATA_VIZ]: {
-    id: 23,
-    name: "dataviz",
-    label: "BI Dashboard",
-    labelZh: "数据看板设计",
-    shortDescription: "围绕 看现状—找变化—做比较—查明细 重构高密度经营分析工作台",
-    color: "#15aabf",
-    icon: "/assets/keyboard/logos/ux/dataviz.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/dataviz.svg",
-    keyboardColor: "#1098ad",
-  },
-  [SkillNames.QA_WALKTHROUGH]: {
-    id: 24,
-    name: "qa",
-    label: "PRD & QA",
-    labelZh: "交互说明与走查",
-    shortDescription: "输出严谨交互文档，协同产品与研发推进方案评审、走查验收与上线迭代",
-    color: "#20c997",
-    icon: "/assets/keyboard/logos/ux/qa.svg",
-    keyboardIcon: "/assets/keyboard/logos/ux/qa.svg",
-    keyboardColor: "#099268",
+    keyboardColor: "#0f766e",
+    shortcut: "KeyQ",
   },
 };
+
+export const VALUE_PILLARS = [
+  {
+    metric: "3 款 0→1",
+    tag: "AGENTIC UX · HITL PARADIGM",
+    title: "生成式与多模态 AI 的确定性交互架构",
+    desc: "主导企业智能体编排平台、多模态语音抄单（准确率 80%+）及 AI 销售陪练商业化投产，建立“流式过程外显、置信度分层核验（HITL）、全分支异常自愈”的 AI 原生设计范式。",
+  },
+  {
+    metric: "92% 覆盖",
+    tag: "DESIGN TOKENS · VIBE CODING",
+    title: "设计系统工程化与代码级交互验证",
+    desc: "统筹构建基于语义化 Variables 的双端 Figma 组件库与标准化原型体系（协同提效 30%），并融合 Cursor / Claude Code 等 Vibe Coding 工具直出高保真数据联动原型。",
+  },
+  {
+    metric: "6+ 业务域",
+    tag: "OOUX · DOMAIN ARCHITECTURE",
+    title: "复杂 B 端面向对象建模与存量治理",
+    desc: "运用 OOUX 领域建模完成「易仓配」全链路仓储状态机架构，主导企业级设置中心六大业务域的信息架构降维、读写状态解耦与 RBAC 权限边界重构。",
+  },
+];
 
 export type Experience = {
   id: number;
   periods: { start: string; end: string }[];
   title: string;
   company: string;
+  badge?: string;
   description: string[];
   skills: SkillNames[];
 };
@@ -324,92 +444,46 @@ export const EXPERIENCE: Experience[] = [
   {
     id: 1,
     periods: [{ start: "2025.05", end: "至今" }],
-    title: "UED 设计师",
-    company: "南京掌控网络科技有限公司 · 平台 / 消费品 / 智能 AI 业务线",
+    title: "UED 交互设计师（AI 原生与复杂系统方向）",
+    company: "南京掌控网络科技有限公司",
+    badge: "平台 / 消费品 / 智能 AI 三线主设",
     description: [
-      "负责平台、消费品与智能 AI 三条业务线的 UX 设计，从业务目标和用户任务出发完成需求拆解、流程梳理、交互方案与高保真视觉交付。",
-      "针对复杂功能建立对象关系、页面结构、状态流转与异常分支，避免设计只停留在单一静态页面层面。",
-      "主导 Web / 移动端 Figma 组件库与 Axure 原型组件库建设（覆盖率达 92%，团队效率提升约 30%），统一跨角色协作语言。",
-      "主导智能抄单助手、智能体库、AI 销售陪练等功能从 0 到 1 落地，重点处理 AI 结果的不确定性、过程反馈与核对纠错体验。",
-      "组织推进个人设置与系统信息架构重构，通过历史页面审查系统性解决功能边界、操作层级与权限规则缺失问题。",
-      "协同产品、研发和业务方完成方案评审、交互说明输出、设计走查与上线验证，结合真实企业使用反馈持续迭代。",
+      "Agentic AI 产品 0→1 架构落地：独立主导企业智能体编排工作台、多模态语音抄单助手及跨端 AI 销售陪练系统的领域建模、人机回环（HITL）核验机制与证据化评估体验设计。",
+      "设计工程化与 Vibe Coding 提效：统筹 Web / Mobile 双端 Figma 语义化组件库（覆盖率 92%，产研提效 30%），引入 Design-to-Code 与代码级交互原型验证，显著消除复杂状态沟通偏差。",
+      "复杂 B 端建模与存量治理：完成易仓配 WMS 全链路单据状态机设计，主导设置中心六大职能域的认知降维、读写态分离与权限校验规则前置。",
     ],
     skills: [
       SkillNames.FIGMA,
-      SkillNames.AXURE,
       SkillNames.AI_UX,
-      SkillNames.SYSTEM_MODEL,
-      SkillNames.INFO_ARCH,
-      SkillNames.STATE_FLOW,
+      SkillNames.CURSOR,
+      SkillNames.MCP,
       SkillNames.DESIGN_SYSTEM,
-      SkillNames.CODEX,
+      SkillNames.SYSTEM_MODEL,
+      SkillNames.RAG_UX,
     ],
   },
   {
     id: 2,
     periods: [{ start: "2024.08", end: "2025.04" }],
-    title: "产品实习生（B 端体验与界面设计）",
+    title: "产品体验设计实习生",
     company: "上海清鹤科技股份有限公司",
+    badge: "企业级 B 端系统",
     description: [
-      "负责 B 端产品界面视觉与交互设计、标注切图交付及前端研发走查协作，保障设计方案在复杂业务场景中准确落地。",
-      "使用 After Effects 等工具制作并持续迭代产品核心操作流程演示视频，直观呈现产品价值与操作路径。",
-      "深度参与功能规划与体验优化评审讨论，结合业务目标与用户痛点输出可落地的交互改进建议。",
+      "负责企业级后台系统的交互架构优化、组件标注交付与前端工程还原走查，并独立完成核心业务流动态交互演示设计。",
     ],
-    skills: [
-      SkillNames.FIGMA,
-      SkillNames.AFTER_EFFECTS,
-      SkillNames.HTML_CSS,
-      SkillNames.USER_RESEARCH,
-      SkillNames.QA_WALKTHROUGH,
-    ],
-  },
-  {
-    id: 3,
-    periods: [{ start: "2021.09", end: "2025.06" }],
-    title: "交互设计 · 本科（专业排名前 3%）",
-    company: "南京传媒学院 · 教育背景与资质",
-    description: [
-      "主修交互设计、UI 视觉设计、网页设计、信息架构与平面设计，本科综合专业排名前 3%。",
-      "持有大学英语四级（CET-4）与全国计算机等级考试二级证书，具备扎实的设计工程理解与双语文档阅读能力。",
-    ],
-    skills: [
-      SkillNames.PROTOPIE,
-      SkillNames.BLENDER,
-      SkillNames.SKETCH,
-      SkillNames.MIDJOURNEY,
-      SkillNames.COMFYUI,
-    ],
+    skills: [SkillNames.FIGMA, SkillNames.AFTER_EFFECTS, SkillNames.HTML_CSS],
   },
 ];
 
-export const ADVANTAGES = [
-  {
-    title: "复杂系统建模",
-    desc: "从业务对象、任务流程、信息架构和权限关系中建立清晰稳定的产品结构。",
-  },
-  {
-    title: "交互与状态设计",
-    desc: "完整覆盖正常路径、异常分支、加载反馈、空状态与操作恢复，保障体验闭环。",
-  },
-  {
-    title: "方案判断与取舍",
-    desc: "基于用户任务、业务约束和研发实现成本推演并解释每一个关键设计决策。",
-  },
-  {
-    title: "落地与持续验证",
-    desc: "协同产品、研发和业务推进评审、交付、走查、上线验证及数据反馈迭代。",
-  },
-];
+export const EDUCATION = {
+  school: "南京传媒学院",
+  degree: "交互设计 · 本科",
+  period: "2021 — 2025",
+  highlight: "专业排名前 3%",
+  certs: "CET-4 · 全国计算机二级",
+};
 
 export const themeDisclaimers = {
-  light: [
-    "即将切换为明亮模式：清晨白昼画布已准备好，适合细致审阅界面细节 ☀️",
-    "明亮模式提示：高亮度视效即将开启，感受干净通透的阅读体验 ✨",
-    "切回浅色主题？没问题，双主题对比度都已经过严格校准 🎨",
-  ],
-  dark: [
-    "已切换回深色模式：3D 键盘光影与粒子空间在暗色背景下表现最佳 🌙",
-    "欢迎回到深色画布，眼睛舒服多了，沉浸感拉满 ✨",
-    "深色模式已激活：更聚焦的视觉层级与立体光效体验 🎹",
-  ],
+  light: ["已切换至浅色视图模式，适配高对比度文档与界面细节审阅。"],
+  dark: ["已切换至深色视图模式，适配三维空间光影与沉浸式案例浏览。"],
 };
