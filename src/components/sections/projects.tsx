@@ -127,17 +127,14 @@ const ProjectCard = ({ project }: { project: Project }) => {
               isHovered={isHovered}
             />
 
-            {/* Minimal Top Badge */}
-            <div className="absolute top-3.5 right-3.5 z-20 rounded-full bg-slate-950/75 backdrop-blur-md border border-white/15 px-3 py-1 text-[11px] font-semibold text-cyan-200">
-              {project.badge}
-            </div>
-
-            {/* Clean Visual-First Bottom Scrim */}
-            <div className="absolute inset-x-0 bottom-0 pt-14 pb-4 px-5 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent pointer-events-none z-10">
+            {/* Clean, Lightweight Bottom Scrim — Zero top-right badge obstructing UI */}
+            <div className="absolute inset-x-0 bottom-0 pt-9 pb-3.5 px-5 bg-gradient-to-t from-slate-950/90 via-slate-950/48 to-transparent pointer-events-none z-10">
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[11px] font-medium text-cyan-300/90">
+                  <div className="text-[11px] font-medium text-cyan-300/90 truncate">
                     {project.indexLabel} · {project.category}
+                    <span className="mx-1.5 text-slate-400/70">·</span>
+                    <span className="text-slate-200/85">{project.badge}</span>
                   </div>
                   <div className="mt-0.5 text-lg md:text-xl font-bold text-white truncate">
                     {project.title}

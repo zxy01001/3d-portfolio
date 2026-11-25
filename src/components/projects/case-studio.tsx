@@ -80,7 +80,9 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
   const tracks = study.tracks ?? [];
   const [trackIdx, setTrackIdx] = useState(0);
   const [stepIdx, setStepIdx] = useState(0);
-  const [activePin, setActivePin] = useState<number | null>(0);
+  // Default null: keep UI screenshots 100% pure and unobstructed!
+  // Only show a subtle translucent focus ring while hovering a specific design note.
+  const [hoveredPin, setHoveredPin] = useState<number | null>(null);
   const [zoomImg, setZoomImg] = useState<string | null>(null);
 
   const track = tracks[trackIdx] ?? tracks[0];
@@ -91,12 +93,12 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
   const selectTrack = (idx: number) => {
     setTrackIdx(idx);
     setStepIdx(0);
-    setActivePin(0);
+    setHoveredPin(null);
   };
 
   const selectStep = (idx: number) => {
     setStepIdx(idx);
-    setActivePin(0);
+    setHoveredPin(null);
   };
 
   const stepDelta = (d: number) => {
@@ -107,123 +109,151 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
 
   return (
     <div className="rounded-3xl border border-border/80 bg-card/80 backdrop-blur-xl shadow-xl overflow-hidden">
-      {/* Studio Top Bar */}
+      {/* Studio Top Bar — Clean controls off the image */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 px-5 py-3.5 bg-secondary/25">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-indigo-500/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-cyan-500/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
           <span className="ml-2 font-mono text-xs text-muted-foreground">
-            INTERACTIVE UX WORKBENCH · {study.indexLabel}
+            UX WORKBENCH · {study.indexLabel}
           </span>
         </div>
 
-        {tracks.length > 1 && (
-          <div className="inline-flex rounded-xl border border-border bg-background/80 p-1">
-            {tracks.map((t, idx) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => selectTrack(idx)}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-semibold transition-all",
-                  idx === trackIdx
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {t.device === "mobile" ? (
-                  <Smartphone className="h-3.5 w-3.5" />
-                ) : (
-                  <Monitor className="h-3.5 w-3.5" />
-                )}
-                {t.tab}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {tracks.length > 1 && (
+            <div className="inline-flex rounded-xl border border-border bg-background/80 p-1">
+              {tracks.map((t, idx) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => selectTrack(idx)}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-semibold transition-all",
+                    idx === trackIdx
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {t.device === "mobile" ? (
+                    <Smartphone className="h-3.5 w-3.5" />
+                  ) : (
+                    <Monitor className="h-3.5 w-3.5" />
+                  )}
+                  {t.tab}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setZoomImg(step.image)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Maximize2 className="h-3.5 w-3.5" />
+            高清大图
+          </button>
+        </div>
       </div>
 
-      {/* Main Split Workbench: Left Stepper Rail (4 cols) + Right Device Stage (8 cols) */}
+      {/* Main Split Workbench: Left Stepper Rail (4 cols) + Right Pure Visual Stage (8 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Left Interactive Step Selector */}
         <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-border/70 p-4 sm:p-5 flex flex-col justify-between bg-background/40">
           <div className="space-y-2">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground px-1 mb-2">
-              KEY FLOW STEPS · 点击切换节点
+              KEY FLOW STEPS · 点击切换界面
             </div>
             {steps.map((s, idx) => {
               const active = idx === stepIdx;
               return (
-                <button
+                <div
                   key={s.label}
-                  type="button"
-                  onClick={() => selectStep(idx)}
                   className={cn(
-                    "w-full text-left rounded-xl p-3.5 transition-all border",
+                    "w-full rounded-xl transition-all border",
                     active
-                      ? "bg-primary/10 dark:bg-white/10 border-cyan-500/50 shadow-sm"
-                      : "bg-transparent border-transparent hover:bg-secondary/50"
+                      ? "bg-primary/8 dark:bg-white/[0.06] border-border shadow-sm"
+                      : "bg-transparent border-transparent hover:bg-secondary/40"
                   )}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-foreground">
-                      <span
-                        className={cn(
-                          "inline-flex h-5 w-5 items-center justify-center rounded-md font-mono text-[11px]",
-                          active
-                            ? "bg-cyan-500 text-slate-950 font-extrabold"
-                            : "bg-secondary text-muted-foreground"
-                        )}
+                  <button
+                    type="button"
+                    onClick={() => selectStep(idx)}
+                    className="w-full text-left p-3.5"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-foreground">
+                        <span
+                          className={cn(
+                            "inline-flex h-5 w-5 items-center justify-center rounded-md font-mono text-[11px]",
+                            active
+                              ? "bg-primary text-primary-foreground font-bold"
+                              : "bg-secondary text-muted-foreground"
+                          )}
+                        >
+                          {idx + 1}
+                        </span>
+                        {s.label}
+                      </span>
+                    </div>
+
+                    {active && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        transition={{ duration: 0.2 }}
+                        className="mt-2 pl-7 space-y-1"
                       >
-                        {idx + 1}
-                      </span>
-                      {s.label}
-                    </span>
-                    {s.hotspots && s.hotspots.length > 0 && (
-                      <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] font-semibold text-cyan-600 dark:text-cyan-300">
-                        {s.hotspots.length} 处标注
-                      </span>
+                        <div className="text-xs font-semibold text-foreground/90">
+                          {s.title}
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {s.decision}
+                        </p>
+                      </motion.div>
                     )}
-                  </div>
-                  {active && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.2 }}
-                      className="mt-2 pl-7 space-y-1"
-                    >
-                      <div className="text-xs font-semibold text-foreground/90">
-                        {s.title}
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {s.decision}
-                      </p>
-                    </motion.div>
+                  </button>
+
+                  {/* Subtle hover-to-locate design details (zero permanent markers on image!) */}
+                  {active && s.hotspots && s.hotspots.length > 0 && (
+                    <div className="px-3.5 pb-3.5 pl-10 space-y-1.5">
+                      {s.hotspots.map((pin, pIdx) => {
+                        const isHovered = hoveredPin === pIdx;
+                        return (
+                          <div
+                            key={pin.title}
+                            onMouseEnter={() => setHoveredPin(pIdx)}
+                            onMouseLeave={() => setHoveredPin(null)}
+                            className={cn(
+                              "rounded-lg border px-2.5 py-2 text-xs transition-colors cursor-default",
+                              isHovered
+                                ? "border-cyan-500/40 bg-cyan-500/10"
+                                : "border-border/60 bg-background/50"
+                            )}
+                          >
+                            <div className="font-semibold text-foreground/90 flex items-center justify-between gap-2">
+                              <span>{pin.title}</span>
+                              <span className="text-[10px] font-mono text-muted-foreground">
+                                悬停定位
+                              </span>
+                            </div>
+                            <p className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed">
+                              {pin.detail}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
-
-          {/* Hotspot Legend if active step has hotspots */}
-          {step.hotspots && step.hotspots.length > 0 && (
-            <div className="mt-4 rounded-xl border border-cyan-500/25 bg-cyan-500/5 p-3.5">
-              <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
-                UI HOTSPOT · 界面细节批注
-              </div>
-              <div className="mt-1 text-xs font-bold text-foreground">
-                ① {step.hotspots[activePin ?? 0]?.title}
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
-                {step.hotspots[activePin ?? 0]?.detail}
-              </p>
-            </div>
-          )}
         </div>
 
-        {/* Right High-Resolution Visual Stage */}
-        <div className="lg:col-span-8 relative bg-slate-950/90 p-5 sm:p-7 flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px]">
+        {/* Right High-Resolution Pure Visual Stage — Zero permanent overlays on screenshot */}
+        <div className="group/stage lg:col-span-8 relative bg-slate-950/90 p-5 sm:p-8 flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={step.image}
@@ -237,8 +267,9 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
               )}
             >
               <div
+                onClick={() => setZoomImg(step.image)}
                 className={cn(
-                  "relative overflow-hidden shadow-2xl",
+                  "relative overflow-hidden shadow-2xl cursor-zoom-in",
                   isMobile
                     ? "rounded-[28px] ring-4 ring-slate-800 border border-white/15"
                     : "rounded-xl ring-1 ring-white/15"
@@ -249,56 +280,36 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
                   alt={step.label}
                   width={1800}
                   height={1150}
-                  className={cn(
-                    "block w-full h-auto object-contain",
-                    isMobile ? "max-h-[58vh]" : "max-h-[58vh]"
-                  )}
+                  className="block w-full h-auto object-contain max-h-[60vh]"
                 />
 
-                {/* Interactive Hotspot Pins */}
-                {step.hotspots?.map((pin, pIdx) => {
-                  const selected = (activePin ?? 0) === pIdx;
-                  return (
-                    <button
-                      key={pin.title}
-                      type="button"
-                      onClick={() => setActivePin(pIdx)}
-                      onMouseEnter={() => setActivePin(pIdx)}
-                      style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-                      aria-label={pin.title}
-                      className={cn(
-                        "absolute -translate-x-1/2 -translate-y-1/2 z-20 flex h-7 w-7 items-center justify-center rounded-full font-mono text-xs font-extrabold transition-transform",
-                        selected
-                          ? "scale-115 bg-cyan-400 text-slate-950 ring-4 ring-cyan-400/35 shadow-lg"
-                          : "bg-slate-900/90 text-white ring-2 ring-white/60 hover:scale-110"
-                      )}
-                    >
-                      {pIdx + 1}
-                    </button>
-                  );
-                })}
+                {/* Ephemeral Focus Halo — ONLY appears while hovering a detail card on the left */}
+                {hoveredPin !== null && step.hotspots?.[hoveredPin] && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.7 }}
+                    style={{
+                      left: `${step.hotspots[hoveredPin].x}%`,
+                      top: `${step.hotspots[hoveredPin].y}%`,
+                    }}
+                    className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full border-2 border-cyan-300/90 bg-cyan-400/15 shadow-[0_0_24px_rgba(34,211,238,0.55)]"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-cyan-300" />
+                  </motion.span>
+                )}
               </div>
-
-              {/* Zoom Trigger */}
-              <button
-                type="button"
-                onClick={() => setZoomImg(step.image)}
-                className="absolute bottom-3 right-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-black/70 border border-white/15 px-3 py-1.5 text-xs text-white/90 hover:bg-black/90 backdrop-blur-md transition"
-              >
-                <Maximize2 className="h-3.5 w-3.5" />
-                高清原图
-              </button>
             </motion.div>
           </AnimatePresence>
 
-          {/* Prev / Next Controls */}
+          {/* Subtle Edge Prev / Next Controls (fade in gently on stage hover on desktop) */}
           {steps.length > 1 && (
             <>
               <button
                 type="button"
                 onClick={() => stepDelta(-1)}
                 aria-label="上一步"
-                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/55 text-white/90 hover:bg-black/85 backdrop-blur-md transition"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/80 hover:bg-black/80 hover:text-white backdrop-blur-md transition md:opacity-0 md:group-hover/stage:opacity-100"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -306,7 +317,7 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
                 type="button"
                 onClick={() => stepDelta(1)}
                 aria-label="下一步"
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/55 text-white/90 hover:bg-black/85 backdrop-blur-md transition"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/80 hover:bg-black/80 hover:text-white backdrop-blur-md transition md:opacity-0 md:group-hover/stage:opacity-100"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -385,18 +396,18 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
 
         <div className="flex items-center gap-2">
           {mod.editImg && (
-            <div className="inline-flex rounded-xl border border-cyan-500/35 bg-cyan-500/10 p-0.5">
+            <div className="inline-flex rounded-xl border border-border bg-background/80 p-0.5">
               <button
                 type="button"
                 onClick={() => setAfterState("view")}
                 className={cn(
                   "rounded-lg px-2.5 py-1 text-xs font-semibold transition-all",
                   afterState === "view"
-                    ? "bg-cyan-500 text-slate-950"
-                    : "text-cyan-600 dark:text-cyan-300"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                新版：查看态
+                查看态
               </button>
               <button
                 type="button"
@@ -404,11 +415,11 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                 className={cn(
                   "rounded-lg px-2.5 py-1 text-xs font-semibold transition-all",
                   afterState === "edit"
-                    ? "bg-cyan-500 text-slate-950"
-                    : "text-cyan-600 dark:text-cyan-300"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                新版：编辑态
+                编辑态
               </button>
             </div>
           )}
@@ -456,10 +467,10 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
         {mode === "side" ? (
           <div className="grid grid-cols-2 gap-2.5 sm:gap-10 max-w-2xl mx-auto">
             <div className="flex flex-col items-center gap-2">
-              <span className="rounded-full bg-white/10 border border-white/10 px-2.5 sm:px-3 py-0.5 text-[10px] sm:text-[11px] font-semibold text-slate-300 text-center">
-                BEFORE · 旧版
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-slate-400">
+                BEFORE · 改版前
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 sm:ring-2 ring-white/15 opacity-85 shadow-xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-white/15 opacity-85 shadow-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={mod.beforeImg}
@@ -473,10 +484,10 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <span className="rounded-full bg-cyan-500 px-2.5 sm:px-3 py-0.5 text-[10px] sm:text-[11px] font-bold text-slate-950 text-center">
-                AFTER · 新版{mod.editImg ? (afterState === "edit" ? "（编辑）" : "（查看）") : ""}
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-cyan-300">
+                AFTER · 重构后{mod.editImg ? (afterState === "edit" ? "（编辑）" : "（查看）") : ""}
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 sm:ring-2 ring-cyan-400/60 shadow-2xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-cyan-400/45 shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={rightImg}
@@ -484,53 +495,53 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              <p className="text-center text-[11px] sm:text-xs text-cyan-200/90 px-1">
+              <p className="text-center text-[11px] sm:text-xs text-slate-300 px-1">
                 {mod.afterGain}
               </p>
             </div>
           </div>
         ) : (
-          <div className="relative mx-auto w-full max-w-[310px] aspect-[9/17] overflow-hidden rounded-[28px] ring-2 ring-cyan-400/50 shadow-2xl select-none">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={mod.beforeImg}
-              alt="旧版"
-              className="absolute inset-0 h-full w-full object-cover object-top"
-            />
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{ clipPath: `inset(0 0 0 ${split}%)` }}
-            >
+          <div className="space-y-2.5 max-w-[310px] mx-auto">
+            <div className="flex items-center justify-between px-1 text-[10px] font-mono tracking-wider text-slate-400">
+              <span>← BEFORE · 旧版</span>
+              <span className="text-cyan-300">AFTER · 新版 →</span>
+            </div>
+            <div className="relative w-full aspect-[9/17] overflow-hidden rounded-[28px] ring-1 ring-white/20 shadow-2xl select-none">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={rightImg}
-                alt="新版"
+                src={mod.beforeImg}
+                alt="旧版"
                 className="absolute inset-0 h-full w-full object-cover object-top"
               />
-            </div>
-            <span className="pointer-events-none absolute top-3 left-3 z-10 rounded-full bg-black/75 px-2.5 py-0.5 text-[10px] font-bold text-slate-300 backdrop-blur-sm">
-              BEFORE
-            </span>
-            <span className="pointer-events-none absolute top-3 right-3 z-10 rounded-full bg-cyan-500 px-2.5 py-0.5 text-[10px] font-bold text-slate-950 backdrop-blur-sm">
-              AFTER
-            </span>
-            <div
-              className="pointer-events-none absolute inset-y-0 z-10 w-0.5 bg-white shadow-[0_0_12px_rgba(0,0,0,0.7)]"
-              style={{ left: `${split}%` }}
-            >
-              <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-white text-slate-950 shadow-lg">
-                <MoveHorizontal className="h-4 w-4" />
+              <div
+                className="absolute inset-0 overflow-hidden"
+                style={{ clipPath: `inset(0 0 0 ${split}%)` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={rightImg}
+                  alt="新版"
+                  className="absolute inset-0 h-full w-full object-cover object-top"
+                />
               </div>
+              <div
+                className="pointer-events-none absolute inset-y-0 z-10 w-px bg-white/85 shadow-[0_0_10px_rgba(0,0,0,0.6)]"
+                style={{ left: `${split}%` }}
+              >
+                <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-slate-900 shadow-lg">
+                  <MoveHorizontal className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <input
+                type="range"
+                min={8}
+                max={92}
+                value={split}
+                onChange={(e) => setSplit(Number(e.target.value))}
+                aria-label="拖动对比新旧版本"
+                className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+              />
             </div>
-            <input
-              type="range"
-              min={8}
-              max={92}
-              value={split}
-              onChange={(e) => setSplit(Number(e.target.value))}
-              aria-label="拖动对比新旧版本"
-              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
-            />
           </div>
         )}
       </div>

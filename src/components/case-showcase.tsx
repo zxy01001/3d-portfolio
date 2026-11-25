@@ -123,7 +123,7 @@ export function InteractiveFlowShowcase({
       </div>
 
       {/* Main Visual Stage */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-slate-950/90 p-3 sm:p-5">
+      <div className="group/stage relative overflow-hidden rounded-2xl border border-border bg-slate-950/90 p-3 sm:p-5">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeStep.image}
@@ -151,22 +151,18 @@ export function InteractiveFlowShowcase({
                     : "max-h-[54vh] max-w-full"
                 )}
               />
-              <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/65 border border-white/15 px-3 py-1 text-xs text-white/90 opacity-0 transition-opacity group-hover:opacity-100 backdrop-blur-md">
-                <Maximize2 className="h-3.5 w-3.5" />
-                高清放大
-              </span>
             </button>
           </motion.div>
         </AnimatePresence>
 
-        {/* Prev / Next Arrows */}
+        {/* Prev / Next Arrows — fade in gently on hover on desktop */}
         {steps.length > 1 && (
           <>
             <button
               type="button"
               onClick={() => goStep(-1)}
               aria-label="上一张"
-              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/55 text-white/90 backdrop-blur-md transition hover:bg-black/80"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/80 backdrop-blur-md transition hover:bg-black/80 hover:text-white md:opacity-0 md:group-hover/stage:opacity-100"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -174,22 +170,30 @@ export function InteractiveFlowShowcase({
               type="button"
               onClick={() => goStep(1)}
               aria-label="下一张"
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/55 text-white/90 backdrop-blur-md transition hover:bg-black/80"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/80 backdrop-blur-md transition hover:bg-black/80 hover:text-white md:opacity-0 md:group-hover/stage:opacity-100"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
           </>
         )}
 
-        {/* Concise 1-Line Design Decision Caption */}
+        {/* Concise 1-Line Design Decision Caption + Clean Zoom Trigger */}
         <div className="mt-3 flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-xs sm:text-sm text-slate-200">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="shrink-0 rounded bg-cyan-500/20 px-2 py-0.5 font-mono text-[11px] font-bold text-cyan-300">
+            <span className="shrink-0 rounded bg-white/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-slate-300">
               {String(stepIdx + 1).padStart(2, "0")} /{" "}
               {String(steps.length).padStart(2, "0")}
             </span>
             <span className="truncate font-medium">{activeStep.note}</span>
           </div>
+          <button
+            type="button"
+            onClick={() => setZoomed(true)}
+            className="shrink-0 inline-flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
+          >
+            <Maximize2 className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">放大</span>
+          </button>
         </div>
       </div>
 
@@ -297,8 +301,8 @@ export function InteractiveCompareShowcase({
         {mode === "side" ? (
           <div className="grid grid-cols-2 gap-4 sm:gap-8 max-w-2xl mx-auto">
             <div className="flex flex-col items-center gap-2">
-              <span className="rounded-full bg-white/10 px-3 py-0.5 text-[11px] font-semibold text-slate-300">
-                改版前 · 旧版
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-slate-400">
+                BEFORE · 改版前
               </span>
               <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-2xl ring-1 ring-white/15 opacity-85">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -310,10 +314,10 @@ export function InteractiveCompareShowcase({
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <span className="rounded-full bg-blue-600 px-3 py-0.5 text-[11px] font-semibold text-white">
-                重构后 · 新版方案
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-cyan-300">
+                AFTER · 重构后
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-2xl ring-2 ring-cyan-400/50 shadow-2xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-2xl ring-1 ring-cyan-400/45 shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={current.afterImg}
@@ -324,47 +328,47 @@ export function InteractiveCompareShowcase({
             </div>
           </div>
         ) : (
-          <div className="relative mx-auto w-full max-w-[300px] aspect-[9/17] overflow-hidden rounded-2xl ring-2 ring-white/15 shadow-2xl select-none">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={current.beforeImg}
-              alt="改版前"
-              className="absolute inset-0 h-full w-full object-cover object-top"
-            />
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{ clipPath: `inset(0 0 0 ${split}%)` }}
-            >
+          <div className="space-y-2 max-w-[300px] mx-auto">
+            <div className="flex items-center justify-between px-1 text-[10px] font-mono tracking-wider text-slate-400">
+              <span>← BEFORE · 旧版</span>
+              <span className="text-cyan-300">AFTER · 新版 →</span>
+            </div>
+            <div className="relative w-full aspect-[9/17] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-2xl select-none">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={current.afterImg}
-                alt="改版后"
+                src={current.beforeImg}
+                alt="改版前"
                 className="absolute inset-0 h-full w-full object-cover object-top"
               />
-            </div>
-            <span className="pointer-events-none absolute top-3 left-3 z-10 rounded-full bg-black/70 px-2.5 py-0.5 text-[10px] font-bold text-slate-300 backdrop-blur-sm">
-              BEFORE
-            </span>
-            <span className="pointer-events-none absolute top-3 right-3 z-10 rounded-full bg-blue-600/90 px-2.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
-              AFTER
-            </span>
-            <div
-              className="pointer-events-none absolute inset-y-0 z-10 w-0.5 bg-white shadow-[0_0_12px_rgba(0,0,0,0.6)]"
-              style={{ left: `${split}%` }}
-            >
-              <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-900 shadow-lg">
-                <MoveHorizontal className="h-4 w-4" />
+              <div
+                className="absolute inset-0 overflow-hidden"
+                style={{ clipPath: `inset(0 0 0 ${split}%)` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={current.afterImg}
+                  alt="改版后"
+                  className="absolute inset-0 h-full w-full object-cover object-top"
+                />
               </div>
+              <div
+                className="pointer-events-none absolute inset-y-0 z-10 w-px bg-white/85 shadow-[0_0_10px_rgba(0,0,0,0.6)]"
+                style={{ left: `${split}%` }}
+              >
+                <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-slate-900 shadow-lg">
+                  <MoveHorizontal className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <input
+                type="range"
+                min={8}
+                max={92}
+                value={split}
+                onChange={(e) => setSplit(Number(e.target.value))}
+                aria-label="左右拖动对比新旧界面"
+                className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+              />
             </div>
-            <input
-              type="range"
-              min={8}
-              max={92}
-              value={split}
-              onChange={(e) => setSplit(Number(e.target.value))}
-              aria-label="左右拖动对比新旧界面"
-              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
-            />
           </div>
         )}
 
