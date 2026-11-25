@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="600" viewBox="0 0 1440 600">
+  <rect x="34" y="34" width="1372" height="532" rx="104" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="5"/>
+  <rect x="78" y="96" width="408" height="408" rx="94" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-opacity="0.3" stroke-width="5"/>
+  <g transform="translate(156, 174) scale(10.5)" fill="none" stroke="#ffffff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="6.5" height="6.5" rx="1.6" fill="#ffffff" fill-opacity="0.26"/><rect x="14.5" y="3" width="6.5" height="6.5" rx="1.6"/><rect x="8.75" y="14.5" width="6.5" height="6.5" rx="1.6" fill="#ffffff" fill-opacity="0.26"/><path d="M9.5 6.25h5M7.2 9.5l3.3 5M16.8 9.5l-3.3 5"/>
+  </g>
+  <text x="536" y="232" fill="#e0e7ff" font-family="'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="40" letter-spacing="6">OOUX ARCHITECTURE</text>
+  <text x="532" y="388" fill="#ffffff" font-family="'PingFang SC', 'SF Pro Display', 'Microsoft YaHei', Arial, sans-serif" font-weight="800" font-size="108" letter-spacing="3">复杂业务建模</text>
+</svg>

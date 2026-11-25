@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="600" viewBox="0 0 1440 600">
+  <rect x="34" y="34" width="1372" height="532" rx="104" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="5"/>
+  <rect x="78" y="96" width="408" height="408" rx="94" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-opacity="0.3" stroke-width="5"/>
+  <g transform="translate(156, 174) scale(10.5)" fill="none" stroke="#ffffff" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.5l2.2 6.1a2 2 0 0 0 1.2 1.2L21.5 12l-6.1 2.2a2 2 0 0 0-1.2 1.2L12 21.5l-2.2-6.1a2 2 0 0 0-1.2-1.2L2.5 12l6.1-2.2a2 2 0 0 0 1.2-1.2L12 2.5z" fill="#ffffff" fill-opacity="0.26"/><circle cx="19" cy="5" r="1.5" fill="#ffffff" stroke="none"/>
+  </g>
+  <text x="536" y="232" fill="#e9d5ff" font-family="'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="40" letter-spacing="6">AGENTIC &amp; HITL</text>
+  <text x="532" y="388" fill="#ffffff" font-family="'PingFang SC', 'SF Pro Display', 'Microsoft YaHei', Arial, sans-serif" font-weight="800" font-size="108" letter-spacing="3">智能体体验</text>
+</svg>

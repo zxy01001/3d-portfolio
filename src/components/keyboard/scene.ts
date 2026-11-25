@@ -442,9 +442,12 @@ export function createKeyboardScene(
           transparent: true,
           maps: { map: iconId, normalMap: null, roughnessMap: null },
         });
-        // Top flat area of 1x1 is ~0.82x0.82, 2x1 is ~1.86x0.82, 2x2 is ~1.86x1.86
-        const planeW = isHero ? 1.56 : isWide ? 1.62 : 0.54;
-        const planeH = isHero ? 1.56 : isWide ? 0.68 : 0.54;
+        // Exact undistorted aspect ratios inside sculpted keycap top dishes:
+        // - 2x2 Hero: 1.68 x 1.68 (1.000:1 -> 1024x1024)
+        // - 2x1 Wide: 1.728 x 0.72 (2.400:1 -> 1440x600)
+        // - 1x1 Unit: 0.72 x 0.72 (1.000:1 -> 1024x1024)
+        const planeW = isHero ? 1.68 : isWide ? 1.728 : 0.72;
+        const planeH = isHero ? 1.68 : isWide ? 0.72 : 0.72;
         const logoElevation =
           KIT.logoY + (isHero ? 0.028 : isWide ? 0.014 : 0.0);
 

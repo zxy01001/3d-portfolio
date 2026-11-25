@@ -30,8 +30,8 @@ export async function applySharpKeyboardTextures(
       try {
         const isWide =
           (key.skill.colSpan ?? 1) === 2 && (key.skill.rowSpan ?? 1) === 1;
-        const w = isWide ? 1280 : 1024;
-        const h = isWide ? 560 : 1024;
+        const w = isWide ? 1440 : 1024;
+        const h = isWide ? 600 : 1024;
         const pngUrl = await rasterizeSvgToPng(key.skill.icon, w, h);
         if (pngUrl && !isCancelled()) {
           api.setMaterial(key.logoMaterialId, { map: pngUrl });
