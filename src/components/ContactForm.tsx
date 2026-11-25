@@ -1,5 +1,5 @@
 "use client";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2, CheckCircle2 } from "lucide-react";
 import React from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/ace-input";
@@ -11,7 +11,7 @@ import { config } from "@/data/config";
 import { z } from "zod";
 
 const formSchema = z.object({
-  fullName: z.string().min(1, "请填写您的姓名或所属团队"),
+  fullName: z.string().min(1, "请填写您的姓名或所属机构"),
   email: z.string().email("请输入有效的联系邮箱"),
   message: z.string().min(4, "请简要说明沟通事项（不少于 4 个字符）"),
 });
@@ -23,6 +23,7 @@ const ContactForm = () => {
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [sentSuccess, setSentSuccess] = React.useState(false);
   const [errors, setErrors] = React.useState<FieldErrors>({});
 
   const { toast } = useToast();
@@ -30,6 +31,7 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
+    setSentSuccess(false);
 
     const result = formSchema.safeParse({ fullName, email, message });
     if (!result.success) {
@@ -44,34 +46,65 @@ const ContactForm = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/send", {
+      // Direct serverless email delivery via FormSubmit AJAX endpoint (zero backend / zero cost)
+      const res = await fetch(`https://formsubmit.co/ajax/${config.email}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, message }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email,
+          message,
+          _subject: `【作品集联系】来自 ${fullName} 的沟通信息`,
+          _template: "table",
+          _captcha: "false",
+        }),
       });
+
+      const data = await res.json().catch(() => null);
+
       if (!res.ok) {
-        throw new Error("fallback-to-mailto");
+        throw new Error(data?.message || "send-failed");
       }
-      toast({
-        title: "信息已提交",
-        description: "感谢您的联系，我将尽快通过邮件与您取得沟通。",
-        variant: "default",
-        className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
-      });
-      setFullName("");
-      setEmail("");
-      setMessage("");
+
+      // FormSubmit returns { success: "false", message: "...Activation..." } on the very first run before inbox activation
+      if (data && (data.success === "false" || data.success === false)) {
+        const msg = String(data.message || "");
+        if (/activat/i.test(msg)) {
+          toast({
+            title: "已触发首次收件激活邮件",
+            description: `请前往 ${config.email} 收件箱（或垃圾箱）点击一次 FormSubmit 的 Activate 按钮，激活后所有留言将直接送达。`,
+            variant: "default",
+            className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
+          });
+        } else {
+          throw new Error(msg);
+        }
+      } else {
+        setSentSuccess(true);
+        toast({
+          title: "邮件已直接发送成功",
+          description: `您的信息已投递至 ${config.email}，我将尽快与您联系。`,
+          variant: "default",
+          className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
+        });
+        setFullName("");
+        setEmail("");
+        setMessage("");
+      }
     } catch {
-      const subject = encodeURIComponent(`作品集联系咨询：${fullName}`);
+      const subject = encodeURIComponent(`【作品集联系】${fullName}`);
       const body = encodeURIComponent(
-        `姓名/团队：${fullName}\n联系邮箱：${email}\n\n沟通事项：\n${message}`
+        `姓名/机构：${fullName}\n联系邮箱：${email}\n\n沟通事项：\n${message}`
       );
       window.location.href = `mailto:${config.email}?subject=${subject}&body=${body}`;
       toast({
-        title: "已调起邮件客户端",
-        description: `您亦可直接发送邮件至 ${config.email}`,
+        title: "网络受限，已为您唤起系统邮件客户端",
+        description: `您亦可直接复制邮箱 ${config.email} 发送联系信息。`,
         variant: "default",
-        className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
+        className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
       });
     } finally {
       setLoading(false);
@@ -79,13 +112,13 @@ const ContactForm = () => {
   };
 
   return (
-    <form className="min-w-7xl mx-auto sm:mt-2" onSubmit={handleSubmit} aria-busy={loading}>
-      <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+    <form className="w-full" onSubmit={handleSubmit} aria-busy={loading}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-3.5">
         <LabelInputContainer>
           <Label htmlFor="fullname">姓名 / 所属机构</Label>
           <Input
             id="fullname"
-            placeholder="例如：所属企业或设计团队名称"
+            placeholder="例如：某科技公司 / 产品研发团队"
             type="text"
             value={fullName}
             onChange={(e) => {
@@ -93,10 +126,12 @@ const ContactForm = () => {
               setErrors((p) => ({ ...p, fullName: undefined }));
             }}
           />
-          {errors.fullName && <p className="text-xs text-red-500">{errors.fullName}</p>}
+          {errors.fullName && (
+            <p className="text-xs text-red-500">{errors.fullName}</p>
+          )}
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">联系邮箱</Label>
+        <LabelInputContainer>
+          <Label htmlFor="email">您的联系邮箱</Label>
           <Input
             id="email"
             placeholder="name@company.com"
@@ -107,35 +142,48 @@ const ContactForm = () => {
               setErrors((p) => ({ ...p, email: undefined }));
             }}
           />
-          {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-xs text-red-500">{errors.email}</p>
+          )}
         </LabelInputContainer>
       </div>
-      <div className="grid w-full gap-1.5 mb-4">
+
+      <div className="grid w-full gap-2 mb-4">
         <Label htmlFor="content">沟通事项</Label>
         <Textarea
-          placeholder="请简要说明岗位职责方向、业务场景或交流意向..."
+          placeholder="请简要说明岗位方向（UX / 产品经理 / FDE）、业务场景或合作意向，点击下方按钮将直接投递至我的邮箱..."
           id="content"
+          rows={4}
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
             setErrors((p) => ({ ...p, message: undefined }));
           }}
         />
-        {errors.message && <p className="text-xs text-red-500">{errors.message}</p>}
+        {errors.message && (
+          <p className="text-xs text-red-500">{errors.message}</p>
+        )}
       </div>
+
       <Button
         disabled={loading}
-        className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+        className="bg-gradient-to-br relative group/btn from-zinc-900 to-zinc-800 dark:from-zinc-800 dark:to-zinc-900 w-full text-white rounded-xl h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff30_inset,0px_-1px_0px_0px_#ffffff20_inset] border border-white/10"
         type="submit"
       >
         {loading ? (
           <div className="flex items-center justify-center">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <p>提交中...</p>
+            <span>正在发送至邮箱...</span>
+          </div>
+        ) : sentSuccess ? (
+          <div className="flex items-center justify-center text-emerald-400">
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            <span>已发送至 {config.email}</span>
           </div>
         ) : (
           <div className="flex items-center justify-center">
-            提交信息 <ChevronRight className="w-4 h-4 ml-2" />
+            <span>直接发送邮件给我</span>
+            <ChevronRight className="w-4 h-4 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
           </div>
         )}
         <BottomGradient />

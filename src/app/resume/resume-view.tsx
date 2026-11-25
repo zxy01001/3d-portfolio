@@ -88,6 +88,9 @@ export default function ResumeView() {
               <p className="text-sm sm:text-base font-medium text-foreground/90">
                 {config.headline}
               </p>
+              <p className="text-xs font-medium text-cyan-600 dark:text-cyan-400">
+                意向岗位：AI-Native UX 设计师 · AI / B 端产品经理（PM）· FDE（前线部署工程师）
+              </p>
 
               <div className="pt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                 <a
