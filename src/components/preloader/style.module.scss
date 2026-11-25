@@ -1,30 +1,194 @@
 .introduction {
-  height: 100dvh;
-  width: 100dvw;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding-inline: 60px;
-  padding-bottom: 30px;
   position: fixed;
-  z-index: 99;
-  // TODO: Add a better color instead of just the background to make it pop more
-  background-color: hsl(var(--background));
-  svg {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: calc(100% + 300px);
-    path {
-      fill: hsl(var(--background));
-    }
+  inset: 0;
+  height: 100dvh;
+  width: 100vw;
+  z-index: 999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f8fafc;
+  user-select: none;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(79, 70, 229, 0.28), transparent 52%),
+    radial-gradient(circle at 78% 76%, rgba(6, 182, 212, 0.22), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4), rgba(4, 8, 20, 0.96)),
+    linear-gradient(135deg, #050a18 0%, #0b1530 52%, #060d1f 100%);
+}
+
+/* Precision Swiss Blueprint Hairline Grid — visible at 0ms SSR before JS loads */
+.blueprintGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 75% at 50% 50%, #000 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 50%, #000 35%, transparent 100%);
+}
+
+/* Ambient breathing glow orb (GPU transform + opacity only) */
+.auroraOrb {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(560px, 82vw);
+  height: min(360px, 56vw);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(99, 102, 241, 0.32) 0%,
+    rgba(14, 165, 233, 0.18) 48%,
+    transparent 75%
+  );
+  filter: blur(42px);
+  pointer-events: none;
+  animation: orbPulse 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes orbPulse {
+  0% {
+    opacity: 0.65;
+    transform: translate(-50%, -50%) scale(0.94);
   }
-  p {
-    display: flex;
-    color: hsl(var(--foreground));
-    font-size: 72px;
-    align-items: center;
-    position: absolute;
-    z-index: 1;
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.06);
   }
+}
+
+/* 8x4 Keycap Blueprint Cells — pure CSS staggered wave from millisecond 0! */
+.keyMatrix {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: min(356px, 78vw);
+  aspect-ratio: 2 / 1;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow:
+    0 24px 60px -15px rgba(2, 6, 23, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.keyCell {
+  border-radius: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.92));
+  position: relative;
+  overflow: hidden;
+  animation: keyWave 2.1s ease-in-out infinite;
+}
+
+.keyCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 60%);
+}
+
+.keyHero {
+  grid-column: span 2;
+  grid-row: span 2;
+  border-color: rgba(129, 140, 248, 0.65);
+  background: linear-gradient(145deg, rgba(91, 78, 255, 0.88), rgba(59, 130, 246, 0.68));
+  box-shadow: 0 0 24px rgba(91, 78, 255, 0.38);
+}
+
+.keyWideViolet {
+  grid-column: span 2;
+  border-color: rgba(167, 139, 250, 0.5);
+  background: linear-gradient(145deg, rgba(109, 40, 217, 0.65), rgba(67, 56, 202, 0.58));
+}
+
+.keyWideBlue {
+  grid-column: span 2;
+  border-color: rgba(56, 189, 248, 0.5);
+  background: linear-gradient(145deg, rgba(29, 78, 216, 0.68), rgba(14, 116, 144, 0.58));
+}
+
+.keyWideTeal {
+  grid-column: span 2;
+  border-color: rgba(45, 212, 191, 0.48);
+  background: linear-gradient(145deg, rgba(13, 148, 136, 0.62), rgba(15, 118, 110, 0.52));
+}
+
+.keyAccentCyan {
+  border-color: rgba(56, 189, 248, 0.42);
+  background: linear-gradient(145deg, rgba(3, 105, 161, 0.6), rgba(15, 23, 42, 0.9));
+}
+
+.keyAccentEmerald {
+  border-color: rgba(52, 211, 153, 0.42);
+  background: linear-gradient(145deg, rgba(5, 150, 105, 0.55), rgba(15, 23, 42, 0.9));
+}
+
+@keyframes keyWave {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: brightness(0.92);
+  }
+  45% {
+    transform: translateY(-2px) scale(1.015);
+    filter: brightness(1.28);
+  }
+}
+
+/* Shimmer scanline across progress rail before & during JS hydration */
+.progressTrack {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6366f1 0%, #3b82f6 50%, #22d3ee 100%);
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.65);
+  transition: width 120ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progressIndeterminate {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.55) 50%,
+    transparent 100%
+  );
+  animation: railScan 1.6s ease-in-out infinite;
+}
+
+@keyframes railScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Bottom SVG Bezier Curtain Tail for seamless Awwwards slide-up reveal */
+.curtainSvg {
+  position: absolute;
+  left: 0;
+  bottom: -140px;
+  width: 100%;
+  height: 142px;
+  pointer-events: none;
 }
