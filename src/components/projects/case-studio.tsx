@@ -454,12 +454,12 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
         </div>
 
         {mode === "side" ? (
-          <div className="grid grid-cols-2 gap-4 sm:gap-10 max-w-2xl mx-auto">
-            <div className="flex flex-col items-center gap-2.5">
-              <span className="rounded-full bg-white/10 border border-white/10 px-3 py-0.5 text-[11px] font-semibold text-slate-300">
-                BEFORE · 历史旧版
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-10 max-w-2xl mx-auto">
+            <div className="flex flex-col items-center gap-2">
+              <span className="rounded-full bg-white/10 border border-white/10 px-2.5 sm:px-3 py-0.5 text-[10px] sm:text-[11px] font-semibold text-slate-300 text-center">
+                BEFORE · 旧版
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[26px] ring-2 ring-white/15 opacity-85 shadow-xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 sm:ring-2 ring-white/15 opacity-85 shadow-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={mod.beforeImg}
@@ -467,16 +467,16 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              <p className="text-center text-xs text-slate-400 px-2">
+              <p className="text-center text-[11px] sm:text-xs text-slate-400 px-1">
                 {mod.beforePain}
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-2.5">
-              <span className="rounded-full bg-cyan-500 px-3 py-0.5 text-[11px] font-bold text-slate-950">
-                AFTER · 重构方案{mod.editImg ? (afterState === "edit" ? "（编辑态）" : "（查看态）") : ""}
+            <div className="flex flex-col items-center gap-2">
+              <span className="rounded-full bg-cyan-500 px-2.5 sm:px-3 py-0.5 text-[10px] sm:text-[11px] font-bold text-slate-950 text-center">
+                AFTER · 新版{mod.editImg ? (afterState === "edit" ? "（编辑）" : "（查看）") : ""}
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[26px] ring-2 ring-cyan-400/60 shadow-2xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 sm:ring-2 ring-cyan-400/60 shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={rightImg}
@@ -484,7 +484,7 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              <p className="text-center text-xs text-cyan-200/90 px-2">
+              <p className="text-center text-[11px] sm:text-xs text-cyan-200/90 px-1">
                 {mod.afterGain}
               </p>
             </div>

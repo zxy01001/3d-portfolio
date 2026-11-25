@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Particles from "@/components/Particles";
 import RemoteCursors from "@/components/realtime/remote-cursors";
 import EasterEggs from "@/components/easter-eggs";
-import ElasticCursor from "@/components/ui/ElasticCursor";
 import RadialMenu from "@/components/radial-menu/index";
 import MotionNudge from "@/components/motion-nudge";
 import DomainNotice from "@/components/domain-notice";
@@ -30,7 +29,6 @@ export default function AppOverlays() {
       )}
       {isHome && <RemoteCursors />}
       {!disableDecorative && <EasterEggs />}
-      {!isResume && !disableDecorative && <ElasticCursor />}
       {isHome && <RadialMenu />}
       {isHome && <MotionNudge />}
       <DomainNotice />

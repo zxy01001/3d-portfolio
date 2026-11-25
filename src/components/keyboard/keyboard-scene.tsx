@@ -321,17 +321,17 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
         onEvent={onEvent}
       />
       {section === "skills" && ready && (
-        <div className="pointer-events-none fixed inset-x-4 bottom-7 z-20 flex justify-center text-center text-foreground">
+        <div className="pointer-events-none fixed inset-x-3 sm:inset-x-4 bottom-4 sm:bottom-7 z-20 flex justify-center text-center text-foreground">
           <div
             aria-live="polite"
-            className="max-w-xl rounded-2xl border border-border/75 bg-background/95 px-5 py-3 shadow-lg"
+            className="max-w-xl rounded-2xl border border-border/75 bg-background/95 px-4 py-2.5 sm:px-5 sm:py-3 shadow-lg"
           >
-            <p className="text-sm md:text-base font-bold text-foreground">
+            <p className="text-xs sm:text-sm md:text-base font-bold text-foreground">
               {selected?.labelZh ?? selected?.label ?? "核心设计能力与工具体系"}
             </p>
-            <p className="mt-1 text-xs md:text-sm text-muted-foreground">
+            <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs md:text-sm text-muted-foreground leading-relaxed">
               {selected?.shortDescription ??
-                "支持鼠标悬停、点击 3D 键帽或按下键盘快捷键检视能力详情"}
+                "支持悬停、点击 3D 键帽或按下键盘快捷键检视能力详情"}
             </p>
           </div>
         </div>

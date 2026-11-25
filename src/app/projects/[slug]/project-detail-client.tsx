@@ -50,16 +50,16 @@ export default function ProjectDetailClient({
 
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           {/* Top Sub-Nav: Back + Quick Case Switcher */}
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <Link
               href="/#projects"
-              className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/75 px-4 py-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground backdrop-blur-md transition-colors"
+              className="self-start inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/90 px-3.5 py-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors shrink-0"
             >
               <ArrowLeft className="h-4 w-4" />
               返回作品集总览
             </Link>
 
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 sm:pb-0">
               {allStudies.map((item) => {
                 const active = item.slug === study.slug;
                 return (
@@ -67,16 +67,16 @@ export default function ProjectDetailClient({
                     key={item.slug}
                     href={`/projects/${item.slug}`}
                     className={cn(
-                      "rounded-full px-3 py-1 text-xs font-medium transition-all border backdrop-blur-md",
+                      "shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all border",
                       active
                         ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                        : "bg-background/60 text-muted-foreground border-border hover:text-foreground"
+                        : "bg-background/80 text-muted-foreground border-border hover:text-foreground"
                     )}
                   >
                     <span className="font-mono mr-1 opacity-75">
                       {item.indexLabel}
                     </span>
-                    <span className="hidden md:inline">{item.title}</span>
+                    <span className="inline">{item.title}</span>
                   </Link>
                 );
               })}
@@ -116,16 +116,16 @@ export default function ProjectDetailClient({
               </div>
 
               {/* 3 Crisp Quantified Impact Cards */}
-              <div className="grid grid-cols-3 gap-2.5 shrink-0 lg:min-w-[330px]">
+              <div className="grid grid-cols-3 gap-2 sm:gap-2.5 shrink-0 lg:min-w-[330px]">
                 {study.metrics.map((m) => (
                   <div
                     key={m.label}
-                    className="rounded-2xl border border-border/80 bg-background/70 px-3.5 py-3 text-center"
+                    className="rounded-2xl border border-border/80 bg-background/80 px-2 sm:px-3.5 py-2.5 sm:py-3 text-center"
                   >
-                    <div className="font-display text-lg sm:text-xl font-extrabold text-foreground">
+                    <div className="font-display text-base sm:text-xl font-extrabold text-foreground">
                       {m.value}
                     </div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground whitespace-nowrap">
+                    <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground truncate">
                       {m.label}
                     </div>
                   </div>

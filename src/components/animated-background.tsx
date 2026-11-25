@@ -18,7 +18,8 @@ class SceneErrorBoundary extends React.Component<
     return { failed: true };
   }
 
-  componentDidCatch() {
+  componentDidCatch(error: unknown) {
+    console.error("Keyboard 3D SceneErrorBoundary:", error);
     setSceneStatus("failed");
   }
 

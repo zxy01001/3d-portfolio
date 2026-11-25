@@ -11,7 +11,6 @@ const nextBin = path.join(root, "node_modules", ".bin", "next");
 let stashed = false;
 
 try {
-  // Recover any previous interrupted stash first
   if (!fs.existsSync(apiDir) && fs.existsSync(stashDir)) {
     fs.renameSync(stashDir, apiDir);
   }
@@ -21,7 +20,9 @@ try {
     stashed = true;
   }
 
-  execFileSync(nextBin, ["build", "--webpack"], {
+  // IMPORTANT: Use Next.js 16 default Turbopack build (NOT --webpack).
+  // --webpack splits React 19 into internal vs external copies, breaking @react-three/fiber hooks!
+  execFileSync(nextBin, ["build"], {
     cwd: root,
     stdio: "inherit",
     env: {

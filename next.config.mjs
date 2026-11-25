@@ -3,6 +3,13 @@ const isStaticExport = process.env.STATIC_EXPORT === "true";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: [
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+    "@react-three/postprocessing",
+    "@chibi3d/runtime",
+  ],
   ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   ...(isStaticExport
     ? {
