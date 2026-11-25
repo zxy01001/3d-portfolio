@@ -163,21 +163,26 @@ export default function ResumeView() {
             </div>
           </div>
 
-          {/* 3 Core Value Pillars */}
+          {/* 3 Core Value Pillars — Swiss Hairline Ledger (no card monotony) */}
           <section>
             <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
               01 · CORE VALUE · 核心交付价值
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-              {VALUE_PILLARS.map((p) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/75 border-y border-border/75">
+              {VALUE_PILLARS.map((p, idx) => (
                 <div
                   key={p.title}
-                  className="rounded-2xl border border-border/75 bg-background/60 p-4"
+                  className="py-4 md:py-5 md:px-5 first:md:pl-0 last:md:pr-0"
                 >
-                  <div className="font-display text-xl font-extrabold text-cyan-600 dark:text-cyan-400">
-                    {p.metric}
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-display text-xl sm:text-2xl font-extrabold text-cyan-600 dark:text-cyan-400 tabular-nums">
+                      {p.metric}
+                    </span>
+                    <span className="font-mono text-[10px] font-bold text-muted-foreground">
+                      0{idx + 1}
+                    </span>
                   </div>
-                  <div className="mt-1 text-sm font-bold text-foreground">
+                  <div className="mt-1.5 text-sm font-bold text-foreground">
                     {p.title}
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
@@ -188,15 +193,15 @@ export default function ResumeView() {
             </div>
           </section>
 
-          {/* Two-Column Body: Left Sidebar (Education + Skills) & Right Main (Experience) */}
+          {/* Two-Column Body: Left Sidebar (Education + Skills) & Right Main (Timeline Spine) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-2">
             <aside className="lg:col-span-4 space-y-6">
               <div>
                 <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
                   02 · EDUCATION · 教育与资质
                 </h2>
-                <div className="rounded-2xl border border-border/75 bg-background/60 p-4 space-y-1.5">
-                  <div className="flex items-center justify-between">
+                <div className="border-l-2 border-indigo-500/60 pl-4 py-0.5 space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 font-bold text-sm text-foreground">
                       <GraduationCap className="h-4 w-4 text-indigo-500" />
                       {EDUCATION.school}
@@ -232,41 +237,58 @@ export default function ResumeView() {
               </div>
             </aside>
 
-            <div className="lg:col-span-8 space-y-6">
-              <div>
-                <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                  04 · EXPERIENCE · 工作经历
-                </h2>
-                <div className="space-y-4">
-                  {EXPERIENCE.map((exp) => (
-                    <div
-                      key={exp.id}
-                      className="rounded-2xl border border-border/75 bg-background/60 p-5"
-                    >
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <div>
-                          <span className="text-base font-bold text-foreground">
-                            {exp.title}
-                          </span>
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            · {exp.company}
-                          </span>
-                        </div>
-                        <span className="font-mono text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-                          {exp.periods[0].start} — {exp.periods[0].end}
+            <div className="lg:col-span-8">
+              <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                04 · EXPERIENCE · 工作经历
+              </h2>
+              <div className="relative pl-6 border-l border-border/80 space-y-7">
+                {EXPERIENCE.map((exp, idx) => (
+                  <div key={exp.id} className="relative">
+                    <span
+                      aria-hidden
+                      className={
+                        idx === 0
+                          ? "absolute -left-[29px] top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-background"
+                          : "absolute -left-[29px] top-1.5 h-2.5 w-2.5 rounded-full bg-indigo-500/80 ring-4 ring-background"
+                      }
+                    />
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <div>
+                        <span className="text-base font-bold text-foreground">
+                          {exp.title}
+                        </span>
+                        <span className="ml-2 text-xs font-medium text-muted-foreground">
+                          · {exp.company}
                         </span>
                       </div>
-                      <ul className="mt-3 space-y-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                        {exp.description.map((d, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
-                            <span>{d}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <span className="font-mono text-xs font-semibold text-cyan-600 dark:text-cyan-400 tabular-nums">
+                        {exp.periods[0].start} — {exp.periods[0].end}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <ul className="mt-2.5 space-y-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      {exp.description.map((d, dIdx) => {
+                        const [head, rest] = d.split("：");
+                        return (
+                          <li key={dIdx} className="flex items-start gap-2">
+                            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-cyan-500" />
+                            <span>
+                              {rest ? (
+                                <>
+                                  <strong className="font-semibold text-foreground">
+                                    {head}：
+                                  </strong>
+                                  {rest}
+                                </>
+                              ) : (
+                                d
+                              )}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
