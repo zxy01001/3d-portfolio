@@ -33,6 +33,10 @@ const CARD_BACKDROPS: Record<string, string> = {
     "radial-gradient(circle at 20% 25%, rgba(56,189,248,0.4), transparent 58%), radial-gradient(circle at 85% 80%, rgba(59,130,246,0.32), transparent 55%), linear-gradient(135deg, #09152b, #12294d)",
   "profile-settings":
     "radial-gradient(circle at 75% 25%, rgba(129,140,248,0.4), transparent 58%), linear-gradient(135deg, #0f172a, #1e1b4b)",
+  "storefront-system":
+    "radial-gradient(circle at 22% 24%, rgba(79,70,229,0.44), transparent 58%), radial-gradient(circle at 82% 78%, rgba(14,165,233,0.34), transparent 55%), linear-gradient(135deg, #091228, #132046)",
+  "wms-fulfillment":
+    "radial-gradient(circle at 25% 25%, rgba(37,99,235,0.42), transparent 58%), radial-gradient(circle at 80% 78%, rgba(20,184,166,0.34), transparent 55%), linear-gradient(135deg, #071024, #0e2244)",
 };
 
 const ProjectsSection = () => {
@@ -48,7 +52,7 @@ const ProjectsSection = () => {
       <SectionHeader
         id="projects"
         title="精选设计案例"
-        desc="聚焦 5 个企业级复杂系统与 AI 产品落地项目 · 点击卡片审阅完整交互架构"
+        desc="聚焦 7 个 AI 原生产品、组件工程体系与复杂供应链重构落地项目 · 点击卡片审阅完整交互架构"
         className="static mb-8 md:mb-10"
       />
 
@@ -74,7 +78,7 @@ const ProjectsSection = () => {
         })}
       </div>
 
-      {/* Crisp 2 + 3 Visual Gallery Grid */}
+      {/* Crisp 2 + 3 + 2 Symmetric Visual Gallery Grid */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-5">
         {filtered.map((project) => {
           const spanClass =
@@ -82,7 +86,7 @@ const ProjectsSection = () => {
               ? project.featuredSpan
                 ? "md:col-span-3"
                 : "md:col-span-2"
-              : filtered.length === 2
+              : filtered.length === 2 || filtered.length === 4
               ? "md:col-span-3"
               : "md:col-span-2";
           return (

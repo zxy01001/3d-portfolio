@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d1f"/>
+      <stop offset="55%" stop-color="#0d1836"/>
+      <stop offset="100%" stop-color="#091228"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.18" cy="0.15" r="0.55">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.86" cy="0.82" r="0.5">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="z5" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="z4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="z3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="z2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="z1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#glow1)"/>
+  <rect width="1600" height="1000" fill="url(#glow2)"/>
+
+  <!-- Header -->
+  <g font-family="'PingFang SC', 'Hiragino Sans GB', -apple-system, sans-serif">
+    <text x="76" y="72" font-size="13" font-weight="700" fill="#38bdf8" letter-spacing="2.5">DESIGN-TO-CODE SPECIFICATION · CONTAINER QUERY V2.0</text>
+    <text x="76" y="114" font-size="32" font-weight="800" fill="#f8fafc">商品卡片网格 · 容器级响应式断点区间契约</text>
+    <text x="76" y="144" font-size="15" font-weight="400" fill="#94a3b8">摒弃传统视口断点（Viewport Media Query），基于父分栏容器宽度建立统一公式：最小单卡 ≥ 200px · 栏内间距 12px · 容器内边距 20px · 无缝适配 8 种低代码分栏骨架</text>
+
+    <rect x="1296" y="84" width="228" height="38" rx="19" fill="#1e293b" stroke="#38bdf8" stroke-opacity="0.45"/>
+    <text x="1410" y="108" font-size="13" font-weight="700" fill="#bae6fd" text-anchor="middle">前端栅格技术契约 · V2.0</text>
+
+    <!-- Section 1: Breakpoint Axis Map -->
+    <rect x="76" y="182" width="4" height="20" rx="2" fill="#38bdf8"/>
+    <text x="90" y="198" font-size="18" font-weight="700" fill="#e2e8f0">01 · 容器宽度断点区间分布轴线（Container Breakpoint Axis Map）</text>
+
+    <!-- 5 Zones Bar (x=76..1524, total width = 1448) -->
+    <g transform="translate(76, 218)">
+      <rect x="0" y="0" width="204" height="66" rx="12" fill="url(#z5)" stroke="#64748b" stroke-opacity="0.5"/>
+      <text x="102" y="29" font-size="15" font-weight="700" fill="#f1f5f9" text-anchor="middle">Zone 5 · 1 列</text>
+      <text x="102" y="50" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#cbd5e1" text-anchor="middle">280 – 452px</text>
+
+      <rect x="210" y="0" width="246" height="66" rx="12" fill="url(#z4)" stroke="#2dd4bf" stroke-opacity="0.45"/>
+      <text x="333" y="29" font-size="15" font-weight="700" fill="#f0fdfa" text-anchor="middle">Zone 4 · 2 列</text>
+      <text x="333" y="50" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#ccfbf1" text-anchor="middle">452 – 664px</text>
+
+      <rect x="462" y="0" width="256" height="66" rx="12" fill="url(#z3)" stroke="#38bdf8" stroke-opacity="0.45"/>
+      <text x="590" y="29" font-size="15" font-weight="700" fill="#f0f9ff" text-anchor="middle">Zone 3 · 3 列</text>
+      <text x="590" y="50" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#bae6fd" text-anchor="middle">664 – 876px</text>
+
+      <rect x="724" y="0" width="266" height="66" rx="12" fill="url(#z2)" stroke="#60a5fa" stroke-opacity="0.5"/>
+      <text x="857" y="29" font-size="15" font-weight="700" fill="#eff6ff" text-anchor="middle">Zone 2 · 4 列</text>
+      <text x="857" y="50" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#bfdbfe" text-anchor="middle">876 – 1088px</text>
+
+      <rect x="996" y="0" width="452" height="66" rx="12" fill="url(#z1)" stroke="#818cf8" stroke-opacity="0.55"/>
+      <text x="1222" y="29" font-size="15" font-weight="700" fill="#eef2ff" text-anchor="middle">Zone 1 · 5 列（主通栏满血态）</text>
+      <text x="1222" y="50" font-size="13" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#ddd6fe" text-anchor="middle">1088 – 1500px</text>
+
+      <!-- Axis Ticks -->
+      <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#94a3b8">
+        <line x1="8" y1="74" x2="8" y2="84" stroke="#64748b" stroke-width="1.5"/>
+        <text x="8" y="102" text-anchor="middle">280px</text>
+
+        <line x1="207" y1="74" x2="207" y2="84" stroke="#2dd4bf" stroke-width="1.5"/>
+        <text x="207" y="102" text-anchor="middle" fill="#5eead4">452px</text>
+
+        <line x1="459" y1="74" x2="459" y2="84" stroke="#38bdf8" stroke-width="1.5"/>
+        <text x="459" y="102" text-anchor="middle" fill="#7dd3fc">664px</text>
+
+        <line x1="721" y1="74" x2="721" y2="84" stroke="#60a5fa" stroke-width="1.5"/>
+        <text x="721" y="102" text-anchor="middle" fill="#93c5fd">876px</text>
+
+        <line x1="993" y1="74" x2="993" y2="84" stroke="#818cf8" stroke-width="1.5"/>
+        <text x="993" y="102" text-anchor="middle" fill="#a5b4fc">1088px</text>
+
+        <line x1="1440" y1="74" x2="1440" y2="84" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="1440" y="102" text-anchor="middle" fill="#c4b5fd">1500px</text>
+      </g>
+    </g>
+
+    <!-- Section 2: Layout Skeleton x Card Column Mapping Table -->
+    <rect x="76" y="362" width="4" height="20" rx="2" fill="#818cf8"/>
+    <text x="90" y="378" font-size="18" font-weight="700" fill="#e2e8f0">02 · 低代码分栏骨架 × 容器栏宽 × 卡片列数映射矩阵（Max Content 1500px · Gutter 12px）</text>
+
+    <rect x="76" y="400" width="1448" height="544" rx="20" fill="#0f172a" fill-opacity="0.88" stroke="#334155" stroke-width="1.5"/>
+
+    <!-- Table Header -->
+    <rect x="76" y="400" width="1448" height="56" rx="20" fill="#1e293b" fill-opacity="0.8"/>
+    <g font-size="14" font-weight="700" fill="#94a3b8">
+      <text x="116" y="434">低代码布局骨架</text>
+      <text x="410" y="434">容器实际栏宽</text>
+      <text x="640" y="434">命中区间</text>
+      <text x="880" y="434">渲染列数</text>
+      <text x="1090" y="434">自适应单卡宽度</text>
+      <text x="1310" y="434">典型 B2B 适用场景</text>
+    </g>
+
+    <!-- 8 Mapping Rows -->
+    <g font-size="15">
+      <!-- Row 1 -->
+      <line x1="100" y1="456" x2="1500" y2="456" stroke="#1e293b"/>
+      <text x="116" y="494" font-weight="700" fill="#f8fafc">100% 通栏容器</text>
+      <text x="410" y="494" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">1500px</text>
+      <rect x="640" y="474" width="120" height="26" rx="13" fill="#4f46e5" fill-opacity="0.25" stroke="#818cf8" stroke-opacity="0.5"/>
+      <text x="700" y="492" font-size="12" font-weight="700" fill="#c7d2fe" text-anchor="middle">Zone 1</text>
+      <text x="880" y="494" font-weight="700" fill="#a5b4fc">5 列</text>
+      <text x="1090" y="494" font-family="ui-monospace, monospace" fill="#cbd5e1">282px / 张</text>
+      <text x="1310" y="494" fill="#94a3b8">主推爆品橱窗 / 大促通栏楼层</text>
+
+      <!-- Row 2 -->
+      <line x1="100" y1="516" x2="1500" y2="516" stroke="#1e293b"/>
+      <text x="116" y="554" font-weight="700" fill="#f8fafc">4 : 1 主栏容器</text>
+      <text x="410" y="554" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">1190px</text>
+      <rect x="640" y="534" width="120" height="26" rx="13" fill="#4f46e5" fill-opacity="0.25" stroke="#818cf8" stroke-opacity="0.5"/>
+      <text x="700" y="552" font-size="12" font-weight="700" fill="#c7d2fe" text-anchor="middle">Zone 1</text>
+      <text x="880" y="554" font-weight="700" fill="#a5b4fc">5 列</text>
+      <text x="1090" y="554" font-family="ui-monospace, monospace" fill="#cbd5e1">220px / 张</text>
+      <text x="1310" y="554" fill="#94a3b8">主商品流 + 右侧公告/客服侧栏</text>
+
+      <!-- Row 3 -->
+      <line x1="100" y1="576" x2="1500" y2="576" stroke="#1e293b"/>
+      <text x="116" y="614" font-weight="700" fill="#f8fafc">3 : 1 大栏容器</text>
+      <text x="410" y="614" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">1116px</text>
+      <rect x="640" y="594" width="120" height="26" rx="13" fill="#4f46e5" fill-opacity="0.25" stroke="#818cf8" stroke-opacity="0.5"/>
+      <text x="700" y="612" font-size="12" font-weight="700" fill="#c7d2fe" text-anchor="middle">Zone 1</text>
+      <text x="880" y="614" font-weight="700" fill="#a5b4fc">5 列</text>
+      <text x="1090" y="614" font-family="ui-monospace, monospace" fill="#cbd5e1">206px / 张</text>
+      <text x="1310" y="614" fill="#94a3b8">左分类树/热榜 + 右主陈列矩阵</text>
+
+      <!-- Row 4 -->
+      <line x1="100" y1="636" x2="1500" y2="636" stroke="#1e293b"/>
+      <text x="116" y="674" font-weight="700" fill="#f8fafc">1 : 1 双等分栏</text>
+      <text x="410" y="674" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">744px</text>
+      <rect x="640" y="654" width="120" height="26" rx="13" fill="#0369a1" fill-opacity="0.28" stroke="#38bdf8" stroke-opacity="0.5"/>
+      <text x="700" y="672" font-size="12" font-weight="700" fill="#bae6fd" text-anchor="middle">Zone 3</text>
+      <text x="880" y="674" font-weight="700" fill="#38bdf8">3 列</text>
+      <text x="1090" y="674" font-family="ui-monospace, monospace" fill="#cbd5e1">227px / 张</text>
+      <text x="1310" y="674" fill="#94a3b8">新品专区 vs 常购清单并置对比</text>
+
+      <!-- Row 5 -->
+      <line x1="100" y1="696" x2="1500" y2="696" stroke="#1e293b"/>
+      <text x="116" y="734" font-weight="700" fill="#f8fafc">1 : 2 : 1 中栏容器</text>
+      <text x="410" y="734" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">738px</text>
+      <rect x="640" y="714" width="120" height="26" rx="13" fill="#0369a1" fill-opacity="0.28" stroke="#38bdf8" stroke-opacity="0.5"/>
+      <text x="700" y="732" font-size="12" font-weight="700" fill="#bae6fd" text-anchor="middle">Zone 3</text>
+      <text x="880" y="734" font-weight="700" fill="#38bdf8">3 列</text>
+      <text x="1090" y="734" font-family="ui-monospace, monospace" fill="#cbd5e1">225px / 张</text>
+      <text x="1310" y="734" fill="#94a3b8">三栏门户核心区商品聚合</text>
+
+      <!-- Row 6 -->
+      <line x1="100" y1="756" x2="1500" y2="756" stroke="#1e293b"/>
+      <text x="116" y="794" font-weight="700" fill="#f8fafc">2 : 1 : 1 主栏容器</text>
+      <text x="410" y="794" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">738px</text>
+      <rect x="640" y="774" width="120" height="26" rx="13" fill="#0369a1" fill-opacity="0.28" stroke="#38bdf8" stroke-opacity="0.5"/>
+      <text x="700" y="792" font-size="12" font-weight="700" fill="#bae6fd" text-anchor="middle">Zone 3</text>
+      <text x="880" y="794" font-weight="700" fill="#38bdf8">3 列</text>
+      <text x="1090" y="794" font-family="ui-monospace, monospace" fill="#cbd5e1">225px / 张</text>
+      <text x="1310" y="794" fill="#94a3b8">主品类推荐 + 双辅助工单/财务卡</text>
+
+      <!-- Row 7 -->
+      <line x1="100" y1="816" x2="1500" y2="816" stroke="#1e293b"/>
+      <text x="116" y="854" font-weight="700" fill="#f8fafc">3 : 1 窄侧栏容器</text>
+      <text x="410" y="854" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">372px</text>
+      <rect x="640" y="834" width="120" height="26" rx="13" fill="#334155" fill-opacity="0.6" stroke="#94a3b8" stroke-opacity="0.45"/>
+      <text x="700" y="852" font-size="12" font-weight="700" fill="#e2e8f0" text-anchor="middle">Zone 5</text>
+      <text x="880" y="854" font-weight="700" fill="#2dd4bf">1 列</text>
+      <text x="1090" y="854" font-family="ui-monospace, monospace" fill="#cbd5e1">332px / 张</text>
+      <text x="1310" y="854" fill="#94a3b8">限时秒杀单列排行 / 补货推荐栏</text>
+
+      <!-- Row 8 -->
+      <line x1="100" y1="876" x2="1500" y2="876" stroke="#1e293b"/>
+      <text x="116" y="914" font-weight="700" fill="#f8fafc">1 : 2 : 1 侧翼窄栏</text>
+      <text x="410" y="914" font-family="ui-monospace, monospace" font-weight="700" fill="#e2e8f0">369px</text>
+      <rect x="640" y="894" width="120" height="26" rx="13" fill="#334155" fill-opacity="0.6" stroke="#94a3b8" stroke-opacity="0.45"/>
+      <text x="700" y="912" font-size="12" font-weight="700" fill="#e2e8f0" text-anchor="middle">Zone 5</text>
+      <text x="880" y="914" font-weight="700" fill="#2dd4bf">1 列</text>
+      <text x="1090" y="914" font-family="ui-monospace, monospace" fill="#cbd5e1">329px / 张</text>
+      <text x="1310" y="914" fill="#94a3b8">高频复购单列快选 / 极窄挂件区</text>
+    </g>
+  </g>
+</svg>

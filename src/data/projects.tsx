@@ -430,6 +430,198 @@ const projects: Project[] = [
       />
     ),
   },
+  {
+    id: "storefront-system",
+    indexLabel: "06",
+    category: "设计系统与低代码引擎",
+    filterGroup: "b2b",
+    featuredSpan: true,
+    badge: "Container Query 契约",
+    title: "双端店铺装修与容器组件体系",
+    oneLiner: "三栏可视化低代码装修工作台与五级父容器自适应栅格工程契约",
+    metrics: ["8 种分栏骨架适配", "5 级容器断点契约", "停售脏数据自愈"],
+    src: `${ZXY_PATH}/storefront-system/01-pc-builder-manual.png`,
+    live: "/projects/storefront-system",
+    liveLabel: "审阅组件工程契约",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "builder",
+            tab: "双端低代码装修引擎",
+            steps: [
+              {
+                label: "手工选品与停售自愈",
+                image: `${ZXY_PATH}/storefront-system/01-pc-builder-manual.png`,
+                note: "左布局骨架、中实时画布、右属性配置三栏联动，内置停售商品自动识别剔除横幅",
+              },
+              {
+                label: "动态标签规则圈选",
+                image: `${ZXY_PATH}/storefront-system/02-pc-builder-tag.png`,
+                note: "支持多标签布尔「或」逻辑动态圈品，新品上架后前台橱窗零人工维护自动更新",
+              },
+              {
+                label: "移动端同源装修器",
+                image: `${ZXY_PATH}/storefront-system/06-mobile-builder.png`,
+                note: "复用同一套选品与异常清理 Schema，真机视口实时预览多分组页签切换效果",
+              },
+              {
+                label: "采购端选品弹窗",
+                image: `${ZXY_PATH}/storefront-system/03-pc-product-modal.png`,
+                note: "承接装修引擎输出的 B2B 高密度订货橱窗，支持编码、名称与条形码聚合检索",
+              },
+            ],
+          },
+          {
+            id: "container",
+            tab: "容器级响应式契约",
+            steps: [
+              {
+                label: "断点区间规格 V2.0",
+                image: `${ZXY_PATH}/storefront-system/07-container-spec-v2.svg`,
+                note: "基于父容器栏宽（280px~1500px）定义 5 大区间与 8 种分栏列数映射公式",
+              },
+              {
+                label: "横向卡片 4 档重排",
+                image: `${ZXY_PATH}/storefront-system/04-container-horizontal.png`,
+                note: "从 1500px 通栏 3 列平滑收敛至窄侧栏 1 列与极窄横滑兜底，编码价格零截断",
+              },
+              {
+                label: "纵向卡片与空图兜底",
+                image: `${ZXY_PATH}/storefront-system/05-container-vertical.png`,
+                note: "完整覆盖 5 列至 1 列梯度及 B2B 长尾商品无主图占位态，保持整行基线严整",
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · CONTAINER QUERY",
+            title: "父容器断点替代视口断点",
+            desc: "将 8 种低代码分栏骨架精确映射为 5 级容器区间，任意嵌套拖拽均不破版。",
+          },
+          {
+            tag: "02 · SELF-HEALING",
+            title: "停售脏数据自动巡检",
+            desc: "在配置面板主动拦截并剔除 ERP 已停售 SKU，杜绝线上空窗与死链。",
+          },
+          {
+            tag: "03 · DUAL SCHEMA",
+            title: "双端同源 Schema 复用",
+            desc: "Web 与移动端共享手工/标签双模选品逻辑，支撑 92% 组件库覆盖率。",
+          },
+        ]}
+      />
+    ),
+  },
+  {
+    id: "wms-fulfillment",
+    indexLabel: "07",
+    category: "供应链履约与状态机",
+    filterGroup: "b2b",
+    featuredSpan: true,
+    badge: "OOUX 视角反转",
+    title: "WMS 仓储履约全链路重构",
+    oneLiner: "以“商品主分配、订单辅核验”重构跨单集货，打通拣货·拆零·封箱闭环",
+    metrics: ["OOUX 操作对象反转", "箱/袋/瓶三级拆零", "双视角分箱打单"],
+    src: `${ZXY_PATH}/covers/wms-fulfillment-cover.svg`,
+    live: "/projects/wms-fulfillment",
+    liveLabel: "审阅状态机与交互方案",
+    content: (
+      <InteractiveFlowShowcase
+        groups={[
+          {
+            id: "consolidate",
+            tab: "OOUX 集货分单与合并",
+            steps: [
+              {
+                label: "双轨集货架构图",
+                image: `${ZXY_PATH}/wms-fulfillment/11-ooux-architecture.svg`,
+                note: "拆解「1批商品→N张订单（分单）」与「M张拣货单→1张订单（合并）」双轨状态机",
+              },
+              {
+                label: "集货任务池分流",
+                image: `${ZXY_PATH}/wms-fulfillment/06-consolidate-list.png`,
+                note: "外显库位号、实时配齐进度条与分单/合并语义色标，辅助现场快速决策",
+                isMobile: true,
+              },
+              {
+                label: "商品主视角统分",
+                image: `${ZXY_PATH}/wms-fulfillment/07-consolidate-distribute.png`,
+                note: "同屏聚合总需求、实集与缺口预警，支持按先到先得或按比例一键预填多单",
+                isMobile: true,
+              },
+              {
+                label: "品项缺货轻抽屉",
+                image: `${ZXY_PATH}/wms-fulfillment/08-consolidate-drawer.png`,
+                note: "原位切换全部/未处理/已处理视图，高亮缺货差额，零跳页损耗",
+                isMobile: true,
+              },
+              {
+                label: "跨区拣货单合流",
+                image: `${ZXY_PATH}/wms-fulfillment/09-consolidate-merge.png`,
+                note: "按库区货架容器逐一核验合流，确认后原地解锁装箱动作",
+                isMobile: true,
+              },
+            ],
+          },
+          {
+            id: "pick-pack",
+            tab: "PDA 拣货与双模装箱",
+            steps: [
+              {
+                label: "规则限流领单",
+                image: `${ZXY_PATH}/wms-fulfillment/01-pick-claim.png`,
+                note: "明确展示总任务池与可领配额上限，滑动领单防止仓内走动误触",
+                isMobile: true,
+              },
+              {
+                label: "三级计量单位拆零",
+                image: `${ZXY_PATH}/wms-fulfillment/02-pick-multiunit.png`,
+                note: "整箱、中袋、散瓶三级步进器直观录入，免除复杂箱规心算",
+                isMobile: true,
+              },
+              {
+                label: "多效期批次核验",
+                image: `${ZXY_PATH}/wms-fulfillment/03-pick-lot-batch.png`,
+                note: "外显同库位多 LOT 批次明细，保障商贸快消效期先出（FEFO）合规",
+                isMobile: true,
+              },
+              {
+                label: "按商品装入封箱",
+                image: `${ZXY_PATH}/wms-fulfillment/04-pack-by-sku.png`,
+                note: "投箱阶段锁定当前箱号，按商品维度快速录入装入数并封箱",
+                isMobile: true,
+              },
+              {
+                label: "按箱号拆箱打印",
+                image: `${ZXY_PATH}/wms-fulfillment/05-pack-by-box.png`,
+                note: "复核阶段切换至左箱号轨+右箱内明细，支持单箱面单打印与超重拆分",
+                isMobile: true,
+              },
+            ],
+          },
+        ]}
+        decisions={[
+          {
+            tag: "01 · OOUX INVERSION",
+            title: "商品主视角反转",
+            desc: "将跨单分货从“逐单进出翻找”反转为“单品统分多单”，操作路径缩短约 60%。",
+          },
+          {
+            tag: "02 · MULTI-UNIT",
+            title: "多级包装与批次契约",
+            desc: "沉淀箱/袋/瓶三级步进器与 LOT 批次胶囊，横向复用至 DMS 调拨单体系。",
+          },
+          {
+            tag: "03 · DUAL PACKING",
+            title: "装入与复核双模切换",
+            desc: "装入看商品、封箱打单看箱号，精准匹配仓内物理履约两阶段心智。",
+          },
+        ]}
+      />
+    ),
+  },
 ];
 
 export default projects;

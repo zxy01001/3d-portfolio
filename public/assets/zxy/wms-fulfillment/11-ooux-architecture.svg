@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="bgw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060d1f"/>
+      <stop offset="50%" stop-color="#0d1b38"/>
+      <stop offset="100%" stop-color="#071226"/>
+    </linearGradient>
+    <radialGradient id="glw1" cx="0.2" cy="0.2" r="0.55">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glw2" cx="0.82" cy="0.78" r="0.52">
+      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bgw)"/>
+  <rect width="1600" height="1000" fill="url(#glw1)"/>
+  <rect width="1600" height="1000" fill="url(#glw2)"/>
+
+  <g font-family="'PingFang SC', 'Hiragino Sans GB', -apple-system, sans-serif">
+    <text x="76" y="70" font-size="13" font-weight="700" fill="#2dd4bf" letter-spacing="2.5">OOUX DOMAIN MODELING · WMS CONSOLIDATION STATE MACHINE</text>
+    <text x="76" y="112" font-size="32" font-weight="800" fill="#f8fafc">集货作业 OOUX 视角反转与双链路履约状态机</text>
+    <text x="76" y="142" font-size="15" fill="#94a3b8">核心架构决策：打破旧版“逐张订单翻找商品”的高认知负荷路径，重构为「以商品分配为主操作对象、订单配齐核对为辅视角」的双轨状态闭环</text>
+
+    <!-- Stage 01: Shared Task Pool -->
+    <rect x="76" y="176" width="1448" height="112" rx="20" fill="#0f172a" stroke="#3b82f6" stroke-opacity="0.5" stroke-width="1.5"/>
+    <circle cx="130" cy="232" r="24" fill="#1d4ed8"/>
+    <text x="130" y="238" font-family="ui-monospace, monospace" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">01</text>
+    <text x="172" y="224" font-size="20" font-weight="800" fill="#f8fafc">集货任务池（统一调度入口）</text>
+    <text x="172" y="252" font-size="14" fill="#94a3b8">按库位号、关联拣货单与实时处理进度条外显任务优先级，自动分流「集货分单」与「集货合并」两类作业形态</text>
+
+    <!-- Flow chips on Stage 01 -->
+    <g transform="translate(830, 206)" font-size="13" font-weight="600">
+      <rect x="0" y="0" width="148" height="52" rx="12" fill="#1e293b" stroke="#334155"/>
+      <text x="74" y="23" fill="#e2e8f0" text-anchor="middle">状态筛选与排序</text>
+      <text x="74" y="41" font-size="11" fill="#94a3b8" text-anchor="middle">待处理 / 集货中 / 时序</text>
+
+      <text x="166" y="31" fill="#38bdf8" text-anchor="middle">→</text>
+
+      <rect x="184" y="0" width="160" height="52" rx="12" fill="#1e293b" stroke="#334155"/>
+      <text x="264" y="23" fill="#e2e8f0" text-anchor="middle">PDA 扫码秒级定位</text>
+      <text x="264" y="41" font-size="11" fill="#94a3b8" text-anchor="middle">库位码 / 拣货单条码</text>
+
+      <text x="362" y="31" fill="#38bdf8" text-anchor="middle">→</text>
+
+      <rect x="380" y="0" width="178" height="52" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-opacity="0.45"/>
+      <text x="469" y="23" fill="#bae6fd" text-anchor="middle">双轨作业路由</text>
+      <text x="469" y="41" font-size="11" fill="#7dd3fc" text-anchor="middle">分单色标 vs 合并色标</text>
+    </g>
+
+    <!-- Connector Arrows Down -->
+    <path d="M 438 288 L 438 324" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M 1162 288 L 1162 324" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="4 4"/>
+
+    <!-- Stage 02 (Left): Distribute 1 Batch SKU -> N Orders -->
+    <rect x="76" y="328" width="704" height="444" rx="22" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.55" stroke-width="1.5"/>
+    <circle cx="128" cy="378" r="22" fill="#0284c7"/>
+    <text x="128" y="384" font-family="ui-monospace, monospace" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">02</text>
+    <text x="166" y="376" font-size="21" font-weight="800" fill="#f8fafc">集货分单</text>
+    <rect x="268" y="355" width="186" height="28" rx="14" fill="#0284c7" fill-opacity="0.22" stroke="#38bdf8" stroke-opacity="0.5"/>
+    <text x="361" y="374" font-size="12" font-weight="700" fill="#7dd3fc" text-anchor="middle">1 批商品 → 分配至 N 张订单</text>
+    <text x="166" y="402" font-size="13.5" fill="#94a3b8">OOUX 主对象锁定「当前商品」，同屏聚合关联门店订单与缺口数量</text>
+
+    <!-- Steps inside Stage 02 -->
+    <g transform="translate(108, 430)">
+      <rect x="0" y="0" width="298" height="72" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-opacity="0.35"/>
+      <text x="18" y="28" font-size="14" font-weight="700" fill="#bae6fd">① 商品分配主视图（主操作面）</text>
+      <text x="18" y="51" font-size="12.5" fill="#94a3b8">外显总需求 / 已集货 / 实时缺口红字预警</text>
+
+      <rect x="336" y="0" width="304" height="72" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-opacity="0.35"/>
+      <text x="354" y="28" font-size="14" font-weight="700" fill="#bae6fd">② 批量分配策略引擎</text>
+      <text x="354" y="51" font-size="12.5" fill="#94a3b8">一键「按先到先得」或「按比例」自动预填</text>
+
+      <rect x="0" y="92" width="298" height="72" rx="14" fill="#1e293b" stroke="#334155"/>
+      <text x="18" y="120" font-size="14" font-weight="700" fill="#e2e8f0">③ 订单配齐辅视角抽屉（按需切换）</text>
+      <text x="18" y="143" font-size="12.5" fill="#94a3b8">不跳页拉起底部抽屉，核查各单配齐进度</text>
+
+      <rect x="336" y="92" width="304" height="72" rx="14" fill="#1e293b" stroke="#334155"/>
+      <text x="354" y="120" font-size="14" font-weight="700" fill="#e2e8f0">④ 异常缺货拦截与整单提交</text>
+      <text x="354" y="143" font-size="12.5" fill="#94a3b8">自动校验未处理品项与缺口，防覆写已分数据</text>
+
+      <!-- Design Gain Box -->
+      <rect x="0" y="190" width="640" height="122" rx="16" fill="#0c1e3a" stroke="#0ea5e9" stroke-opacity="0.4"/>
+      <text x="22" y="220" font-size="13" font-weight="700" fill="#38bdf8">UX / PM 核心收益（对比旧版订单主视角）</text>
+      <text x="22" y="248" font-size="13" fill="#cbd5e1">• 消除同一商品在 10+ 张订单间反复进出页面的跨单翻找成本，单品分配步数缩短约 60%</text>
+      <text x="22" y="274" font-size="13" fill="#cbd5e1">• 策略自动预填 + 步进器微调 +「自动下一项」连贯流转，单手 PDA 高频作业零阻断</text>
+      <text x="22" y="300" font-size="13" fill="#cbd5e1">• 显性区分「全部(12) / 未处理(4) / 已处理(8)」与缺货标签，彻底杜绝漏分与多单冲突</text>
+    </g>
+
+    <!-- Stage 03 (Right): Merge M Picklists -> 1 Order -->
+    <rect x="820" y="328" width="704" height="444" rx="22" fill="#0f172a" stroke="#2dd4bf" stroke-opacity="0.55" stroke-width="1.5"/>
+    <circle cx="872" cy="378" r="22" fill="#0d9488"/>
+    <text x="872" y="384" font-family="ui-monospace, monospace" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">03</text>
+    <text x="910" y="376" font-size="21" font-weight="800" fill="#f8fafc">集货合并</text>
+    <rect x="1012" y="355" width="198" height="28" rx="14" fill="#0d9488" fill-opacity="0.22" stroke="#2dd4bf" stroke-opacity="0.5"/>
+    <text x="1111" y="374" font-size="12" font-weight="700" fill="#5eead4" text-anchor="middle">M 张跨区拣货单 → 归并 1 单</text>
+    <text x="910" y="402" font-size="13.5" fill="#94a3b8">面向跨温区/跨巷道并行拣货场景，以「周转容器/拣货单」为核验单元归并封箱</text>
+
+    <g transform="translate(852, 430)">
+      <rect x="0" y="0" width="298" height="72" rx="14" fill="#1e293b" stroke="#2dd4bf" stroke-opacity="0.35"/>
+      <text x="18" y="28" font-size="14" font-weight="700" fill="#99f6e4">① 跨区容器归并总览</text>
+      <text x="18" y="51" font-size="12.5" fill="#94a3b8">清晰标识 A/B/C 库区货架来源与待确认状态</text>
+
+      <rect x="336" y="0" width="304" height="72" rx="14" fill="#1e293b" stroke="#2dd4bf" stroke-opacity="0.35"/>
+      <text x="354" y="28" font-size="14" font-weight="700" fill="#99f6e4">② 拣货单抽屉逐品核对</text>
+      <text x="354" y="51" font-size="12.5" fill="#94a3b8">原位核查实拣数 vs 订单数，高亮缺货差异项</text>
+
+      <rect x="0" y="92" width="640" height="72" rx="14" fill="#1e293b" stroke="#334155"/>
+      <text x="18" y="120" font-size="14" font-weight="700" fill="#e2e8f0">③ 确认后无缝衔接「按商品 / 按箱号」双视角装箱打印</text>
+      <text x="18" y="143" font-size="12.5" fill="#94a3b8">已确认容器自动解锁「装箱」主动作，支持封箱、多箱拆分与蓝牙面单即时打印</text>
+
+      <rect x="0" y="190" width="640" height="122" rx="16" fill="#09222c" stroke="#14b8a6" stroke-opacity="0.4"/>
+      <text x="22" y="220" font-size="13" font-weight="700" fill="#2dd4bf">全链路状态一致性保障（拣货 → 集货 → 装箱）</text>
+      <text x="22" y="248" font-size="13" fill="#cbd5e1">• 多级计量单位统一契约：整箱 / 中盒 / 散瓶三级步进器组件贯穿拣货、调拨与装箱全模块</text>
+      <text x="22" y="274" font-size="13" fill="#cbd5e1">• 效期批次（LOT）可追溯：支持同库位多批次库存并列核验，严守商贸食品效期先出规则</text>
+      <text x="22" y="300" font-size="13" fill="#cbd5e1">• 渐进式状态反馈：顶部角标「目前进度 1/4」与已确认绿标联动，随时掌控合流完备度</text>
+    </g>
+
+    <!-- Connector Arrows to Stage 04 -->
+    <path d="M 438 772 L 438 808" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4"/>
+    <path d="M 1162 772 L 1162 808" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="4 4"/>
+
+    <!-- Stage 04: Unified Result & Archiving -->
+    <rect x="76" y="812" width="1448" height="124" rx="20" fill="#0f172a" stroke="#6366f1" stroke-opacity="0.55" stroke-width="1.5"/>
+    <circle cx="130" cy="874" r="24" fill="#4f46e5"/>
+    <text x="130" y="880" font-family="ui-monospace, monospace" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">04</text>
+    <text x="172" y="866" font-size="20" font-weight="800" fill="#f8fafc">集货结果与履约归档（共用状态终态）</text>
+    <text x="172" y="894" font-size="14" fill="#94a3b8">统一沉淀分单明细、合并记录、缺货差异快照与箱号面单台账，向下游复核与城配装车输出确定性单据</text>
+
+    <g transform="translate(1060, 848)" font-size="13" font-weight="700">
+      <rect x="0" y="0" width="204" height="52" rx="14" fill="#312e81" fill-opacity="0.55" stroke="#818cf8" stroke-opacity="0.5"/>
+      <text x="102" y="31" fill="#e0e7ff" text-anchor="middle">差异异常留痕可回溯</text>
+      <rect x="220" y="0" width="212" height="52" rx="14" fill="#064e3b" fill-opacity="0.55" stroke="#34d399" stroke-opacity="0.5"/>
+      <text x="326" y="31" fill="#d1fae5" text-anchor="middle">箱码面单闭环直出</text>
+    </g>
+  </g>
+</svg>

@@ -711,6 +711,367 @@ export const CASE_STUDIES: CaseStudyData[] = [
       },
     ],
   },
+
+  {
+    slug: "storefront-system",
+    indexLabel: "06",
+    category: "设计系统与低代码引擎",
+    filterGroup: "b2b",
+    featuredSpan: true,
+    badge: "Container Query 契约",
+    title: "双端店铺装修与容器组件体系",
+    oneLiner:
+      "构建三栏可视化低代码装修工作台，制定基于父容器宽度的五级自适应栅格契约（Container Query V2.0），打通双端高还原交付闭环。",
+    role: "组件工程主设（低代码编排交互 / 容器断点规格 / 双端组件契约）",
+    period: "2026.05 — 2026.08",
+    coverSrc: `${ZXY}/storefront-system/01-pc-builder-manual.png`,
+    accentFrom: "#4f46e5",
+    accentTo: "#0ea5e9",
+    metrics: [
+      { value: "8 种分栏", label: "低代码骨架无缝嵌套" },
+      { value: "5 级断点", label: "容器宽度精准映射" },
+      { value: "92% 覆盖", label: "双端语义组件复用" },
+    ],
+    studioMode: "flow",
+    tracks: [
+      {
+        id: "builder",
+        tab: "双端低代码装修引擎",
+        device: "desktop",
+        steps: [
+          {
+            label: "手工选品与脏数据自愈",
+            title: "左骨架组件库 · 中实时画布 · 右属性面板三栏协同",
+            decision:
+              "支持 100% 通栏、1:1、3:1、1:2:1 等分栏自由嵌套；属性侧内置「自动识别并剔除停售商品」非阻断降级横幅，消除线上空白坏卡。",
+            image: `${ZXY}/storefront-system/01-pc-builder-manual.png`,
+            hotspots: [
+              {
+                x: 8,
+                y: 22,
+                title: "结构与业务组件解耦",
+                detail:
+                  "左侧先定布局骨架（分栏比例），再拖入营销橱窗或财务/工单数据看板，心智层次清晰。",
+              },
+              {
+                x: 88,
+                y: 34,
+                title: "停售异常自动剔除自愈",
+                detail:
+                  "当底层 ERP 商品状态变更为停售时，配置面板主动拦截并提示已清理数量，无需人工逐个排查。",
+              },
+            ],
+          },
+          {
+            label: "动态标签规则圈选",
+            title: "从静态人工维护，升级为布尔规则动态商品池",
+            decision:
+              "支持按「新品 / 促销 / 常购」等多标签「或（OR）」逻辑组合自动圈品，商户上新后前台橱窗零人工介入实时刷新。",
+            image: `${ZXY}/storefront-system/02-pc-builder-tag.png`,
+            hotspots: [
+              {
+                x: 89,
+                y: 31,
+                title: "手工 vs 标签双模切换",
+                detail:
+                  "兼顾精细化主推坑位（手工排序置顶）与大规模日常运营（标签规则自动流转）两类场景。",
+              },
+            ],
+          },
+          {
+            label: "移动端同源配置器",
+            title: "一套语义化 Schema 驱动 Web 与移动端双端装修",
+            decision:
+              "左侧控制模块显隐与拖拽排序，中间真机视口实时联动分组页签（推荐 / 常购 / 热销），右侧复用同一套标签与停售自愈逻辑。",
+            image: `${ZXY}/storefront-system/06-mobile-builder.png`,
+          },
+          {
+            label: "采购端多维选品弹窗",
+            title: "高密度 B2B 订货橱窗的消费态落地",
+            decision:
+              "统一编码、规格、批发价与收藏热区排布，支持编码/名称/条形码聚合检索，直接承接后台装修配置输出。",
+            image: `${ZXY}/storefront-system/03-pc-product-modal.png`,
+          },
+        ],
+      },
+      {
+        id: "container-query",
+        tab: "Container Query 栅格契约",
+        device: "desktop",
+        steps: [
+          {
+            label: "容器断点规格 V2.0",
+            title: "以父容器栏宽替代视口宽度，终结多分栏嵌套变形",
+            decision:
+              "严格定义 Zone 1~Zone 5 五段容器区间（280px~1500px）与 8 种分栏骨架的列数映射公式，作为前后端联调唯一标尺。",
+            image: `${ZXY}/storefront-system/07-container-spec-v2.svg`,
+            hotspots: [
+              {
+                x: 52,
+                y: 25,
+                title: "五级容器断点轴线",
+                detail:
+                  "锁定单卡最小可读宽度 ≥ 200px、统一间距 12px，无论组件被拖入主栏还是窄侧栏均自动匹配最佳列数。",
+              },
+              {
+                x: 45,
+                y: 66,
+                title: "8 种骨架零歧义映射表",
+                detail:
+                  "直接向前端输出精确到像素的栏宽与列数契约（如 1:1 分栏 744px → 3 列 227px/张），消除还原走查争议。",
+              },
+            ],
+          },
+          {
+            label: "横向卡片 4 档重排",
+            title: "横向商品卡在通栏、双栏与极窄侧栏下的弹性降维",
+            decision:
+              "从 1500px 3 列舒展态平滑过渡至 380px 以下单列紧凑态，低于 180px 自动触发横向滚动兜底，确保编码与价格永不截断错位。",
+            image: `${ZXY}/storefront-system/04-container-horizontal.png`,
+          },
+          {
+            label: "纵向卡片 5 档与空图兜底",
+            title: "覆盖 5 列至 1 列全梯度响应及缺图占位容错",
+            decision:
+              "针对 B2B 海量长尾工业品常缺实拍图的现状，内置标准化无图占位骨架与两行标题截断规则，严守整行基线对齐。",
+            image: `${ZXY}/storefront-system/05-container-vertical.png`,
+          },
+        ],
+      },
+    ],
+    highlights: [
+      {
+        tag: "ENGINEERING CONTRACT · 容器级响应式标准",
+        title: "商品卡片网格 · Container Query 断点区间映射契约 V2.0",
+        caption:
+          "将设计直觉量化为前端可直接编码实现的 5 级容器区间与 8 种分栏映射矩阵，从根源上解决低代码画布任意拖拽后的排版崩坏问题。",
+        image: `${ZXY}/storefront-system/07-container-spec-v2.svg`,
+        wide: true,
+      },
+      {
+        tag: "FAULT-TOLERANT CONFIG",
+        title: "停售商品自动巡检剔除与双模选品",
+        caption:
+          "把 ERP 库存生命周期变更前置到装修配置侧自动消化，兼顾运营效率与线上商城零死链体验。",
+        image: `${ZXY}/storefront-system/01-pc-builder-manual.png`,
+      },
+      {
+        tag: "EDGE-CASE MATRIX",
+        title: "纵向与横向双形态全断点压力验证",
+        caption:
+          "完整覆盖长标题折行、无商品主图、极窄侧翼栏等真实企业采购边缘数据场景。",
+        image: `${ZXY}/storefront-system/05-container-vertical.png`,
+      },
+    ],
+    takeaways: [
+      {
+        code: "01 · 工程契约",
+        title: "组件响应式必须绑定“父容器”而非“屏幕”",
+        desc: "在低代码可嵌套场景下，传统 Media Query 必然失效；建立 Container Query 区间映射表后，前端仅凭一套 CSS 容器规则即可通吃 8 种布局。",
+      },
+      {
+        code: "02 · 异常自愈",
+        title: "优秀配置工具能主动消化上下游脏数据",
+        desc: "通过「停售商品自动识别清理」与「无图占位骨架」，避免后台 ERP 主数据变动直接传导为前台采购端的报错或破版。",
+      },
+      {
+        code: "03 · 双端同构",
+        title: "配置心智同源，渲染形态按端适配",
+        desc: "Web 与移动端共享同一套选品 Schema 与标签布尔规则，大幅降低商户学习成本并支撑团队 92% 双端组件复用率。",
+      },
+    ],
+  },
+
+  {
+    slug: "wms-fulfillment",
+    indexLabel: "07",
+    category: "供应链履约与状态机",
+    filterGroup: "b2b",
+    featuredSpan: true,
+    badge: "OOUX 视角反转",
+    title: "WMS 仓储履约全链路重构",
+    oneLiner:
+      "运用 OOUX 将集货作业从“逐单翻找”反转为“商品主视角统分”，贯通 PDA 限流领单、多批次效期拆零、双视角封箱与跨单集货状态机闭环。",
+    role: "供应链体验主设（仓内动线走查 / OOUX 领域建模 / PDA 高频交互重构）",
+    period: "2026.08 — 2026.10",
+    coverSrc: `${ZXY}/covers/wms-fulfillment-cover.svg`,
+    accentFrom: "#2563eb",
+    accentTo: "#14b8a6",
+    metrics: [
+      { value: "视角反转", label: "商品主分配 · 订单辅核验" },
+      { value: "3 级单位", label: "箱/袋/瓶同源步进契约" },
+      { value: "4 大环节", label: "领单→拣货→装箱→集货" },
+    ],
+    studioMode: "flow",
+    tracks: [
+      {
+        id: "consolidate",
+        tab: "OOUX 集货分单与合并",
+        device: "mobile",
+        steps: [
+          {
+            label: "双轨集货任务池",
+            title: "进度条外显 +「集货分单 / 集货合并」双轨清晰分流",
+            decision:
+              "将库位号、关联拣货单与商品/拣货单处理进度条置顶呈现，以蓝/青语义标签一眼区分“一批商品分多单”与“多拣货单合一单”两类作业。",
+            image: `${ZXY}/wms-fulfillment/06-consolidate-list.png`,
+            hotspots: [
+              {
+                x: 83,
+                y: 27,
+                title: "作业类型显性分流",
+                detail:
+                  "在列表层即明确标识「集货分单」与「集货合并」，让仓内作业员在走动前预判拿取容器策略。",
+              },
+              {
+                x: 52,
+                y: 33,
+                title: "可视化配齐进度条",
+                detail:
+                  "直观呈现 8/12 种、11/12 个实时完成度，优先推进临近尾声的待发运波次。",
+              },
+            ],
+          },
+          {
+            label: "商品主视角跨单统分",
+            title: "OOUX 核心重构：以商品为主操作对象，一次分完关联多单",
+            decision:
+              "颠覆旧版“点进订单 A 分 3 瓶 → 退出 → 点进订单 B 分 3 瓶”的折返路径；同屏汇聚总需求(10)、实集(8)、缺口(2)与门店分配策略。",
+            image: `${ZXY}/wms-fulfillment/07-consolidate-distribute.png`,
+            hotspots: [
+              {
+                x: 76,
+                y: 39,
+                title: "需求 / 实集 / 缺口三栏看板",
+                detail:
+                  "缺口数量以高对比警示色实时计算，从源头阻断超分与漏分冲突。",
+              },
+              {
+                x: 58,
+                y: 88,
+                title: "一键策略预填 + 自动下一项",
+                detail:
+                  "支持「按先到先得」或「按比例」自动填充各门店分配数，确认后自动切入下一待分品项。",
+              },
+            ],
+          },
+          {
+            label: "品项状态与缺货抽屉",
+            title: "不脱离当前作业流，原位拉起「全部 / 未处理 / 已处理」核查",
+            decision:
+              "底部轻抽屉集中暴露缺货差额（如缺 2 瓶）与处理状态，消除深层页面跳转带来的上下文迷失。",
+            image: `${ZXY}/wms-fulfillment/08-consolidate-drawer.png`,
+          },
+          {
+            label: "跨区拣货单合流",
+            title: "面向多温区并行拣货的「集货合并」容器状态机",
+            decision:
+              "按 A/B/C 库区货架容器逐单确认，已核验容器自动切换为「已确认」并解锁「装箱」入口，防止未齐套错发。",
+            image: `${ZXY}/wms-fulfillment/09-consolidate-merge.png`,
+          },
+          {
+            label: "货架容器明细核对",
+            title: "单拣货容器原位清点与缺货异常留痕",
+            decision:
+              "聚焦当前周转箱（如 PK-1031-05）展示货架来源与差异数量，单手大热区一键确认。",
+            image: `${ZXY}/wms-fulfillment/10-consolidate-check.png`,
+          },
+        ],
+      },
+      {
+        id: "pick-pack",
+        tab: "PDA 拣货与双模装箱",
+        device: "mobile",
+        steps: [
+          {
+            label: "限流领单与防误触",
+            title: "基于仓内负载均衡的规则限流与滑动领单",
+            decision:
+              "顶部外显总池任务数与当前权限可领上限（24 单中可领 8 单），单卡采用防误触滑动领取与「一单一拣」标签提示。",
+            image: `${ZXY}/wms-fulfillment/01-pick-claim.png`,
+          },
+          {
+            label: "多级计量单位拆零",
+            title: "整箱 · 中袋 · 散瓶三级步进器同屏精准录入",
+            decision:
+              "针对快消商贸复杂包装换算痛点，将三级单位纵向对齐并联动总待拣数，该组件同步复用于 DMS 调拨单模块。",
+            image: `${ZXY}/wms-fulfillment/02-pick-multiunit.png`,
+            hotspots: [
+              {
+                x: 76,
+                y: 48,
+                title: "多级包装防算错组件",
+                detail:
+                  "无需仓管员心算箱规折合率，按实物整箱、中袋、散瓶直填即可自动汇总校验。",
+              },
+            ],
+          },
+          {
+            label: "FEFO 多批次溯源",
+            title: "同库位多效期批次（LOT）显性并列核验",
+            decision:
+              "拣货卡直接外显各批次号与对应单位数量（LOT2080 / LOT20），严守食品医药先进先出（FEFO）合规红线。",
+            image: `${ZXY}/wms-fulfillment/03-pick-lot-batch.png`,
+          },
+          {
+            label: "按商品维度装箱",
+            title: "边拣边装：面向装入动作的「按商品」视图",
+            decision:
+              "锁定当前开启箱号（1 号箱装箱中），逐品输入装入袋数并一键封箱，贴合单手手持 PDA 投箱节奏。",
+            image: `${ZXY}/wms-fulfillment/04-pack-by-sku.png`,
+          },
+          {
+            label: "按箱号拆分与打单",
+            title: "面向封箱复核与城配交接的「按箱号」视图",
+            decision:
+              "左侧箱号导航轨联动右侧箱内明细，顶部集中提供逐箱蓝牙面单「打印」与超重「拆分」能力，形成物理履约闭环。",
+            image: `${ZXY}/wms-fulfillment/05-pack-by-box.png`,
+          },
+        ],
+      },
+    ],
+    highlights: [
+      {
+        tag: "OOUX STATE ARCHITECTURE · 业务建模壁垒",
+        title: "集货作业视角反转架构图：以商品分配为主、订单核对为辅",
+        caption:
+          "完整拆解「集货分单（1 批商品 → N 张订单）」与「集货合并（M 张拣货单 → 1 张订单）」双轨状态流转及异常缺口拦截机制。",
+        image: `${ZXY}/wms-fulfillment/11-ooux-architecture.svg`,
+        wide: true,
+      },
+      {
+        tag: "PERSPECTIVE INVERSION",
+        title: "跨单统分与策略预填工作面",
+        caption:
+          "将分散在十余张门店单据里的同一 SKU 聚拢至单屏完成分配，单品跨单分货路径缩短约 60%。",
+        image: `${ZXY}/wms-fulfillment/07-consolidate-distribute.png`,
+      },
+      {
+        tag: "DUAL-VIEW PACKING",
+        title: "「按商品装入」与「按箱号拆打」双视角切换",
+        caption:
+          "同一物理装箱流程在不同阶段需要完全不同的主键视角：装入时看商品，封箱打印与超重拆箱时看箱号。",
+        image: `${ZXY}/wms-fulfillment/05-pack-by-box.png`,
+      },
+    ],
+    takeaways: [
+      {
+        code: "01 · OOUX 反转",
+        title: "选对主操作对象，比局部美化按钮有效十倍",
+        desc: "当业务本质是“把刚拣回的一车货分给多家门店”时，强迫用户按订单进入就是逆人因设计；反转为商品主视角后，认知与点击成本迎刃而解。",
+      },
+      {
+        code: "02 · 现场人因",
+        title: "为走动、单手与高频扫码的真实仓库环境设计",
+        desc: "引入底部固定大热区、策略一键预填、「自动下一项」连贯跳转与原位轻抽屉，最大限度减少仓管员在货架间的低头点按次数。",
+      },
+      {
+        code: "03 · 跨端资产",
+        title: "提炼多级计量单位与批次核验的供应链原子组件",
+        desc: "将「箱/袋/瓶多级步进器」与「效期批次胶囊」抽象为标准业务组件，无缝横向复用至 DMS 调拨单与盘点模块。",
+      },
+    ],
+  },
 ];
 
 export function getCaseStudyBySlug(slug: string): CaseStudyData | undefined {
