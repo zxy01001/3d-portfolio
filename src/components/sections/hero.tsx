@@ -153,11 +153,11 @@ const HeroSection = () => {
 
                 <Tooltip delayDuration={250}>
                   <TooltipTrigger asChild>
-                    <Link href={`mailto:${config.email}`}>
+                    <Link href="#contact">
                       <Button
                         variant="outline"
                         size="icon"
-                        aria-label="发送邮件"
+                        aria-label="在线联系"
                         className="bg-background/95"
                       >
                         <Mail size={16} />
@@ -165,7 +165,7 @@ const HeroSection = () => {
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
-                    <p>{config.email}</p>
+                    <p>前往在线联系模块（防爬虫保护）</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -174,6 +174,7 @@ const HeroSection = () => {
                     <Link
                       href={config.social.github}
                       target="_blank"
+                      rel="noopener noreferrer"
                       aria-label="GitHub"
                     >
                       <Button

@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowUpRight,
+  Check,
   GraduationCap,
   Mail,
   MapPin,
@@ -15,10 +16,41 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { config } from "@/data/config";
+import { decodeProtectedEmail, getMaskedEmail } from "@/lib/contact-shield";
 import { EDUCATION, EXPERIENCE, SKILLS, VALUE_PILLARS } from "@/data/constants";
 import { CASE_STUDIES } from "@/data/case-studies";
 
 export default function ResumeView() {
+  const [revealedEmail, setRevealedEmail] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const onBeforePrint = () => setRevealedEmail(decodeProtectedEmail());
+    const onAfterPrint = () => setRevealedEmail(null);
+    window.addEventListener("beforeprint", onBeforePrint);
+    window.addEventListener("afterprint", onAfterPrint);
+    return () => {
+      window.removeEventListener("beforeprint", onBeforePrint);
+      window.removeEventListener("afterprint", onAfterPrint);
+    };
+  }, []);
+
+  const handleRevealAndCopy = async () => {
+    const full = decodeProtectedEmail();
+    setRevealedEmail(full);
+    try {
+      await navigator.clipboard.writeText(full);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handlePrintPdf = () => {
+    setRevealedEmail(decodeProtectedEmail());
+    setTimeout(() => window.print(), 60);
+  };
   return (
     <div className="min-h-screen font-sans pt-24 pb-20 print:pt-0 print:pb-0">
       {/* Print-clean overrides so window.print() exports a crisp A4 PDF */}
@@ -47,7 +79,7 @@ export default function ResumeView() {
 
           <div className="flex items-center gap-2.5">
             <Button
-              onClick={() => window.print()}
+              onClick={handlePrintPdf}
               size="sm"
               className="gap-2 rounded-full px-5 shadow-sm"
             >
@@ -93,20 +125,28 @@ export default function ResumeView() {
               </p>
 
               <div className="pt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <a
-                  href={`mailto:${config.email}`}
+                <button
+                  type="button"
+                  onClick={handleRevealAndCopy}
+                  title="防爬虫保护，点击即可显示并复制完整邮箱"
                   className="inline-flex items-center gap-1.5 font-mono hover:text-foreground transition-colors"
                 >
-                  <Mail className="h-3.5 w-3.5 text-cyan-500" />
-                  {config.email}
-                </a>
+                  {copied ? (
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  ) : (
+                    <Mail className="h-3.5 w-3.5 text-cyan-500" />
+                  )}
+                  <span>
+                    {revealedEmail ?? `${getMaskedEmail()}（点击显示）`}
+                  </span>
+                </button>
                 <span>·</span>
                 <span className="inline-flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5 text-cyan-500" />
                   {config.location}
                 </span>
                 <span>·</span>
-                <span>24 岁 · {config.experienceYears}</span>
+                <span>{config.experienceYears} · 本科</span>
               </div>
             </div>
 

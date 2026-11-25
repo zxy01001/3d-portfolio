@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import ContactForm from "../ContactForm";
 import { config } from "@/data/config";
+import { decodeProtectedEmail, getMaskedEmail } from "@/lib/contact-shield";
 import { SectionHeader } from "./section-header";
 import SectionWrapper from "../ui/section-wrapper";
 import {
@@ -48,14 +49,20 @@ const QUICK_LINKS = [
 
 const ContactSection = () => {
   const [copied, setCopied] = useState(false);
+  const [revealedEmail, setRevealedEmail] = useState<string | null>(null);
 
   const handleCopyEmail = async () => {
+    const full = decodeProtectedEmail();
+    setRevealedEmail(full);
     try {
-      await navigator.clipboard.writeText(config.email);
+      await navigator.clipboard.writeText(full);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => {
+        setCopied(false);
+        setRevealedEmail(null);
+      }, 4000);
     } catch {
-      /* ignore */
+      setTimeout(() => setRevealedEmail(null), 5000);
     }
   };
 
@@ -99,17 +106,18 @@ const ContactSection = () => {
                 variant="secondary"
                 size="sm"
                 onClick={handleCopyEmail}
+                title="已开启防爬虫脱敏，点击即可显示并复制完整邮箱"
                 className="gap-2 font-mono text-xs"
               >
                 {copied ? (
                   <>
                     <Check className="h-3.5 w-3.5 text-emerald-500" />
-                    已复制：{config.email}
+                    已复制：{revealedEmail}
                   </>
                 ) : (
                   <>
                     <Copy className="h-3.5 w-3.5" />
-                    {config.email}
+                    {revealedEmail ?? `${getMaskedEmail()}（点击复制）`}
                   </>
                 )}
               </Button>

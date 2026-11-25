@@ -24,7 +24,9 @@ const config = {
   experienceYears: "2 年实战经验",
   education: "南京传媒学院 · 交互设计专业前 3%",
   status: "OPEN TO OPPORTUNITIES",
-  email: "476181740@qq.com",
+  // Plaintext email omitted from static bundle to prevent automated crawler harvesting;
+  // use decodeProtectedEmail() / getMaskedEmail() from @/lib/contact-shield on interaction.
+  email: "476***740@qq.com",
   site: "https://zxy01001.github.io/portfolio",
 
   metrics: [
@@ -40,10 +42,10 @@ const config = {
     return this.site + "/assets/zxy/avatar.jpg";
   },
   social: {
-    twitter: "mailto:476181740@qq.com",
+    twitter: "/#contact",
     linkedin: "/resume",
-    instagram: "mailto:476181740@qq.com",
-    facebook: "mailto:476181740@qq.com",
+    instagram: "/#contact",
+    facebook: "/#contact",
     github: "https://github.com/zxy01001",
   },
 };

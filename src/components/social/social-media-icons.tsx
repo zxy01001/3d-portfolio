@@ -14,8 +14,8 @@ const SocialMediaButtons = () => {
 
   const buttons = [
     {
-      name: "邮箱联系",
-      href: `mailto:${config.email}`,
+      name: "在线联系",
+      href: "/#contact",
       icon: <Mail className="h-5 w-5 text-foreground/80" />,
       external: false,
     },
@@ -41,6 +41,7 @@ const SocialMediaButtons = () => {
             href={button.href}
             key={button.name}
             target={button.external ? "_blank" : undefined}
+            rel={button.external ? "noopener noreferrer" : undefined}
             aria-label={button.name}
           >
             <Button variant={"ghost"} size={"icon"}>

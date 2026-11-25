@@ -1,5 +1,5 @@
 "use client";
-import { ChevronRight, Loader2, CheckCircle2 } from "lucide-react";
+import { ChevronRight, Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
 import React from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/ace-input";
@@ -7,13 +7,28 @@ import { Textarea } from "./ui/ace-textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "./ui/use-toast";
 import { Button } from "./ui/button";
-import { config } from "@/data/config";
+import { decodeProtectedEmail, getMaskedEmail } from "@/lib/contact-shield";
 import { z } from "zod";
 
+const COOLDOWN_MS = 60_000;
+const COOLDOWN_KEY = "portfolio:contact-cooldown-ts";
+
+const sanitizeText = (raw: string) =>
+  raw.replace(/[<>]/g, "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").trim();
+
 const formSchema = z.object({
-  fullName: z.string().min(1, "请填写您的姓名或所属机构"),
-  email: z.string().email("请输入有效的联系邮箱"),
-  message: z.string().min(4, "请简要说明沟通事项（不少于 4 个字符）"),
+  fullName: z
+    .string()
+    .min(1, "请填写您的姓名或所属机构")
+    .max(80, "名称长度请控制在 80 个字符以内"),
+  email: z
+    .string()
+    .email("请输入有效的联系邮箱")
+    .max(120, "邮箱长度超出限制"),
+  message: z
+    .string()
+    .min(4, "请简要说明沟通事项（不少于 4 个字符）")
+    .max(1500, "内容长度请控制在 1500 个字符以内"),
 });
 
 type FieldErrors = Partial<Record<keyof z.infer<typeof formSchema>, string>>;
@@ -22,6 +37,7 @@ const ContactForm = () => {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const [honeypot, setHoneypot] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [sentSuccess, setSentSuccess] = React.useState(false);
   const [errors, setErrors] = React.useState<FieldErrors>({});
@@ -33,7 +49,37 @@ const ContactForm = () => {
     setErrors({});
     setSentSuccess(false);
 
-    const result = formSchema.safeParse({ fullName, email, message });
+    // 1. Honeypot anti-bot check: real humans never see or fill this field
+    if (honeypot.trim().length > 0) {
+      setSentSuccess(true);
+      return;
+    }
+
+    // 2. Rate-limit check (60s per browser) to block automated spam floods
+    try {
+      const lastTs = Number(localStorage.getItem(COOLDOWN_KEY) || "0");
+      const elapsed = Date.now() - lastTs;
+      if (lastTs > 0 && elapsed < COOLDOWN_MS) {
+        const remainSec = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
+        toast({
+          title: "提交频率保护",
+          description: `为防止恶意刷信，请等待 ${remainSec} 秒后再发送新消息。`,
+          variant: "default",
+          className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
+        });
+        return;
+      }
+    } catch {
+      /* ignore storage errors */
+    }
+
+    const cleanPayload = {
+      fullName: sanitizeText(fullName),
+      email: email.trim(),
+      message: sanitizeText(message),
+    };
+
+    const result = formSchema.safeParse(cleanPayload);
     if (!result.success) {
       const fieldErrors: FieldErrors = {};
       result.error.issues.forEach((issue) => {
@@ -44,20 +90,23 @@ const ContactForm = () => {
       return;
     }
 
+    const recipient = decodeProtectedEmail();
+    const masked = getMaskedEmail();
+
     setLoading(true);
     try {
-      // Direct serverless email delivery via FormSubmit AJAX endpoint (zero backend / zero cost)
-      const res = await fetch(`https://formsubmit.co/ajax/${config.email}`, {
+      const res = await fetch(`https://formsubmit.co/ajax/${recipient}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          name: fullName,
-          email,
-          message,
-          _subject: `【作品集联系】来自 ${fullName} 的沟通信息`,
+          name: cleanPayload.fullName,
+          email: cleanPayload.email,
+          message: cleanPayload.message,
+          _honey: honeypot,
+          _subject: `【作品集联系】来自 ${cleanPayload.fullName} 的沟通信息`,
           _template: "table",
           _captcha: "false",
         }),
@@ -69,13 +118,12 @@ const ContactForm = () => {
         throw new Error(data?.message || "send-failed");
       }
 
-      // FormSubmit returns { success: "false", message: "...Activation..." } on the very first run before inbox activation
       if (data && (data.success === "false" || data.success === false)) {
         const msg = String(data.message || "");
         if (/activat/i.test(msg)) {
           toast({
-            title: "已触发首次收件激活邮件",
-            description: `请前往 ${config.email} 收件箱（或垃圾箱）点击一次 FormSubmit 的 Activate 按钮，激活后所有留言将直接送达。`,
+            title: "已触发首次收件安全激活",
+            description: `请前往收件箱（${masked}）点击一次 FormSubmit 的 Activate 按钮，激活后所有留言将加密直达。`,
             variant: "default",
             className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
           });
@@ -83,10 +131,15 @@ const ContactForm = () => {
           throw new Error(msg);
         }
       } else {
+        try {
+          localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
+        } catch {
+          /* ignore */
+        }
         setSentSuccess(true);
         toast({
-          title: "邮件已直接发送成功",
-          description: `您的信息已投递至 ${config.email}，我将尽快与您联系。`,
+          title: "邮件已安全投递成功",
+          description: `您的信息已加密发送至收件箱（${masked}），我将尽快回复。`,
           variant: "default",
           className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
         });
@@ -95,14 +148,14 @@ const ContactForm = () => {
         setMessage("");
       }
     } catch {
-      const subject = encodeURIComponent(`【作品集联系】${fullName}`);
+      const subject = encodeURIComponent(`【作品集联系】${cleanPayload.fullName}`);
       const body = encodeURIComponent(
-        `姓名/机构：${fullName}\n联系邮箱：${email}\n\n沟通事项：\n${message}`
+        `姓名/机构：${cleanPayload.fullName}\n联系邮箱：${cleanPayload.email}\n\n沟通事项：\n${cleanPayload.message}`
       );
-      window.location.href = `mailto:${config.email}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
       toast({
-        title: "网络受限，已为您唤起系统邮件客户端",
-        description: `您亦可直接复制邮箱 ${config.email} 发送联系信息。`,
+        title: "已调起本地邮件客户端",
+        description: "您亦可点击上方脱敏邮箱按钮一键复制完整邮箱联系。",
         variant: "default",
         className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4 z-[10000]"),
       });
@@ -112,7 +165,24 @@ const ContactForm = () => {
   };
 
   return (
-    <form className="w-full" onSubmit={handleSubmit} aria-busy={loading}>
+    <form className="w-full" onSubmit={handleSubmit} aria-busy={loading} autoComplete="on">
+      {/* Offscreen Honeypot Trap for Automated Spambots */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden opacity-0"
+      >
+        <label htmlFor="company_website_url">Website</label>
+        <input
+          id="company_website_url"
+          name="_honey"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-3.5">
         <LabelInputContainer>
           <Label htmlFor="fullname">姓名 / 所属机构</Label>
@@ -120,6 +190,7 @@ const ContactForm = () => {
             id="fullname"
             placeholder="例如：某科技公司 / 产品研发团队"
             type="text"
+            maxLength={80}
             value={fullName}
             onChange={(e) => {
               setFullName(e.target.value);
@@ -136,6 +207,7 @@ const ContactForm = () => {
             id="email"
             placeholder="name@company.com"
             type="email"
+            maxLength={120}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -151,9 +223,10 @@ const ContactForm = () => {
       <div className="grid w-full gap-2 mb-4">
         <Label htmlFor="content">沟通事项</Label>
         <Textarea
-          placeholder="请简要说明岗位方向（UX / 产品经理 / FDE）、业务场景或合作意向，点击下方按钮将直接投递至我的邮箱..."
+          placeholder="请简要说明岗位方向（UX / 产品经理 / FDE）、业务场景或合作意向，点击下方按钮将加密投递至我的邮箱..."
           id="content"
           rows={4}
+          maxLength={1500}
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
@@ -173,17 +246,18 @@ const ContactForm = () => {
         {loading ? (
           <div className="flex items-center justify-center">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <span>正在发送至邮箱...</span>
+            <span>正在加密投递...</span>
           </div>
         ) : sentSuccess ? (
           <div className="flex items-center justify-center text-emerald-400">
             <CheckCircle2 className="mr-2 h-4 w-4" />
-            <span>已发送至 {config.email}</span>
+            <span>已安全投递至收件箱</span>
           </div>
         ) : (
           <div className="flex items-center justify-center">
+            <ShieldCheck className="w-4 h-4 mr-1.5 text-cyan-400" />
             <span>直接发送邮件给我</span>
-            <ChevronRight className="w-4 h-4 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
+            <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover/btn:translate-x-0.5" />
           </div>
         )}
         <BottomGradient />
