@@ -44,21 +44,21 @@ export const usePreloader = () => {
   return context;
 };
 
-const MIN_SHOWCASE_MS = 900;
-const HARD_FAILSAFE_MS = 3600;
+// Crisp ~1.45s minimum cinematic showcase so fast GPUs still display the 3D holographic
+// ring-lock & dual-shutter blast reveal, with an instant SKIP button always available.
+const MIN_SHOWCASE_MS = 1450;
+const HARD_FAILSAFE_MS = 3800;
 
 function Preloader({ children, disabled = false }: PreloaderProps) {
   const pathname = usePathname();
-  // Show the signature 3D blueprint preloader only on the homepage ("/").
-  // Deep links to /projects/[slug], /blogs, or /resume open instantaneously!
   const skip = disabled || Boolean(pathname && pathname !== "/");
 
   const [isLoading, setIsLoading] = useState(!skip);
-  const [loadingPercent, setLoadingPercent] = useState(skip ? 100 : 8);
+  const [loadingPercent, setLoadingPercent] = useState(skip ? 100 : 6);
   const loadingTween = useRef<gsap.core.Tween | null>(null);
   const finishingRef = useRef(false);
   const mountedAtRef = useRef<number>(Date.now());
-  const loadingPercentRef = useRef<{ value: number }>({ value: skip ? 100 : 8 });
+  const loadingPercentRef = useRef<{ value: number }>({ value: skip ? 100 : 6 });
 
   const { disable3D, ready: perfReady } = usePerfProfile();
 
@@ -70,28 +70,27 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
     setIsLoading(false);
   }, []);
 
-  /**
-   * Hybrid Awwwards finish: when the 3D scene reports ready (or fallback triggers),
-   * smoothly glide the counter from its current value to 100% before lifting the curtain.
-   */
   const bypassLoading = useCallback(() => {
     if (finishingRef.current) return;
     finishingRef.current = true;
     loadingTween.current?.kill();
 
     const elapsed = Date.now() - mountedAtRef.current;
-    const remainingMinSec = Math.max(0.32, (MIN_SHOWCASE_MS - elapsed) / 1000);
+    const remainingMinSec = Math.max(0.42, (MIN_SHOWCASE_MS - elapsed) / 1000);
 
     loadingTween.current = gsap.to(loadingPercentRef.current, {
       value: 100,
-      duration: Math.min(0.65, remainingMinSec),
-      ease: "power2.out",
+      duration: Math.min(1.15, remainingMinSec),
+      ease: "power2.inOut",
       onUpdate: () => {
         setLoadingPercent(loadingPercentRef.current.value);
       },
       onComplete: () => {
         setLoadingPercent(100);
-        setIsLoading(false);
+        // Brief 90ms lock at 100% so the user sees PORTAL LOCKED before the blast doors split!
+        window.setTimeout(() => {
+          setIsLoading(false);
+        }, 90);
       },
     });
   }, []);
@@ -111,13 +110,11 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
     if (skip) return;
     mountedAtRef.current = Date.now();
     finishingRef.current = false;
-    loadingPercentRef.current.value = 8;
+    loadingPercentRef.current.value = 6;
 
-    // Hybrid approach: glide organically from 8% -> 88% while real WebGL & GLB assets load,
-    // then glide 88% -> 100% as soon as `bypassLoading()` fires (or failsafe triggers).
     loadingTween.current = gsap.to(loadingPercentRef.current, {
       value: 88,
-      duration: 2.2,
+      duration: 2.3,
       ease: "power1.out",
       onUpdate: () => {
         setLoadingPercent(loadingPercentRef.current.value);
