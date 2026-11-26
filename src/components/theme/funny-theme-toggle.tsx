@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { runCircularThemeTransition } from "@/lib/theme-transition";
 import {
   Tooltip,
   TooltipContent,
@@ -26,12 +27,12 @@ export default function FunnyThemeToggle({
 
   const isLight = mounted && resolvedTheme === "light";
 
-  // Zero-stall theme switch: avoids `document.startViewTransition` + `flushSync`,
-  // which previously forced synchronous Retina WebGL framebuffer readbacks (`glReadPixels`).
-  const handleToggle = () => {
+  const handleToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
     const nextTheme = isLight ? "dark" : "light";
-    React.startTransition(() => {
-      setTheme(nextTheme);
+    const rect = event.currentTarget.getBoundingClientRect();
+    void runCircularThemeTransition(nextTheme, setTheme, {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
     });
   };
 

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { CASE_STUDIES } from "@/data/case-studies";
 import { decodeProtectedEmail, getMaskedEmail } from "@/lib/contact-shield";
+import { runCircularThemeTransition } from "@/lib/theme-transition";
 import { cn } from "@/lib/utils";
 
 export const OPEN_COMMAND_PALETTE_EVENT = "portfolio:open-command-palette";
@@ -130,10 +131,13 @@ export default function CommandPalette() {
           <Sun className="h-4 w-4 text-sky-400 shrink-0" />
         ),
         run: () => {
-          React.startTransition(() => {
-            setTheme(isLight ? "dark" : "light");
-          });
           setOpen(false);
+          requestAnimationFrame(() => {
+            void runCircularThemeTransition(
+              isLight ? "dark" : "light",
+              setTheme
+            );
+          });
         },
       },
       {

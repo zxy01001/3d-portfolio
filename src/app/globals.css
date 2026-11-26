@@ -256,11 +256,32 @@ body > canvas {
   }
 }
 
-/* Clean circular View Transition without default browser crossfade interference */
+/* Hardware-composited Circular View Transition (zero mid-animation style thrash) */
+::view-transition-group(root) {
+  animation-duration: 0s;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  will-change: clip-path;
+  height: 100%;
+  overflow: clip;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+html[data-vt-active="true"] *,
+html[data-vt-active="true"] *::before,
+html[data-vt-active="true"] *::after {
+  transition: none !important;
 }
 
 html[data-motion="off"],

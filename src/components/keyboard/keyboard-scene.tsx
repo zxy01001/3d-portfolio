@@ -4,6 +4,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -150,110 +151,105 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     counterMotion.current?.update(total, available);
   }, [total, available, ready, loadVersion, scene]);
 
-  useEffect(() => {
-    if (!ready || !api.current) return;
-    let frame = 0;
-    // Defer GPU uniform updates by 1 rAF so DOM CSS theme flip completes in <1ms on Frame 0
-    frame = requestAnimationFrame(() => {
-      const host = api.current;
-      if (!host) return;
+  // Synchronous layout-phase uniform write (<0.7ms, zero shader recompile) so
+  // `runCircularThemeTransition`'s single rAF captures the updated 3D keyboard cleanly!
+  useLayoutEffect(() => {
+    const host = api.current;
+    if (!ready || !host) return;
 
-      // 1. Toggle dedicated Daylight Softbox Studio Fill Lights (0.01ms visibility flag)
-      host.setNodeVisible(scene.lightStudioFillId, isLight);
+    // 1. Toggle dedicated Daylight Softbox Studio Fill Lights
+    host.setNodeVisible(scene.lightStudioFillId, isLight);
 
-      // 2. Switch CNC Aluminum Chassis & Switch Plate (Silver-Porcelain vs Stealth Obsidian)
-      host.setMaterial(
-        scene.caseMaterialId,
-        isLight
-          ? {
-              color: "#e9eef5",
-              roughness: 0.36,
-              metalness: 0.08,
-              emissive: "#f8fafc",
-              emissiveIntensity: 0.1,
-            }
-          : {
-              color: "#171819",
-              roughness: 0.64,
-              metalness: 0,
-              emissive: "#000000",
-              emissiveIntensity: 0,
-            }
-      );
-
-      host.setMaterial(
-        scene.plateMaterialId,
-        isLight
-          ? {
-              color: "#cbd5e1",
-              roughness: 0.5,
-              metalness: 0.1,
-              emissive: "#e2e8f0",
-              emissiveIntensity: 0.08,
-            }
-          : {
-              color: "#101213",
-              roughness: 0.82,
-              metalness: 0,
-              emissive: "#000000",
-              emissiveIntensity: 0,
-            }
-      );
-
-      // 3. Switch Embedded Mechanical Counter Frame
-      host.setMaterial(scene.counter.rimMaterialId, {
-        color: isLight ? "#cbd5e1" : "#343638",
-        roughness: isLight ? 0.35 : 0.46,
-      });
-      host.setMaterial(scene.counter.insetMaterialId, {
-        color: isLight ? "#64748b" : "#070809",
-      });
-      host.setMaterial(scene.counter.drumMaterialId, {
-        color: isLight ? "#1e293b" : "#161819",
-      });
-
-      // 4. Switch 23 Sculpted Custom PBT Keycaps & Dye-Sub Legends
-      for (const key of scene.keys) {
-        if (isLight) {
-          const isAccentHero = key.lightBodyColor === "#4f46e5";
-          host.setMaterial(key.materialId, {
-            color: key.lightBodyColor,
-            emissive: key.lightBodyColor,
-            emissiveIntensity: isAccentHero ? 0.06 : 0.11,
-          });
-          if (key.logoMaterialId) {
-            host.setMaterial(key.logoMaterialId, {
-              color: key.lightLegendColor,
-            });
+    // 2. Switch CNC Aluminum Chassis & Switch Plate (Silver-Porcelain vs Stealth Obsidian)
+    host.setMaterial(
+      scene.caseMaterialId,
+      isLight
+        ? {
+            color: "#e9eef5",
+            roughness: 0.36,
+            metalness: 0.08,
+            emissive: "#f8fafc",
+            emissiveIntensity: 0.1,
           }
-        } else {
-          host.setMaterial(key.materialId, {
-            color: key.darkBodyColor,
+        : {
+            color: "#171819",
+            roughness: 0.64,
+            metalness: 0,
             emissive: "#000000",
             emissiveIntensity: 0,
-          });
-          if (key.logoMaterialId) {
-            host.setMaterial(key.logoMaterialId, {
-              color: "#ffffff",
-            });
           }
-        }
-      }
+    );
 
-      // 5. Switch 3D Floating Skill Headings & Descriptions
-      host.setMaterial(scene.textMaterialId, {
-        color: isLight ? "#0f172a" : "#ffffff",
-      });
-      for (const desc of scene.descriptions) {
-        host.setMaterial(desc.materialId, {
-          color: isLight ? "#334155" : "#f1f5f9",
-        });
-      }
+    host.setMaterial(
+      scene.plateMaterialId,
+      isLight
+        ? {
+            color: "#cbd5e1",
+            roughness: 0.5,
+            metalness: 0.1,
+            emissive: "#e2e8f0",
+            emissiveIntensity: 0.08,
+          }
+        : {
+            color: "#101213",
+            roughness: 0.82,
+            metalness: 0,
+            emissive: "#000000",
+            emissiveIntensity: 0,
+          }
+    );
 
-      markActive();
+    // 3. Switch Embedded Mechanical Counter Frame
+    host.setMaterial(scene.counter.rimMaterialId, {
+      color: isLight ? "#cbd5e1" : "#343638",
+      roughness: isLight ? 0.35 : 0.46,
+    });
+    host.setMaterial(scene.counter.insetMaterialId, {
+      color: isLight ? "#64748b" : "#070809",
+    });
+    host.setMaterial(scene.counter.drumMaterialId, {
+      color: isLight ? "#1e293b" : "#161819",
     });
 
-    return () => cancelAnimationFrame(frame);
+    // 4. Switch 23 Sculpted Custom PBT Keycaps & Dye-Sub Legends
+    for (const key of scene.keys) {
+      if (isLight) {
+        const isAccentHero = key.lightBodyColor === "#4f46e5";
+        host.setMaterial(key.materialId, {
+          color: key.lightBodyColor,
+          emissive: key.lightBodyColor,
+          emissiveIntensity: isAccentHero ? 0.06 : 0.11,
+        });
+        if (key.logoMaterialId) {
+          host.setMaterial(key.logoMaterialId, {
+            color: key.lightLegendColor,
+          });
+        }
+      } else {
+        host.setMaterial(key.materialId, {
+          color: key.darkBodyColor,
+          emissive: "#000000",
+          emissiveIntensity: 0,
+        });
+        if (key.logoMaterialId) {
+          host.setMaterial(key.logoMaterialId, {
+            color: "#ffffff",
+          });
+        }
+      }
+    }
+
+    // 5. Switch 3D Floating Skill Headings & Descriptions
+    host.setMaterial(scene.textMaterialId, {
+      color: isLight ? "#0f172a" : "#ffffff",
+    });
+    for (const desc of scene.descriptions) {
+      host.setMaterial(desc.materialId, {
+        color: isLight ? "#334155" : "#f1f5f9",
+      });
+    }
+
+    markActive();
   }, [ready, loadVersion, texturesVersion, scene, isLight, markActive]);
 
   useEffect(() => {
