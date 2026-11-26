@@ -5,7 +5,7 @@ export const rootExit = {
   exit: {
     opacity: 1,
     transition: {
-      duration: 0.88,
+      duration: 0.86,
     },
   },
 };
@@ -15,11 +15,11 @@ export const shutterTopExit = {
     y: "0%",
   },
   exit: {
-    y: "-104%",
+    y: "-102%",
     transition: {
-      duration: 0.82,
+      duration: 0.8,
       ease: [0.83, 0, 0.17, 1] as const,
-      delay: 0.08,
+      delay: 0.06,
     },
   },
 };
@@ -29,11 +29,11 @@ export const shutterBottomExit = {
     y: "0%",
   },
   exit: {
-    y: "104%",
+    y: "102%",
     transition: {
-      duration: 0.82,
+      duration: 0.8,
       ease: [0.83, 0, 0.17, 1] as const,
-      delay: 0.08,
+      delay: 0.06,
     },
   },
 };
@@ -42,14 +42,12 @@ export const hudContentExit = {
   initial: {
     opacity: 1,
     scale: 1,
-    filter: "blur(0px)",
   },
   exit: {
     opacity: 0,
-    scale: 1.08,
-    filter: "blur(8px)",
+    scale: 0.95,
     transition: {
-      duration: 0.38,
+      duration: 0.32,
       ease: [0.33, 1, 0.68, 1] as const,
     },
   },
