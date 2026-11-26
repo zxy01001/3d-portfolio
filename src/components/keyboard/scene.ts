@@ -51,7 +51,6 @@ export type KeyboardScene = {
   revealId: string;
   caseMaterialId: string;
   plateMaterialId: string;
-  lightStudioFillId: string;
   catId: string;
   frameIds: [string, string];
   labelsId: string;
@@ -243,9 +242,11 @@ export function createKeyboardScene(
       parent
     );
 
+  // Fixed 2-light studio rig — keeping light count constant prevents Three.js
+  // from ever recompiling 50+ PBR shaders (`NUM_DIR_LIGHTS`) on theme switch!
   for (const [name, position, intensity, castShadow] of [
     ["Key light", [-6, 8, -3], 2.8, true],
-    ["Fill", [4, 6, 6], 0.16, false],
+    ["Fill", [4, 6, 6], 0.28, false],
   ] as const) {
     add({
       id: newId("nd"),
@@ -256,29 +257,6 @@ export function createKeyboardScene(
       transform: transform([...position]),
       light: { kind: "directional", color: "#ffffff", intensity, castShadow },
     });
-  }
-
-  // Dedicated Daylight Studio Softbox Fill Rig — invisible in Dark Mode,
-  // enabled in Light Mode so Ceramic-White PBT keycaps & Silver CNC chassis look crisp and airy.
-  const lightStudioFillId = group("Daylight studio fill");
-  doc.nodes[lightStudioFillId].visible = false;
-  for (const [name, position, color, intensity] of [
-    ["Daylight front fill", [5, 7, 8], "#f8fafc", 1.35],
-    ["Daylight top bounce", [0, 9, 4], "#ffffff", 0.72],
-    ["Daylight ice rim", [2, 4, -8], "#e0f2fe", 0.62],
-  ] as const) {
-    add(
-      {
-        id: newId("nd"),
-        name,
-        type: "light",
-        visible: true,
-        children: [],
-        transform: transform([...position]),
-        light: { kind: "directional", color, intensity, castShadow: false },
-      },
-      lightStudioFillId
-    );
   }
 
   const boardId = group("Keyboard placement");
@@ -578,7 +556,6 @@ export function createKeyboardScene(
     revealId,
     caseMaterialId: caseMaterial,
     plateMaterialId: plateMaterial,
-    lightStudioFillId,
     catId,
     frameIds,
     labelsId,

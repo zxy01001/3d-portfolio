@@ -1,25 +1,25 @@
 import { flushSync } from "react-dom";
 
-type ViewTransitionDoc = Document & {
-  startViewTransition?: (
-    updateCallback: () => Promise<void> | void
-  ) => {
-    ready: Promise<void>;
-    finished: Promise<void>;
-  };
+type ViewTransitionHandle = {
+  ready: Promise<void>;
+  finished: Promise<void>;
+  skipTransition?: () => void;
 };
 
-let inFlight = false;
+type ViewTransitionDoc = Document & {
+  startViewTransition?: (updateCallback: () => void) => ViewTransitionHandle;
+};
+
+let activeTransition: ViewTransitionHandle | null = null;
 
 /**
- * Silky-smooth 120fps Circular Ripple Theme Transition:
- * 1. Holds `data-vt-active="true"` across the ENTIRE animation (avoiding next-themes'
- *    1ms mid-animation `<style>` removal reflow that previously caused Frame-1 stutter).
- * 2. Waits 1 rAF inside `startViewTransition` so the 3D WebGL keyboard draws its updated
- *    Porcelain/Obsidian materials into `::view-transition-new(root)` before the wave starts.
- * 3. Expands a GPU-composited `clip-path: circle(...)` from the exact click origin.
+ * Non-blocking 120fps Circular Ripple Theme Transition:
+ * - Callback inside `startViewTransition` MUST be 100% synchronous (Chromium pauses
+ *   `requestAnimationFrame` while capturing snapshots, so awaiting rAF inside it deadlocks!).
+ * - Holds `data-vt-active="true"` across the full clip-path animation so CSS transitions
+ *   never trigger mid-frame style recalculations.
  */
-export async function runCircularThemeTransition(
+export function runCircularThemeTransition(
   nextTheme: "light" | "dark",
   setTheme: (theme: string) => void,
   origin?: { x: number; y: number }
@@ -35,12 +35,20 @@ export async function runCircularThemeTransition(
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ||
     root.dataset.motion === "off";
 
-  if (!doc.startViewTransition || prefersReducedMotion || inFlight) {
+  if (!doc.startViewTransition || prefersReducedMotion) {
     setTheme(nextTheme);
     return;
   }
 
-  inFlight = true;
+  // If user clicks rapidly while a previous ripple is still expanding, skip the old one cleanly
+  if (activeTransition?.skipTransition) {
+    try {
+      activeTransition.skipTransition();
+    } catch {
+      // ignore
+    }
+  }
+
   const x = origin?.x ?? window.innerWidth / 2;
   const y = origin?.y ?? window.innerHeight / 2;
   const maxRadius = Math.hypot(
@@ -50,39 +58,49 @@ export async function runCircularThemeTransition(
 
   root.dataset.vtActive = "true";
 
+  let transition: ViewTransitionHandle;
   try {
-    const transition = doc.startViewTransition(async () => {
+    // STRICTLY SYNCHRONOUS callback — zero deadlocks!
+    transition = doc.startViewTransition(() => {
       flushSync(() => {
         setTheme(nextTheme);
       });
-      // Wait 1 rAF (~8ms at 120Hz) so @react-three/fiber paints the updated 3D keyboard
-      // uniforms before the browser snapshots `::view-transition-new(root)`.
-      await new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      });
+    });
+    activeTransition = transition;
+  } catch {
+    delete root.dataset.vtActive;
+    setTheme(nextTheme);
+    return;
+  }
+
+  transition.ready
+    .then(() => {
+      root.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+            `circle(${Math.ceil(maxRadius)}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
+          ],
+        },
+        {
+          duration: 480,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    })
+    .catch(() => {
+      // Transition skipped or superseded
     });
 
-    await transition.ready;
-
-    const anim = root.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
-          `circle(${Math.ceil(maxRadius)}px at ${x.toFixed(1)}px ${y.toFixed(1)}px)`,
-        ],
-      },
-      {
-        duration: 520,
-        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-        pseudoElement: "::view-transition-new(root)",
+  transition.finished
+    .catch(() => {
+      // Ignore abort errors
+    })
+    .finally(() => {
+      if (activeTransition === transition) {
+        activeTransition = null;
+        delete root.dataset.vtActive;
       }
-    );
-
-    await Promise.allSettled([anim.finished, transition.finished]);
-  } catch {
-    setTheme(nextTheme);
-  } finally {
-    delete root.dataset.vtActive;
-    inFlight = false;
-  }
+    });
 }

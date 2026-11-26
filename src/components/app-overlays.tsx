@@ -10,19 +10,18 @@ import DomainNotice from "@/components/domain-notice";
 import Analytics from "@/components/analytics";
 import ChapterRail from "@/components/ui/chapter-rail";
 import CommandPalette from "@/components/ui/command-palette";
+import { usePreloader } from "@/components/preloader";
 import { usePerfProfile } from "@/hooks/use-perf-profile";
 
 export default function AppOverlays() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  // The résumé route disables the elastic cursor (keeps the particle bg).
-  const isResume = pathname?.startsWith("/resume") ?? false;
-
+  const { isLoading } = usePreloader();
   const { particleCount, maxDpr, disableDecorative } = usePerfProfile();
 
   return (
     <>
-      {particleCount > 0 && (
+      {!isLoading && particleCount > 0 && (
         <Particles
           className="fixed inset-0 -z-10 animate-fade-in"
           quantity={particleCount}

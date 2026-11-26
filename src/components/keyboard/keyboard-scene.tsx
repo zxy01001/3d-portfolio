@@ -54,7 +54,6 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     null
   );
   const [loadVersion, setLoadVersion] = useState(0);
-  const [texturesVersion, setTexturesVersion] = useState(0);
   const ready = loadVersion > 0;
   const [section, setSection] = useState<KeyboardSection>("hero");
   const [selected, setSelected] = useState<KeyboardSkill | null>(null);
@@ -106,32 +105,45 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   );
   const { counts, total, available, recordPress } = useKeyboardCounts();
 
+  // 1. Preloader Readiness: Chibi's built-in `onLoad` has ALREADY loaded the GLB + all 23
+  // HiDPI keycap SVGs. Give WebGL 2 quiet frames to compile shaders behind the closed
+  // shutters, then trigger smooth 100% completion with ZERO competing texture uploads!
   useEffect(() => {
     if (!ready || !api.current) return;
     let cancelled = false;
-    const blobUrls: string[] = [];
-    void applySharpKeyboardTextures(
-      api.current,
-      scene,
-      () => cancelled,
-      (u) => blobUrls.push(u)
-    ).then(() => {
-      if (cancelled) return;
-      setTexturesVersion((v) => v + 1);
-      markActive();
-      // Give WebGL 2 frames to upload textures & compile shaders behind the closed preloader,
-      // then trigger smooth 100% completion & shutter reveal with zero GPU hitch!
+    markActive();
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (!cancelled) bypassLoading();
-        });
+        if (!cancelled) bypassLoading();
       });
     });
     return () => {
       cancelled = true;
+    };
+  }, [ready, loadVersion, markActive, bypassLoading]);
+
+  // 2. Post-Reveal Idle Pass: Upgrade `#skills` CJK description textures 1.2s AFTER
+  // the dual shutters have completely finished opening so Frame 0..60 stay 120fps pure!
+  useEffect(() => {
+    if (!ready || isLoading || !api.current) return;
+    let cancelled = false;
+    const blobUrls: string[] = [];
+    const timer = window.setTimeout(() => {
+      if (!cancelled && api.current) {
+        void applySharpKeyboardTextures(
+          api.current,
+          scene,
+          () => cancelled,
+          (u) => blobUrls.push(u)
+        );
+      }
+    }, 1200);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
       blobUrls.forEach((u) => URL.revokeObjectURL(u));
     };
-  }, [ready, loadVersion, scene, markActive, bypassLoading]);
+  }, [ready, isLoading, loadVersion, scene]);
 
   useEffect(() => {
     if (!ready || !api.current) return;
@@ -151,25 +163,21 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     counterMotion.current?.update(total, available);
   }, [total, available, ready, loadVersion, scene]);
 
-  // Synchronous layout-phase uniform write (<0.7ms, zero shader recompile) so
-  // `runCircularThemeTransition`'s single rAF captures the updated 3D keyboard cleanly!
+  // Pure scalar uniform updates (<0.4ms, zero shader recompile, zero light-count changes)
   useLayoutEffect(() => {
     const host = api.current;
     if (!ready || !host) return;
 
-    // 1. Toggle dedicated Daylight Softbox Studio Fill Lights
-    host.setNodeVisible(scene.lightStudioFillId, isLight);
-
-    // 2. Switch CNC Aluminum Chassis & Switch Plate (Silver-Porcelain vs Stealth Obsidian)
+    // 1. Switch CNC Aluminum Chassis & Switch Plate (Silver-Porcelain vs Stealth Obsidian)
     host.setMaterial(
       scene.caseMaterialId,
       isLight
         ? {
-            color: "#e9eef5",
+            color: "#eef2f7",
             roughness: 0.36,
-            metalness: 0.08,
+            metalness: 0.06,
             emissive: "#f8fafc",
-            emissiveIntensity: 0.1,
+            emissiveIntensity: 0.24,
           }
         : {
             color: "#171819",
@@ -186,9 +194,9 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
         ? {
             color: "#cbd5e1",
             roughness: 0.5,
-            metalness: 0.1,
+            metalness: 0.08,
             emissive: "#e2e8f0",
-            emissiveIntensity: 0.08,
+            emissiveIntensity: 0.18,
           }
         : {
             color: "#101213",
@@ -199,7 +207,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
           }
     );
 
-    // 3. Switch Embedded Mechanical Counter Frame
+    // 2. Switch Embedded Mechanical Counter Frame
     host.setMaterial(scene.counter.rimMaterialId, {
       color: isLight ? "#cbd5e1" : "#343638",
       roughness: isLight ? 0.35 : 0.46,
@@ -211,14 +219,14 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
       color: isLight ? "#1e293b" : "#161819",
     });
 
-    // 4. Switch 23 Sculpted Custom PBT Keycaps & Dye-Sub Legends
+    // 3. Switch 23 Sculpted Custom PBT Keycaps & Dye-Sub Legends
     for (const key of scene.keys) {
       if (isLight) {
         const isAccentHero = key.lightBodyColor === "#4f46e5";
         host.setMaterial(key.materialId, {
           color: key.lightBodyColor,
           emissive: key.lightBodyColor,
-          emissiveIntensity: isAccentHero ? 0.06 : 0.11,
+          emissiveIntensity: isAccentHero ? 0.1 : 0.22,
         });
         if (key.logoMaterialId) {
           host.setMaterial(key.logoMaterialId, {
@@ -239,7 +247,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
       }
     }
 
-    // 5. Switch 3D Floating Skill Headings & Descriptions
+    // 4. Switch 3D Floating Skill Headings & Descriptions
     host.setMaterial(scene.textMaterialId, {
       color: isLight ? "#0f172a" : "#ffffff",
     });
@@ -250,7 +258,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     }
 
     markActive();
-  }, [ready, loadVersion, texturesVersion, scene, isLight, markActive]);
+  }, [ready, loadVersion, scene, isLight, markActive]);
 
   useEffect(() => {
     if (!ready) return;
