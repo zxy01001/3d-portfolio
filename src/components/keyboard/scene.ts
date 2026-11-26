@@ -49,6 +49,7 @@ export type KeyboardScene = {
   catId: string;
   frameIds: [string, string];
   labelsId: string;
+  textMaterialId: string;
   defaultLabelId: string;
   pointerTargets: string[];
   counter: CounterModel;
@@ -539,6 +540,7 @@ export function createKeyboardScene(
     catId,
     frameIds,
     labelsId,
+    textMaterialId: textMaterial,
     defaultLabelId,
     counter,
     counterId,

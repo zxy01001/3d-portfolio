@@ -49,33 +49,35 @@ const ProjectsSection = () => {
 
   return (
     <SectionWrapper id="projects" className="max-w-7xl mx-auto md:min-h-[130vh] px-4 py-16 md:py-24">
-      <SectionHeader
-        id="projects"
-        title="精选设计案例"
-        desc="聚焦 7 个 AI 原生产品、组件工程体系与复杂供应链重构落地项目 · 点击卡片审阅完整交互架构"
-        className="static mb-8 md:mb-10"
-      />
+      <div className="mx-auto mb-8 md:mb-10 max-w-3xl rounded-3xl border border-slate-200/85 bg-white/85 px-5 py-6 shadow-[0_10px_32px_-12px_rgba(15,23,42,0.07)] backdrop-blur-xl dark:border-transparent dark:bg-transparent dark:p-0 dark:shadow-none dark:backdrop-blur-none">
+        <SectionHeader
+          id="projects"
+          title="精选设计案例"
+          desc="聚焦 7 个 AI 原生产品、组件工程体系与复杂供应链重构落地项目 · 点击卡片审阅完整交互架构"
+          className="static mb-5 md:mb-6"
+        />
 
-      {/* Compact Filter Bar */}
-      <div className="mb-8 flex flex-wrap items-center justify-center gap-2 z-20 relative">
-        {FILTERS.map((f) => {
-          const active = activeFilter === f.id;
-          return (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setActiveFilter(f.id)}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-xs md:text-sm font-medium transition-all border backdrop-blur-md",
-                active
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                  : "bg-background/75 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
-              )}
-            >
-              {f.label}
-            </button>
-          );
-        })}
+        {/* Compact Filter Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-2 z-20 relative">
+          {FILTERS.map((f) => {
+            const active = activeFilter === f.id;
+            return (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setActiveFilter(f.id)}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-xs md:text-sm font-medium transition-all border backdrop-blur-md",
+                  active
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-background/90 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
+                )}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Crisp 2 + 3 + 2 Symmetric Visual Gallery Grid */}
@@ -128,7 +130,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
             />
 
             {/* Clean, Lightweight Bottom Scrim — Zero top-right badge obstructing UI */}
-            <div className="absolute inset-x-0 bottom-0 pt-9 pb-3.5 px-5 bg-gradient-to-t from-slate-950/90 via-slate-950/48 to-transparent pointer-events-none z-10">
+            <div className="absolute inset-x-0 bottom-0 pt-12 pb-3.5 px-5 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent pointer-events-none z-10">
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0">
                   <div className="text-[11px] font-medium text-cyan-300/90 truncate">

@@ -193,7 +193,7 @@ export default function ProjectDetailClient({
                   <button
                     type="button"
                     onClick={() => setZoomHighlight(hl.image)}
-                    className="relative block w-full overflow-hidden rounded-xl border border-border bg-slate-950/85 p-2.5 cursor-zoom-in"
+                    className="relative block w-full overflow-hidden rounded-xl border border-border bg-slate-100/85 dark:bg-slate-950/85 p-2.5 cursor-zoom-in"
                   >
                     <Image
                       src={hl.image}

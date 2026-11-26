@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -5,112 +7,98 @@ import { flushSync } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useToast } from "../ui/use-toast";
-import { themeDisclaimers } from "@/data/constants";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function FunnyThemeToggle({
   className,
 }: {
   className?: string;
 }) {
-  const { setTheme, theme } = useTheme();
-  const [counter, setCounter] = React.useState({ dark: 0, light: 0 });
-  const { toast } = useToast();
-  const ref = React.useRef<HTMLButtonElement>(null);
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
 
-  const toggleTheme = async (newTheme: string, event?: React.MouseEvent) => {
-    // @ts-ignore
-    if (!document.startViewTransition || !event) {
-      setTheme(newTheme);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isLight = mounted && resolvedTheme === "light";
+
+  const handleToggle = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const nextTheme = isLight ? "dark" : "light";
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
+
+    if (!doc.startViewTransition) {
+      setTheme(nextTheme);
       return;
     }
 
-    const { top, left, width, height } = (
-      event.target as HTMLElement
-    ).getBoundingClientRect();
+    const { top, left, width, height } =
+      event.currentTarget.getBoundingClientRect();
     const x = left + width / 2;
     const y = top + height / 2;
-    const right = window.innerWidth - left;
-    const bottom = window.innerHeight - top;
-    const maxRadius = Math.hypot(Math.max(left, right), Math.max(top, bottom));
+    const maxRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
 
-    // @ts-ignore
-    const transition = document.startViewTransition(() => {
+    const transition = doc.startViewTransition(() => {
       flushSync(() => {
-        setTheme(newTheme);
+        setTheme(nextTheme);
       });
     });
 
-    await transition.ready;
-
-    document.documentElement.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${maxRadius}px at ${x}px ${y}px)`,
-        ],
-      },
-      {
-        duration: 500,
-        easing: "ease-in-out",
-        pseudoElement: "::view-transition-new(root)",
-      }
-    );
-  };
-
-  const goLight = (e: React.MouseEvent) => {
-    setCounter({ ...counter, light: counter.light + 1 });
-    toggleTheme("light", e);
-  };
-
-  const goDark = (e: React.MouseEvent) => {
-    const description =
-      themeDisclaimers.dark[counter.dark % themeDisclaimers.dark.length];
-    setCounter({ ...counter, dark: counter.dark + 1 });
-    toast({
-      description: description,
-      className:
-        "top-0 right-0 flex fixed md:max-w-[420px] md:top-16 md:right-4",
-    });
-    toggleTheme("dark", e);
+    try {
+      await transition.ready;
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${maxRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 460,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    } catch {
+      // Fallback gracefully if view transition is interrupted
+    }
   };
 
   return (
-    <>
-      {theme === "light" ? (
+    <Tooltip delayDuration={200}>
+      <TooltipTrigger asChild>
         <Button
+          type="button"
           variant="outline"
-          size="icon"
-          className={cn("border-none bg-transparent", className)}
-          onClick={goDark}
+          size="sm"
+          onClick={handleToggle}
+          aria-label={isLight ? "切换为深色主题" : "切换为浅色主题"}
+          className={cn(
+            "relative h-7 gap-1.5 rounded-full border border-border/80 bg-background/85 px-2.5 text-[11px] font-medium text-foreground/85 shadow-sm backdrop-blur-md transition-colors hover:border-sky-500/45 hover:text-foreground",
+            className
+          )}
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 pointer-events-none" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 pointer-events-none" />
-          <span className="sr-only">Toggle theme</span>
+          <span className="relative flex h-3.5 w-3.5 items-center justify-center shrink-0">
+            <Sun className="h-3.5 w-3.5 rotate-0 scale-100 text-sky-600 transition-all duration-300 dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute inset-0 h-3.5 w-3.5 rotate-90 scale-0 text-sky-300 transition-all duration-300 dark:rotate-0 dark:scale-100" />
+          </span>
+          <span className="hidden sm:inline font-mono tracking-wider">
+            {isLight ? "浅色" : "深色"}
+          </span>
         </Button>
-      ) : (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className={cn("border-none bg-transparent", className)}
-            >
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="z-[99999] flex flex-col items-center gap-2">
-            {/* <p className="text-sm">these stunts are done by professional only</p> */}
-            <p className="text-sm text-center">
-              {themeDisclaimers.light[counter.light % themeDisclaimers.light.length]}
-            </p>
-            <Button onClick={goLight}>切换至明亮模式</Button>
-          </PopoverContent>
-        </Popover>
-      )}
-    </>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">
+        <p>{isLight ? "点击切换深邃暗色主题" : "点击预览瑞士瓷白亮色主题"}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

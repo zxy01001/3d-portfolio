@@ -1,4 +1,65 @@
+/* ==========================================================================
+   Theme-Adaptive Precision Optical Chronometer Preloader
+   - Light Mode (:root): Swiss Alabaster Porcelain & Anodized Silver-Cobalt
+   - Dark Mode  (.dark): Anodized Obsidian & Ice-Cyan Specular Glass
+   Zero JS hydration delay — CSS variables resolve on Frame 0 from <html> class!
+   ========================================================================== */
+
 .preloaderRoot {
+  /* ---- Light Mode Tokens (Braun / Leica Silver-Porcelain) ---- */
+  --pl-canvas: #f8fafc;
+  --pl-text-primary: #0f172a;
+  --pl-text-secondary: #475569;
+  --pl-text-muted: #64748b;
+  --pl-divider: #cbd5e1;
+  --pl-status-dot: #0284c7;
+  --pl-status-glow: rgba(2, 132, 199, 0.45);
+
+  --pl-shutter-top-glow-outer: rgba(148, 163, 184, 0.14);
+  --pl-shutter-equator-glow: rgba(99, 102, 241, 0.065);
+  --pl-shutter-bottom-glow-outer: rgba(186, 230, 253, 0.22);
+  --pl-lip-mid: rgba(2, 132, 199, 0.42);
+  --pl-lip-side: rgba(99, 102, 241, 0.2);
+  --pl-dot: rgba(15, 23, 42, 0.075);
+
+  --pl-dial-shadow:
+    0 28px 68px -16px rgba(15, 23, 42, 0.13),
+    0 4px 16px -4px rgba(15, 23, 42, 0.06);
+  --pl-ambient-inner: rgba(56, 189, 248, 0.14);
+  --pl-ambient-mid: rgba(99, 102, 241, 0.07);
+
+  --pl-bezel-inner: #ffffff;
+  --pl-bezel-outer: #eef2f7;
+  --pl-bezel-stroke: rgba(15, 23, 42, 0.08);
+  --pl-orbit-stroke: rgba(2, 132, 199, 0.32);
+
+  --pl-tick-idle: rgba(15, 23, 42, 0.11);
+  --pl-tick-passed: rgba(30, 41, 59, 0.72);
+  --pl-tick-active: #0284c7;
+
+  --pl-track-stroke: rgba(15, 23, 42, 0.07);
+  --pl-arc-start: #6366f1;
+  --pl-arc-mid: #0284c7;
+  --pl-arc-end: #0f172a;
+  --pl-jewel: #0284c7;
+
+  --pl-lens-bg: radial-gradient(
+    125% 125% at 50% 12%,
+    #ffffff 0%,
+    #f8fafc 58%,
+    #eef2f6 100%
+  );
+  --pl-lens-border: rgba(15, 23, 42, 0.08);
+  --pl-lens-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(2, 132, 199, 0.12),
+    0 16px 38px -10px rgba(15, 23, 42, 0.12);
+  --pl-lens-sheen: rgba(2, 132, 199, 0.28);
+
+  --pl-num-gradient: linear-gradient(180deg, #090d16 0%, #1e293b 62%, #64748b 100%);
+  --pl-pct-unit: #0284c7;
+  --pl-hairline: rgba(100, 116, 139, 0.35);
+
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -7,8 +68,62 @@
   overflow: hidden;
   user-select: none;
   pointer-events: auto;
-  color: #f8fafc;
+  color: var(--pl-text-primary);
   contain: layout style paint;
+}
+
+:global(.dark) .preloaderRoot {
+  /* ---- Dark Mode Tokens (Anodized Obsidian & Specular Ice) ---- */
+  --pl-canvas: #05070e;
+  --pl-text-primary: #f8fafc;
+  --pl-text-secondary: #94a3b8;
+  --pl-text-muted: #64748b;
+  --pl-divider: #334155;
+  --pl-status-dot: #7dd3fc;
+  --pl-status-glow: rgba(125, 211, 252, 0.9);
+
+  --pl-shutter-top-glow-outer: rgba(148, 163, 184, 0.08);
+  --pl-shutter-equator-glow: rgba(99, 102, 241, 0.09);
+  --pl-shutter-bottom-glow-outer: rgba(30, 41, 59, 0.2);
+  --pl-lip-mid: rgba(226, 232, 240, 0.45);
+  --pl-lip-side: rgba(186, 230, 253, 0.24);
+  --pl-dot: rgba(226, 232, 240, 0.085);
+
+  --pl-dial-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.9);
+  --pl-ambient-inner: rgba(125, 211, 252, 0.12);
+  --pl-ambient-mid: rgba(99, 102, 241, 0.07);
+
+  --pl-bezel-inner: #0b1020;
+  --pl-bezel-outer: #05070e;
+  --pl-bezel-stroke: rgba(255, 255, 255, 0.06);
+  --pl-orbit-stroke: rgba(186, 230, 253, 0.24);
+
+  --pl-tick-idle: rgba(255, 255, 255, 0.09);
+  --pl-tick-passed: rgba(226, 232, 240, 0.78);
+  --pl-tick-active: #bae6fd;
+
+  --pl-track-stroke: rgba(255, 255, 255, 0.06);
+  --pl-arc-start: rgba(99, 102, 241, 0.5);
+  --pl-arc-mid: rgba(125, 211, 252, 0.92);
+  --pl-arc-end: #f8fafc;
+  --pl-jewel: #ffffff;
+
+  --pl-lens-bg: radial-gradient(
+    125% 125% at 50% 12%,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(11, 15, 27, 0.98) 56%,
+    #05070e 100%
+  );
+  --pl-lens-border: rgba(255, 255, 255, 0.1);
+  --pl-lens-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(125, 211, 252, 0.14),
+    0 20px 50px -10px rgba(0, 0, 0, 0.85);
+  --pl-lens-sheen: rgba(226, 232, 240, 0.32);
+
+  --pl-num-gradient: linear-gradient(180deg, #ffffff 0%, #f1f5f9 55%, #94a3b8 100%);
+  --pl-pct-unit: rgba(125, 211, 252, 0.88);
+  --pl-hairline: rgba(100, 116, 139, 0.5);
 }
 
 /* Dedicated GPU Compositor Layers — completely seamless while closed, splits at 120fps */
@@ -30,18 +145,18 @@
   top: 0;
   height: calc(50dvh + 1px);
   background:
-    radial-gradient(ellipse 62% 85% at 50% 0%, rgba(148, 163, 184, 0.08), transparent 70%),
-    radial-gradient(ellipse 40% 65% at 50% 100%, rgba(99, 102, 241, 0.09), transparent 72%),
-    #05070e;
+    radial-gradient(ellipse 62% 85% at 50% 0%, var(--pl-shutter-top-glow-outer), transparent 70%),
+    radial-gradient(ellipse 40% 65% at 50% 100%, var(--pl-shutter-equator-glow), transparent 72%),
+    var(--pl-canvas);
 }
 
 .shutterBottom {
   bottom: 0;
   height: 50dvh;
   background:
-    radial-gradient(ellipse 40% 65% at 50% 0%, rgba(99, 102, 241, 0.09), transparent 72%),
-    radial-gradient(ellipse 60% 80% at 50% 100%, rgba(30, 41, 59, 0.2), transparent 75%),
-    #05070e;
+    radial-gradient(ellipse 40% 65% at 50% 0%, var(--pl-shutter-equator-glow), transparent 72%),
+    radial-gradient(ellipse 60% 80% at 50% 100%, var(--pl-shutter-bottom-glow-outer), transparent 75%),
+    var(--pl-canvas);
 }
 
 /* Subtle Anodized Shutter Lips — invisible (opacity: 0) while loading, revealed ONLY on split */
@@ -54,9 +169,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(186, 230, 253, 0.24) 22%,
-    rgba(226, 232, 240, 0.45) 50%,
-    rgba(186, 230, 253, 0.24) 78%,
+    var(--pl-lip-side) 22%,
+    var(--pl-lip-mid) 50%,
+    var(--pl-lip-side) 78%,
     transparent 100%
   );
   will-change: opacity;
@@ -70,12 +185,12 @@
   top: 0;
 }
 
-/* Linear / Vercel-style 1px Precision Architectural Dot Matrix (masked away from center) */
+/* 1px Precision Architectural Dot Matrix (masked away from center) */
 .dotMatrixTop,
 .dotMatrixBottom {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(226, 232, 240, 0.085) 1px, transparent 1px);
+  background-image: radial-gradient(var(--pl-dot) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -104,6 +219,30 @@
   transform: translate3d(0, 0, 0);
 }
 
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--pl-status-dot);
+  box-shadow: 0 0 10px var(--pl-status-glow);
+}
+
+.textPrimary {
+  color: var(--pl-text-primary);
+}
+
+.textSecondary {
+  color: var(--pl-text-secondary);
+}
+
+.textMuted {
+  color: var(--pl-text-muted);
+}
+
+.textDivider {
+  color: var(--pl-divider);
+}
+
 /* Exact Mathematical (50%, 50%) Centering independent of header/footer heights */
 .dialAnchor {
   position: absolute;
@@ -123,7 +262,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.9);
+  box-shadow: var(--pl-dial-shadow);
 }
 
 .dialAmbient {
@@ -132,8 +271,8 @@
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    rgba(125, 211, 252, 0.12) 0%,
-    rgba(99, 102, 241, 0.07) 48%,
+    var(--pl-ambient-inner) 0%,
+    var(--pl-ambient-mid) 48%,
     transparent 72%
   );
   pointer-events: none;
@@ -161,7 +300,7 @@
   }
 }
 
-/* Machined Dark-Glass Inner Optical Lens */
+/* Machined Inner Optical Lens */
 .opticalLens {
   position: relative;
   width: 61%;
@@ -171,17 +310,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(
-    125% 125% at 50% 12%,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(11, 15, 27, 0.98) 56%,
-    #05070e 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(125, 211, 252, 0.14),
-    0 20px 50px -10px rgba(0, 0, 0, 0.85);
+  background: var(--pl-lens-bg);
+  border: 1px solid var(--pl-lens-border);
+  box-shadow: var(--pl-lens-shadow);
 }
 
 /* Subtle Specular Rim Sweep on the Lens Bezel */
@@ -195,7 +326,7 @@
   background: conic-gradient(
     from 210deg,
     transparent 0deg,
-    rgba(226, 232, 240, 0.32) 45deg,
+    var(--pl-lens-sheen) 45deg,
     transparent 100deg,
     transparent 360deg
   );
@@ -206,6 +337,33 @@
   mask-composite: exclude;
   animation: bezelSheen 6s linear infinite;
   pointer-events: none;
+}
+
+.numValue {
+  background-image: var(--pl-num-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pctUnit {
+  color: var(--pl-pct-unit);
+}
+
+.lensHairline {
+  height: 1px;
+  width: 28px;
+  background: linear-gradient(90deg, transparent, var(--pl-hairline), transparent);
+}
+
+.skipBtn {
+  pointer-events: auto;
+  color: var(--pl-text-secondary);
+  transition: color 180ms ease;
+}
+
+.skipBtn:hover {
+  color: var(--pl-text-primary);
 }
 
 @keyframes bezelSheen {

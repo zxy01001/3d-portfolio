@@ -15,6 +15,7 @@ import {
   type ScenePointerEvent,
   type RuntimeEvent,
 } from "@chibi3d/runtime";
+import { useTheme } from "next-themes";
 import { SKILLS } from "@/data/constants";
 import { setSceneStatus } from "@/lib/scene-health";
 import { usePreloader } from "../preloader";
@@ -43,6 +44,8 @@ const SCENE_STYLE: CSSProperties = {
 
 export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   const { isLoading, bypassLoading } = usePreloader();
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
   const api = useRef<ChibiSceneApi>(null);
   const failed = useRef(false);
   const motion = useRef<ReturnType<typeof createKeyboardMotion> | null>(null);
@@ -73,6 +76,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   const environment = useMemo(
     () => ({
       ...scene.document.environment,
+      exposure: isLight ? 0.96 : 0.88,
       shadows,
       softShadows,
       ao,
@@ -81,7 +85,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
       vignette: false,
       preset: lighting ? scene.document.environment.preset : null,
     }),
-    [scene, shadows, softShadows, ao, bloom, lighting]
+    [scene, isLight, shadows, softShadows, ao, bloom, lighting]
   );
 
   const targetDpr = Math.min(graphics.dpr, maxDpr);
@@ -141,6 +145,19 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   useEffect(() => {
     counterMotion.current?.update(total, available);
   }, [total, available, ready, loadVersion, scene]);
+
+  useEffect(() => {
+    if (!ready || !api.current) return;
+    api.current.setMaterial(scene.textMaterialId, {
+      color: isLight ? "#0f172a" : "#ffffff",
+    });
+    for (const desc of scene.descriptions) {
+      api.current.setMaterial(desc.materialId, {
+        color: isLight ? "#334155" : "#f1f5f9",
+      });
+    }
+    markActive();
+  }, [ready, loadVersion, scene, isLight, markActive]);
 
   useEffect(() => {
     if (!ready) return;

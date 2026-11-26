@@ -11,6 +11,7 @@ import {
   shutterTopExit,
 } from "./anim";
 import { usePreloader } from ".";
+import { cn } from "@/lib/utils";
 
 const TOTAL_TICKS = 72;
 const RADIUS = 114;
@@ -51,7 +52,7 @@ export default function Loader() {
   const lastIntRef = useRef<number>(-1);
   const lastTickRef = useRef<number>(-1);
 
-  // Zero-React-Rerender Direct GPU/SVG Mutation Loop (120fps butter-smooth)
+  // Zero-React-Rerender Direct GPU/SVG Mutation Loop (theme-aware via CSS custom properties)
   useEffect(() => {
     return subscribeProgress((rawPct) => {
       const pct = Math.max(0, Math.min(100, rawPct));
@@ -73,7 +74,6 @@ export default function Loader() {
         );
       }
 
-      // Only touch text DOM when integer percentage changes
       if (rounded !== lastIntRef.current) {
         lastIntRef.current = rounded;
         if (numRef.current) {
@@ -88,7 +88,6 @@ export default function Loader() {
         }
       }
 
-      // Incremental tick highlight (only update ticks whose state changed)
       const activeTick = Math.round((pct / 100) * (TOTAL_TICKS - 1));
       if (activeTick !== lastTickRef.current) {
         const prev = lastTickRef.current;
@@ -99,11 +98,11 @@ export default function Loader() {
           const el = tickRefs.current[i];
           if (!el) continue;
           if (i === activeTick) {
-            el.setAttribute("stroke", "#bae6fd");
+            el.style.stroke = "var(--pl-tick-active)";
           } else if (i < activeTick) {
-            el.setAttribute("stroke", "rgba(226, 232, 240, 0.78)");
+            el.style.stroke = "var(--pl-tick-passed)";
           } else {
-            el.setAttribute("stroke", "rgba(255, 255, 255, 0.09)");
+            el.style.stroke = "var(--pl-tick-idle)";
           }
         }
       }
@@ -125,7 +124,7 @@ export default function Loader() {
       aria-label="正在载入朱星宇作品集"
       className={styles.preloaderRoot}
     >
-      {/* Seamless Monolithic Dual Shutters — zero seam while loading, crisp anodized lip on split */}
+      {/* Seamless Monolithic Dual Shutters — Porcelain in Light Mode, Obsidian in Dark Mode */}
       <motion.div
         variants={shutterTopExit}
         initial="initial"
@@ -166,21 +165,36 @@ export default function Loader() {
         {/* Top Editorial Masthead */}
         <header className="relative z-10 flex items-center justify-between px-6 sm:px-12 pt-7 sm:pt-10">
           <div className="flex items-center gap-3">
-            <span className="h-1.5 w-1.5 rounded-full bg-sky-300 shadow-[0_0_10px_rgba(125,211,252,0.9)]" />
-            <span className="text-xs sm:text-sm font-semibold tracking-[0.14em] text-slate-100">
+            <span className={styles.statusDot} />
+            <span
+              className={cn(
+                "text-xs sm:text-sm font-semibold tracking-[0.14em]",
+                styles.textPrimary
+              )}
+            >
               朱星宇
             </span>
-            <span className="text-slate-700">/</span>
-            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.24em] text-slate-400">
+            <span className={styles.textDivider}>/</span>
+            <span
+              className={cn(
+                "font-mono text-[10px] sm:text-[11px] tracking-[0.24em]",
+                styles.textSecondary
+              )}
+            >
               ZHU XINGYU
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 font-mono text-[10px] tracking-[0.24em] text-slate-500">
+          <div
+            className={cn(
+              "hidden sm:flex items-center gap-2 font-mono text-[10px] tracking-[0.24em]",
+              styles.textMuted
+            )}
+          >
             <span>AI-NATIVE UX</span>
-            <span className="text-slate-700">·</span>
+            <span className={styles.textDivider}>·</span>
             <span>PRODUCT</span>
-            <span className="text-slate-700">·</span>
+            <span className={styles.textDivider}>·</span>
             <span>FDE</span>
           </div>
         </header>
@@ -198,24 +212,24 @@ export default function Loader() {
             >
               <defs>
                 <linearGradient id="specularArc" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.45" />
-                  <stop offset="55%" stopColor="#7dd3fc" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#f8fafc" stopOpacity="1" />
+                  <stop offset="0%" style={{ stopColor: "var(--pl-arc-start)" }} />
+                  <stop offset="55%" style={{ stopColor: "var(--pl-arc-mid)" }} />
+                  <stop offset="100%" style={{ stopColor: "var(--pl-arc-end)" }} />
                 </linearGradient>
                 <radialGradient id="bezelPlate" cx="50%" cy="35%" r="65%">
-                  <stop offset="0%" stopColor="#0b1020" />
-                  <stop offset="100%" stopColor="#05070e" />
+                  <stop offset="0%" style={{ stopColor: "var(--pl-bezel-inner)" }} />
+                  <stop offset="100%" style={{ stopColor: "var(--pl-bezel-outer)" }} />
                 </radialGradient>
               </defs>
 
-              {/* Solid Anodized Bezel Backing Plate — isolates the gauge cleanly from the stage */}
+              {/* Solid Machined Bezel Backing Plate */}
               <circle cx="160" cy="160" r="150" fill="url(#bezelPlate)" />
 
               <circle
                 cx="160"
                 cy="160"
                 r="150"
-                stroke="rgba(255, 255, 255, 0.06)"
+                style={{ stroke: "var(--pl-bezel-stroke)" }}
                 strokeWidth="0.85"
               />
               <g className={styles.subtleOrbit}>
@@ -223,7 +237,7 @@ export default function Loader() {
                   cx="160"
                   cy="160"
                   r="150"
-                  stroke="rgba(186, 230, 253, 0.24)"
+                  style={{ stroke: "var(--pl-orbit-stroke)" }}
                   strokeWidth="0.9"
                   strokeDasharray="36 200"
                 />
@@ -241,11 +255,12 @@ export default function Loader() {
                     y1={t.y1}
                     x2={t.x2}
                     y2={t.y2}
-                    stroke={
-                      idx <= 4
-                        ? "rgba(226, 232, 240, 0.78)"
-                        : "rgba(255, 255, 255, 0.09)"
-                    }
+                    style={{
+                      stroke:
+                        idx <= 4
+                          ? "var(--pl-tick-passed)"
+                          : "var(--pl-tick-idle)",
+                    }}
                     strokeWidth={t.isMajor ? "1.15" : "0.75"}
                     strokeLinecap="round"
                   />
@@ -257,7 +272,7 @@ export default function Loader() {
                 cx="160"
                 cy="160"
                 r={RADIUS}
-                stroke="rgba(255, 255, 255, 0.06)"
+                style={{ stroke: "var(--pl-track-stroke)" }}
                 strokeWidth="1"
               />
               <circle
@@ -279,15 +294,18 @@ export default function Loader() {
                 cx={initTipX}
                 cy={initTipY}
                 r="2.6"
-                fill="#ffffff"
+                style={{ fill: "var(--pl-jewel)" }}
               />
             </svg>
 
-            {/* Dark-Glass Anodized Inner Lens */}
+            {/* Inner Optical Lens */}
             <div className={styles.opticalLens}>
               <span
                 ref={stepRef}
-                className="font-mono text-[8.5px] sm:text-[9px] font-medium uppercase tracking-[0.34em] text-slate-400/85"
+                className={cn(
+                  "font-mono text-[8.5px] sm:text-[9px] font-medium uppercase tracking-[0.34em]",
+                  styles.textMuted
+                )}
               >
                 01 / 03
               </span>
@@ -295,20 +313,31 @@ export default function Loader() {
               <div className="mt-1.5 flex items-start font-display tabular-nums leading-none">
                 <span
                   ref={numRef}
-                  className="text-[48px] sm:text-[58px] font-light tracking-[-0.04em] bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent"
+                  className={cn(
+                    "text-[48px] sm:text-[58px] font-light tracking-[-0.04em]",
+                    styles.numValue
+                  )}
                 >
                   6
                 </span>
-                <span className="mt-2 ml-1 font-mono text-xs font-medium text-sky-300/85">
+                <span
+                  className={cn(
+                    "mt-2 ml-1 font-mono text-xs font-medium",
+                    styles.pctUnit
+                  )}
+                >
                   %
                 </span>
               </div>
 
-              <span className="mt-2.5 h-px w-7 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent" />
+              <span className={cn("mt-2.5", styles.lensHairline)} />
 
               <span
                 ref={labelRef}
-                className="mt-2 text-[10px] sm:text-[11px] font-normal tracking-[0.12em] text-slate-400"
+                className={cn(
+                  "mt-2 text-[10px] sm:text-[11px] font-normal tracking-[0.12em]",
+                  styles.textSecondary
+                )}
               >
                 载入三维几何模型
               </span>
@@ -318,14 +347,22 @@ export default function Loader() {
 
         {/* Bottom Quiet Architectural Footer */}
         <footer className="relative z-10 flex items-center justify-between px-6 sm:px-12 pb-7 sm:pb-10 text-xs">
-          <span className="font-mono text-[10px] tracking-[0.22em] text-slate-500 uppercase">
+          <span
+            className={cn(
+              "font-mono text-[10px] tracking-[0.22em] uppercase",
+              styles.textMuted
+            )}
+          >
             3D INTERACTIVE PORTFOLIO · EDITION 2026
           </span>
 
           <button
             type="button"
             onClick={forceDismiss}
-            className="pointer-events-auto font-mono text-[11px] tracking-[0.14em] text-slate-400 transition-colors hover:text-white"
+            className={cn(
+              "font-mono text-[11px] tracking-[0.14em]",
+              styles.skipBtn
+            )}
           >
             跳过开场 ↗
           </button>

@@ -253,7 +253,7 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
         </div>
 
         {/* Right High-Resolution Pure Visual Stage — Zero permanent overlays on screenshot */}
-        <div className="group/stage lg:col-span-8 relative bg-slate-950/90 p-5 sm:p-8 flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px]">
+        <div className="group/stage lg:col-span-8 relative bg-slate-100/85 dark:bg-slate-950/90 p-5 sm:p-8 flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={step.image}
@@ -269,10 +269,10 @@ function FlowStudio({ study }: { study: CaseStudyData }) {
               <div
                 onClick={() => setZoomImg(step.image)}
                 className={cn(
-                  "relative overflow-hidden shadow-2xl cursor-zoom-in",
+                  "relative overflow-hidden shadow-[0_22px_50px_-14px_rgba(15,23,42,0.18)] dark:shadow-2xl cursor-zoom-in",
                   isMobile
-                    ? "rounded-[28px] ring-4 ring-slate-800 border border-white/15"
-                    : "rounded-xl ring-1 ring-white/15"
+                    ? "rounded-[28px] ring-4 ring-slate-800 border border-slate-900/15 dark:border-white/15"
+                    : "rounded-xl ring-1 ring-slate-900/10 dark:ring-white/15"
                 )}
               >
                 <Image
@@ -454,12 +454,12 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
       </div>
 
       {/* Visual Comparison Stage */}
-      <div className="bg-slate-950/90 p-5 sm:p-7">
+      <div className="bg-slate-100/85 dark:bg-slate-950/90 p-5 sm:p-7">
         <div className="mb-5 text-center max-w-2xl mx-auto">
-          <h3 className="text-base sm:text-lg font-bold text-white">
+          <h3 className="text-base sm:text-lg font-bold text-foreground">
             {mod.title}
           </h3>
-          <p className="mt-1 text-xs sm:text-sm text-slate-300">
+          <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
             {mod.decision}
           </p>
         </div>
@@ -467,10 +467,10 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
         {mode === "side" ? (
           <div className="grid grid-cols-2 gap-2.5 sm:gap-10 max-w-2xl mx-auto">
             <div className="flex flex-col items-center gap-2">
-              <span className="text-[11px] font-mono font-semibold tracking-wider text-slate-400">
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-muted-foreground">
                 BEFORE · 改版前
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-white/15 opacity-85 shadow-xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-slate-900/12 dark:ring-white/15 opacity-85 shadow-xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={mod.beforeImg}
@@ -478,16 +478,16 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              <p className="text-center text-[11px] sm:text-xs text-slate-400 px-1">
+              <p className="text-center text-[11px] sm:text-xs text-muted-foreground px-1">
                 {mod.beforePain}
               </p>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <span className="text-[11px] font-mono font-semibold tracking-wider text-cyan-300">
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-sky-700 dark:text-cyan-300">
                 AFTER · 重构后{mod.editImg ? (afterState === "edit" ? "（编辑）" : "（查看）") : ""}
               </span>
-              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-cyan-400/45 shadow-2xl">
+              <div className="w-full max-w-[260px] aspect-[9/17] overflow-hidden rounded-[18px] sm:rounded-[26px] ring-1 ring-sky-500/45 dark:ring-cyan-400/45 shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={rightImg}
@@ -495,18 +495,18 @@ function CompareStudio({ study }: { study: CaseStudyData }) {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              <p className="text-center text-[11px] sm:text-xs text-slate-300 px-1">
+              <p className="text-center text-[11px] sm:text-xs text-foreground/80 dark:text-slate-300 px-1">
                 {mod.afterGain}
               </p>
             </div>
           </div>
         ) : (
           <div className="space-y-2.5 max-w-[310px] mx-auto">
-            <div className="flex items-center justify-between px-1 text-[10px] font-mono tracking-wider text-slate-400">
+            <div className="flex items-center justify-between px-1 text-[10px] font-mono tracking-wider text-muted-foreground">
               <span>← BEFORE · 旧版</span>
-              <span className="text-cyan-300">AFTER · 新版 →</span>
+              <span className="text-sky-700 dark:text-cyan-300">AFTER · 新版 →</span>
             </div>
-            <div className="relative w-full aspect-[9/17] overflow-hidden rounded-[28px] ring-1 ring-white/20 shadow-2xl select-none">
+            <div className="relative w-full aspect-[9/17] overflow-hidden rounded-[28px] ring-1 ring-slate-900/15 dark:ring-white/20 shadow-2xl select-none">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={mod.beforeImg}

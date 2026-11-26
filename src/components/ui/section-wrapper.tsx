@@ -17,8 +17,8 @@ const SectionWrapper = ({ id, className, children, ...props }: SectionWrapperPro
     offset: ["start end", "end start"],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
+  const opacity = useTransform(scrollYProgress, [0, 0.08, 0.92, 1], [0, 1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.08, 0.92, 1], [0.96, 1, 1, 0.96]);
 
   return (
     <section

@@ -58,7 +58,7 @@ const Header = ({ loader, githubStars }: HeaderProps) => {
           </Button>
         </Link>
 
-        <FunnyThemeToggle className="w-6 h-6 mr-4 hidden md:flex" />
+        <FunnyThemeToggle className="mr-3 flex" />
         {isHome && process.env.NEXT_PUBLIC_WS_URL && (
           <div className="flex items-center">
             <GameTrigger className="mr-3" />

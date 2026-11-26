@@ -4,10 +4,11 @@ import { Euler, Quaternion } from "three";
 import type { ChibiSceneApi, Vec3 } from "@chibi3d/runtime";
 import type { KeyboardScene } from "./scene";
 
-export type KeyboardSection = "hero" | "skills" | "projects" | "contact";
+export type KeyboardSection = "hero" | "skills" | "experience" | "projects" | "contact";
 const SCROLL_SECTIONS = [
   { id: "skills", previous: "hero", threshold: 0.5 },
-  { id: "projects", previous: "skills", threshold: 0.7 },
+  { id: "experience", previous: "skills", threshold: 0.45 },
+  { id: "projects", previous: "experience", threshold: 0.65 },
   { id: "contact", previous: "projects", threshold: 0.3 },
 ] as const;
 
@@ -77,7 +78,9 @@ export function createKeyboardMotion(
     const mobile = window.innerWidth < 768;
     const fit = Math.min(1, window.innerWidth / window.innerHeight * 1.05);
     const [centerX, centerY, centerZ] = scene.document.camera.target;
-    const size = fit * (section === "hero" ? 0.8 : section === "contact" ? 0.75 : section === "skills" ? (mobile ? 0.88 : 1.05) : 0.95);
+    const size = section === "experience"
+      ? 0.001
+      : fit * (section === "hero" ? 0.8 : section === "contact" ? 0.75 : section === "skills" ? (mobile ? 0.88 : 1.05) : 0.95);
     const right = !mobile && section === "hero" ? 2.5 : !mobile && section === "contact" ? 3.8 : 0;
     const up = mobile && section === "hero" ? -1.8 : section === "contact" ? -0.8 : 0;
     return {

@@ -47,7 +47,7 @@ const ExperienceSection = () => {
   return (
     <SectionWrapper
       id="experience"
-      className="relative z-10 my-12 md:my-20 border-y border-border/80 bg-white/92 dark:bg-zinc-950/90 backdrop-blur-2xl"
+      className="relative z-10 my-12 md:my-20 border-y border-border/90 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl shadow-[0_12px_40px_-15px_rgba(15,23,42,0.06)] dark:shadow-none"
     >
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 py-16 md:py-24">
         {/* Top Swiss Editorial Masthead (Left-aligned journalistic rhythm, contrasting centered Projects header) */}

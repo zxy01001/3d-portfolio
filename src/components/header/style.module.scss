@@ -8,8 +8,8 @@
   backdrop-filter: blur(12px);
 
   .background {
-    background-color: hsl(240 10% 3.9%); // constant color instead of using a css variable
-    opacity: 0.5;
+    background-color: hsl(222 47% 11% / 0.35);
+    backdrop-filter: blur(4px);
     height: 100%;
     width: 100%;
     position: absolute;

@@ -103,11 +103,8 @@ async function renderCrispDescriptionUrl(text: string): Promise<string | null> {
   ctx.clearRect(0, 0, W, H);
   ctx.textBaseline = "top";
 
-  ctx.shadowColor = "rgba(2, 6, 23, 0.65)";
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 3;
-
+  // Pure white alpha glyph mask — tinted dynamically via Chibi material `color`
+  // (#334155 in Light Mode / #f1f5f9 in Dark Mode) with zero muddy shadow halo.
   const lines = wrapCjkLines(text, 24);
   const fontSize = Math.min(64, Math.floor(285 / Math.max(lines.length, 1)));
   ctx.font = `600 ${fontSize}px 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif`;

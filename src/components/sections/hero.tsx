@@ -141,7 +141,7 @@ const HeroSection = () => {
               </HeroEntrance>
 
               <HeroEntrance ready={ready} delay={0.36}>
-                <p className="mt-4 text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+                <p className="mt-4 text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-600 dark:from-indigo-400 dark:via-blue-400 dark:to-cyan-300 bg-clip-text text-transparent">
                   {config.headline}
                 </p>
                 <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -151,7 +151,7 @@ const HeroSection = () => {
 
               {/* Tight Inline Metrics Bar (Mobile-Safe 3 Columns) */}
               <HeroEntrance ready={ready} delay={0.43}>
-                <div className="mt-6 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border/80 bg-background/95 shadow-sm w-full">
+                <div className="mt-6 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border/90 bg-card/95 shadow-[0_8px_28px_-10px_rgba(15,23,42,0.08)] dark:shadow-sm w-full">
                   {config.metrics.map((m) => (
                     <div
                       key={m.label}
