@@ -101,17 +101,28 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   useEffect(() => {
     if (!ready || !api.current) return;
     let cancelled = false;
+    const blobUrls: string[] = [];
     void applySharpKeyboardTextures(
       api.current,
       scene,
-      () => cancelled
+      () => cancelled,
+      (u) => blobUrls.push(u)
     ).then(() => {
-      if (!cancelled) markActive();
+      if (cancelled) return;
+      markActive();
+      // Give WebGL 2 frames to upload textures & compile shaders behind the closed preloader,
+      // then trigger smooth 100% completion & shutter reveal with zero GPU hitch!
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!cancelled) bypassLoading();
+        });
+      });
     });
     return () => {
       cancelled = true;
+      blobUrls.forEach((u) => URL.revokeObjectURL(u));
     };
-  }, [ready, loadVersion, scene, markActive]);
+  }, [ready, loadVersion, scene, markActive, bypassLoading]);
 
   useEffect(() => {
     if (!ready || !api.current) return;
@@ -204,8 +215,9 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     if (failed.current) return;
     setLoadVersion((version) => version + 1);
     setSceneStatus("ready");
-    bypassLoading();
-  }, [bypassLoading]);
+    // Note: bypassLoading() is now called right after time-sliced textures & 2 warm-up
+    // WebGL frames complete, preventing shader/texture upload stutters during shutter split!
+  }, []);
 
   const onError = useCallback(
     (error: Error) => {
@@ -255,7 +267,12 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   }, [available, ready, loadVersion, scene, input, markActive]);
 
   useEffect(() => {
-    if (ready && !isLoading) motion.current?.reveal();
+    if (!ready || isLoading) return;
+    // Stagger 3D elastic key-drop by 90ms so Frame 0 of the CSS shutter split has 100% GPU priority
+    const timer = window.setTimeout(() => {
+      motion.current?.reveal();
+    }, 90);
+    return () => window.clearTimeout(timer);
   }, [ready, loadVersion, isLoading, scene, input]);
 
   useEffect(() => {

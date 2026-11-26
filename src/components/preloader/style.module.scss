@@ -6,19 +6,25 @@
   z-index: 999;
   overflow: hidden;
   user-select: none;
+  pointer-events: auto;
   color: #f8fafc;
+  contain: layout style paint;
 }
 
-/* Keep the praised Dual-Shutter Split Transition, refined to anodized obsidian titanium */
+/* Dedicated GPU Compositor Layers for Butter-Smooth 120fps Split-Shutter Exit */
 .shutterTop,
 .shutterBottom {
   position: absolute;
   left: 0;
   right: 0;
-  height: 50.1dvh;
+  height: 50.2dvh;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 
 .shutterTop {
@@ -38,7 +44,7 @@
     #05070e;
 }
 
-/* Linear / Vercel-style 1px Precision Architectural Dot Matrix (subtle, never noisy) */
+/* Linear / Vercel-style 1px Precision Architectural Dot Matrix */
 .dotMatrixTop,
 .dotMatrixBottom {
   position: absolute;
@@ -68,16 +74,18 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
 }
 
-/* Horizontal Equator Seam — physically connects progress 0->100% to the dual-shutter split! */
+/* Horizontal Equator Seam — driven directly by rAF without conflicting CSS transitions */
 .equatorGuide {
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
   height: 1px;
-  transform: translateY(-50%);
+  transform: translate3d(0, -50%, 0);
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -96,6 +104,7 @@
   top: 50%;
   height: 1px;
   transform-origin: center center;
+  will-change: transform;
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -104,12 +113,9 @@
     rgba(99, 102, 241, 0.55) 88%,
     transparent 100%
   );
-  box-shadow:
-    0 0 18px 1px rgba(125, 211, 252, 0.42),
-    0 0 42px 2px rgba(99, 102, 241, 0.28);
+  box-shadow: 0 0 16px 1px rgba(125, 211, 252, 0.38);
   pointer-events: none;
   z-index: 3;
-  transition: transform 90ms linear;
 }
 
 /* Central Optical Chronometer Assembly */
@@ -125,15 +131,14 @@
 
 .dialAmbient {
   position: absolute;
-  inset: 14%;
+  inset: 8%;
   border-radius: 9999px;
   background: radial-gradient(
     circle,
     rgba(125, 211, 252, 0.14) 0%,
-    rgba(99, 102, 241, 0.1) 48%,
-    transparent 74%
+    rgba(99, 102, 241, 0.09) 46%,
+    transparent 70%
   );
-  filter: blur(26px);
   pointer-events: none;
 }
 
@@ -159,7 +164,7 @@
   }
 }
 
-/* Machined Dark-Glass Inner Optical Lens (Apple / Leica anodized bezel craft) */
+/* Machined Dark-Glass Inner Optical Lens (zero expensive backdrop-filter blur pass!) */
 .opticalLens {
   position: relative;
   width: 61%;
@@ -171,16 +176,15 @@
   justify-content: center;
   background: radial-gradient(
     125% 125% at 50% 12%,
-    rgba(255, 255, 255, 0.075) 0%,
-    rgba(11, 15, 27, 0.94) 56%,
-    rgba(5, 7, 14, 0.99) 100%
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(11, 15, 27, 0.98) 56%,
+    #05070e 100%
   );
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
     inset 0 -1px 0 rgba(125, 211, 252, 0.14),
     0 24px 60px -12px rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(18px);
 }
 
 /* Subtle Specular Rim Sweep on the Lens Bezel */
@@ -190,6 +194,7 @@
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
+  will-change: transform;
   background: conic-gradient(
     from 210deg,
     transparent 0deg,

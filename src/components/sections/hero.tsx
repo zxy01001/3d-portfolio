@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { motion } from "motion/react";
 import { Button } from "../ui/button";
 import {
   FileText,
@@ -18,7 +19,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { usePreloader } from "../preloader";
-import { BlurIn, BoxReveal } from "../reveal-animations";
 import ScrollDownIcon from "../scroll-down-icon";
 import { SiGithub } from "react-icons/si";
 import { config } from "@/data/config";
@@ -40,8 +40,43 @@ const HERO_SPOTLIGHTS = [
   },
 ];
 
+const HERO_EASE = [0.22, 1, 0.36, 1] as const;
+
+type HeroEntranceProps = {
+  ready: boolean;
+  delay: number;
+  className?: string;
+  children: React.ReactNode;
+};
+
+/**
+ * Pre-mounted behind the opaque preloader so DOM layout, fonts, and avatar decode
+ * happen BEFORE the shutter split. Uses GPU-only opacity + translateY (zero blur filter).
+ */
+const HeroEntrance = ({
+  ready,
+  delay,
+  className,
+  children,
+}: HeroEntranceProps) => (
+  <motion.div
+    initial={false}
+    animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+    transition={{
+      duration: 0.62,
+      delay: ready ? delay : 0,
+      ease: HERO_EASE,
+    }}
+    style={{ willChange: "transform, opacity" }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
 const HeroSection = () => {
   const { isLoading } = usePreloader();
+  const ready = !isLoading;
 
   return (
     <SectionWrapper id="hero" className={cn("relative w-full min-h-screen")}>
@@ -55,100 +90,103 @@ const HeroSection = () => {
             "pt-24 pb-64 sm:pb-72 md:py-16 px-5 sm:px-8 md:px-10 lg:px-14"
           )}
         >
-          {!isLoading && (
-            <div className="flex flex-col items-center md:items-start w-full max-w-xl">
-              {/* Compact Avatar + Status Pill */}
-              <BlurIn delay={0.35}>
-                <div className="mb-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-border/80 bg-background/95 px-3 py-1.5 shadow-sm">
-                  <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-cyan-500/40 shrink-0">
-                    <Image
-                      src="/assets/zxy/avatar.jpg"
-                      alt="朱星宇"
-                      width={48}
-                      height={48}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="font-mono text-[10px] sm:text-[11px] font-bold text-foreground/90">
-                    {config.status}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground border-l border-border pl-2">
-                    <MapPin className="h-3 w-3 text-cyan-500" />
-                    {config.location}
-                  </span>
+          <div
+            aria-hidden={!ready}
+            className={cn(
+              "flex flex-col items-center md:items-start w-full max-w-xl",
+              !ready && "pointer-events-none select-none"
+            )}
+          >
+            {/* Compact Avatar + Status Pill */}
+            <HeroEntrance ready={ready} delay={0.14}>
+              <div className="mb-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-border/80 bg-background/95 px-3 py-1.5 shadow-sm">
+                <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-cyan-500/40 shrink-0">
+                  <Image
+                    src="/assets/zxy/avatar.jpg"
+                    alt="朱星宇"
+                    width={48}
+                    height={48}
+                    priority
+                    className="h-full w-full object-cover"
+                  />
                 </div>
-              </BlurIn>
-
-              <div className="text-center md:text-left w-full">
-                <BlurIn delay={0.5}>
-                  <p className="font-mono text-[11px] sm:text-xs font-semibold text-muted-foreground tracking-[0.18em] sm:tracking-[0.22em] uppercase">
-                    {config.authorEn} · {config.role}
-                  </p>
-                </BlurIn>
-
-                <BlurIn delay={0.65}>
-                  <h1
-                    className={cn(
-                      "mt-2 leading-none text-slate-900 dark:text-white",
-                      "font-extrabold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight",
-                      "cursor-default font-display"
-                    )}
-                  >
-                    {config.author}
-                  </h1>
-                </BlurIn>
-
-                <BlurIn delay={0.8}>
-                  <p className="mt-4 text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                    {config.headline}
-                  </p>
-                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                    {config.tagline}
-                  </p>
-                </BlurIn>
-
-                {/* Tight Inline Metrics Bar (Mobile-Safe 3 Columns) */}
-                <BlurIn delay={0.95}>
-                  <div className="mt-6 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border/80 bg-background/95 shadow-sm w-full">
-                    {config.metrics.map((m) => (
-                      <div
-                        key={m.label}
-                        className="px-2 sm:px-3.5 py-2.5 sm:py-3 text-center md:text-left"
-                      >
-                        <div className="font-display text-base sm:text-xl font-extrabold text-foreground">
-                          {m.value}
-                        </div>
-                        <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground truncate">
-                          {m.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </BlurIn>
+                <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-foreground/90">
+                  {config.status}
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground border-l border-border pl-2">
+                  <MapPin className="h-3 w-3 text-cyan-500" />
+                  {config.location}
+                </span>
               </div>
+            </HeroEntrance>
 
-              {/* Clean CTA Row */}
+            <div className="text-center md:text-left w-full">
+              <HeroEntrance ready={ready} delay={0.22}>
+                <p className="font-mono text-[11px] sm:text-xs font-semibold text-muted-foreground tracking-[0.18em] sm:tracking-[0.22em] uppercase">
+                  {config.authorEn} · {config.role}
+                </p>
+              </HeroEntrance>
+
+              <HeroEntrance ready={ready} delay={0.29}>
+                <h1
+                  className={cn(
+                    "mt-2 leading-none text-slate-900 dark:text-white",
+                    "font-extrabold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight",
+                    "cursor-default font-display"
+                  )}
+                >
+                  {config.author}
+                </h1>
+              </HeroEntrance>
+
+              <HeroEntrance ready={ready} delay={0.36}>
+                <p className="mt-4 text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+                  {config.headline}
+                </p>
+                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  {config.tagline}
+                </p>
+              </HeroEntrance>
+
+              {/* Tight Inline Metrics Bar (Mobile-Safe 3 Columns) */}
+              <HeroEntrance ready={ready} delay={0.43}>
+                <div className="mt-6 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border/80 bg-background/95 shadow-sm w-full">
+                  {config.metrics.map((m) => (
+                    <div
+                      key={m.label}
+                      className="px-2 sm:px-3.5 py-2.5 sm:py-3 text-center md:text-left"
+                    >
+                      <div className="font-display text-base sm:text-xl font-extrabold text-foreground">
+                        {m.value}
+                      </div>
+                      <div className="mt-0.5 text-[10px] sm:text-[11px] text-muted-foreground truncate">
+                        {m.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </HeroEntrance>
+            </div>
+
+            {/* Clean CTA Row */}
+            <HeroEntrance ready={ready} delay={0.5}>
               <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
                 <Link href="#projects">
-                  <BoxReveal delay={1.05} width="100%">
-                    <Button className="gap-2 px-5 sm:px-6 shadow-md text-xs sm:text-sm">
-                      <span>浏览精选案例</span>
-                      <ArrowDownRight size={16} />
-                    </Button>
-                  </BoxReveal>
+                  <Button className="gap-2 px-5 sm:px-6 shadow-md text-xs sm:text-sm">
+                    <span>浏览精选案例</span>
+                    <ArrowDownRight size={16} />
+                  </Button>
                 </Link>
 
                 <Link href="/resume">
-                  <BoxReveal delay={1.15} width="100%">
-                    <Button
-                      variant="outline"
-                      className="gap-2 px-4 bg-background/95 text-xs sm:text-sm"
-                    >
-                      <FileText size={15} />
-                      <span>在线简历 / PDF</span>
-                    </Button>
-                  </BoxReveal>
+                  <Button
+                    variant="outline"
+                    className="gap-2 px-4 bg-background/95 text-xs sm:text-sm"
+                  >
+                    <FileText size={15} />
+                    <span>在线简历 / PDF</span>
+                  </Button>
                 </Link>
 
                 <Tooltip delayDuration={250}>
@@ -191,70 +229,74 @@ const HeroSection = () => {
                   </TooltipContent>
                 </Tooltip>
               </div>
-            </div>
-          )}
+            </HeroEntrance>
+          </div>
         </div>
 
         {/* Right Column: Architectural Framing HUD around the 3D Keyboard Stage */}
-        <div className="hidden md:flex md:col-span-5 lg:col-span-6 flex-col justify-between py-24 pr-8 lg:pr-12 pointer-events-none z-[2]">
-          {!isLoading && (
-            <>
-              {/* Top-Right Spec Tag */}
-              <BlurIn delay={0.9}>
-                <div className="flex justify-end">
-                  <div className="inline-flex items-center gap-2.5 rounded-2xl border border-border/75 bg-background/90 px-4 py-2.5 shadow-sm">
-                    <Cpu className="h-4 w-4 text-indigo-500 shrink-0" />
-                    <div className="text-left">
-                      <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
-                        AI-NATIVE CAPABILITY MATRIX
-                      </div>
-                      <div className="text-xs font-medium text-muted-foreground">
-                        Agentic UX · OOUX 领域建模 · Vibe Coding 原型工程
-                      </div>
+        <div
+          aria-hidden={!ready}
+          className="hidden md:flex md:col-span-5 lg:col-span-6 flex-col justify-between py-24 pr-8 lg:pr-12 pointer-events-none z-[2]"
+        >
+          {/* Top-Right Spec Tag */}
+          <HeroEntrance ready={ready} delay={0.38}>
+            <div className="flex justify-end">
+              <div className="inline-flex items-center gap-2.5 rounded-2xl border border-border/75 bg-background/90 px-4 py-2.5 shadow-sm">
+                <Cpu className="h-4 w-4 text-indigo-500 shrink-0" />
+                <div className="text-left">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
+                    AI-NATIVE CAPABILITY MATRIX
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground">
+                    Agentic UX · OOUX 领域建模 · Vibe Coding 原型工程
+                  </div>
+                </div>
+              </div>
+            </div>
+          </HeroEntrance>
+
+          {/* Center stays open so the 3D spinning keyboard has full visual spotlight */}
+          <div className="flex-1" />
+
+          {/* Bottom-Right Quick Case Spotlights */}
+          <HeroEntrance ready={ready} delay={0.52}>
+            <div
+              className={cn(
+                "ml-auto w-full max-w-md space-y-2",
+                ready ? "pointer-events-auto" : "pointer-events-none"
+              )}
+            >
+              <div className="flex items-center justify-between px-1 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <Layers className="h-3 w-3 text-cyan-500" />
+                  FEATURED WORKS · 代表作直达
+                </span>
+                <span>向下滚动交互 ↓</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {HERO_SPOTLIGHTS.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="group rounded-2xl border border-border/80 bg-card/90 p-3.5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-cyan-500/45 hover:shadow-md"
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="font-mono text-[9px] font-bold text-cyan-600 dark:text-cyan-400 truncate">
+                        {item.code}
+                      </span>
+                      <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-500 shrink-0" />
                     </div>
-                  </div>
-                </div>
-              </BlurIn>
-
-              {/* Center stays open so the 3D spinning keyboard has full visual spotlight */}
-              <div className="flex-1" />
-
-              {/* Bottom-Right Quick Case Spotlights */}
-              <BlurIn delay={1.15}>
-                <div className="ml-auto w-full max-w-md space-y-2 pointer-events-auto">
-                  <div className="flex items-center justify-between px-1 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Layers className="h-3 w-3 text-cyan-500" />
-                      FEATURED WORKS · 代表作直达
-                    </span>
-                    <span>向下滚动交互 ↓</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {HERO_SPOTLIGHTS.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="group rounded-2xl border border-border/80 bg-card/90 p-3.5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-cyan-500/45 hover:shadow-md"
-                      >
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="font-mono text-[9px] font-bold text-cyan-600 dark:text-cyan-400 truncate">
-                            {item.code}
-                          </span>
-                          <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-500 shrink-0" />
-                        </div>
-                        <div className="mt-1 text-xs font-bold text-foreground truncate">
-                          {item.title}
-                        </div>
-                        <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-1">
-                          {item.meta}
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </BlurIn>
-            </>
-          )}
+                    <div className="mt-1 text-xs font-bold text-foreground truncate">
+                      {item.title}
+                    </div>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-1">
+                      {item.meta}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </HeroEntrance>
         </div>
       </div>
 

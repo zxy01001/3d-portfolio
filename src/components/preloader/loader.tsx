@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./style.module.scss";
 import { motion } from "motion/react";
 import {
@@ -12,6 +12,9 @@ import {
 import { usePreloader } from ".";
 
 const TOTAL_TICKS = 72;
+const RADIUS = 114;
+const CIRCUMFERENCE = Number((2 * Math.PI * RADIUS).toFixed(2));
+
 const TICKS = Array.from({ length: TOTAL_TICKS }, (_, i) => {
   const deg = (i * 360) / TOTAL_TICKS - 90;
   const rad = (deg * Math.PI) / 180;
@@ -36,21 +39,88 @@ function getPhaseCaption(pct: number): { step: string; label: string } {
 }
 
 export default function Loader() {
-  const { loadingPercent, forceDismiss } = usePreloader();
-  const clamped = Math.max(0, Math.min(100, Math.round(loadingPercent)));
-  const phase = getPhaseCaption(clamped);
+  const { subscribeProgress, forceDismiss } = usePreloader();
 
-  // Precision SVG arc math (r = 114) — rounded to 2 decimals for deterministic SSR hydration
-  const radius = 114;
-  const circumference = Number((2 * Math.PI * radius).toFixed(2));
-  const dashOffset = Number((circumference * (1 - clamped / 100)).toFixed(2));
+  const laserRef = useRef<HTMLDivElement | null>(null);
+  const arcRef = useRef<SVGCircleElement | null>(null);
+  const jewelRef = useRef<SVGCircleElement | null>(null);
+  const numRef = useRef<HTMLSpanElement | null>(null);
+  const stepRef = useRef<HTMLSpanElement | null>(null);
+  const labelRef = useRef<HTMLSpanElement | null>(null);
+  const tickRefs = useRef<(SVGLineElement | null)[]>([]);
+  const lastIntRef = useRef<number>(-1);
+  const lastTickRef = useRef<number>(-1);
 
-  // Exact polar tip coordinates for the specular jewel point on the arc
-  const tipAngleRad = ((clamped / 100) * 360 - 90) * (Math.PI / 180);
-  const tipX = (160 + radius * Math.cos(tipAngleRad)).toFixed(2);
-  const tipY = (160 + radius * Math.sin(tipAngleRad)).toFixed(2);
+  // Zero-React-Rerender Direct GPU/SVG Mutation Loop (120fps butter-smooth!)
+  useEffect(() => {
+    return subscribeProgress((rawPct) => {
+      const pct = Math.max(0, Math.min(100, rawPct));
+      const rounded = Math.round(pct);
 
-  const activeTickIndex = Math.round((clamped / 100) * TOTAL_TICKS);
+      // Continuous sub-pixel updates for arc, jewel point, and equator laser
+      if (laserRef.current) {
+        laserRef.current.style.transform = `translate3d(0, -50%, 0) scaleX(${Math.max(
+          0.06,
+          pct / 100
+        ).toFixed(4)})`;
+      }
+      if (arcRef.current) {
+        const offset = CIRCUMFERENCE * (1 - pct / 100);
+        arcRef.current.setAttribute("stroke-dashoffset", offset.toFixed(2));
+      }
+      if (jewelRef.current) {
+        const rad = ((pct / 100) * 360 - 90) * (Math.PI / 180);
+        jewelRef.current.setAttribute(
+          "cx",
+          (160 + RADIUS * Math.cos(rad)).toFixed(2)
+        );
+        jewelRef.current.setAttribute(
+          "cy",
+          (160 + RADIUS * Math.sin(rad)).toFixed(2)
+        );
+      }
+
+      // Only touch text DOM when integer percentage changes
+      if (rounded !== lastIntRef.current) {
+        lastIntRef.current = rounded;
+        if (numRef.current) {
+          numRef.current.textContent = String(rounded);
+        }
+        const phase = getPhaseCaption(rounded);
+        if (stepRef.current && stepRef.current.textContent !== phase.step) {
+          stepRef.current.textContent = phase.step;
+        }
+        if (labelRef.current && labelRef.current.textContent !== phase.label) {
+          labelRef.current.textContent = phase.label;
+        }
+      }
+
+      // Incremental tick highlight (only update ticks whose state changed!)
+      const activeTick = Math.round((pct / 100) * (TOTAL_TICKS - 1));
+      if (activeTick !== lastTickRef.current) {
+        const prev = lastTickRef.current;
+        lastTickRef.current = activeTick;
+        const start = Math.max(0, Math.min(prev, activeTick) - 1);
+        const end = Math.min(TOTAL_TICKS - 1, Math.max(prev, activeTick) + 1);
+        for (let i = start; i <= end; i++) {
+          const el = tickRefs.current[i];
+          if (!el) continue;
+          if (i === activeTick) {
+            el.setAttribute("stroke", "#bae6fd");
+          } else if (i < activeTick) {
+            el.setAttribute("stroke", "rgba(226, 232, 240, 0.78)");
+          } else {
+            el.setAttribute("stroke", "rgba(255, 255, 255, 0.09)");
+          }
+        }
+      }
+    });
+  }, [subscribeProgress]);
+
+  const initOffset = Number((CIRCUMFERENCE * 0.94).toFixed(2));
+  const initRad = (0.06 * 360 - 90) * (Math.PI / 180);
+  const initTipX = (160 + RADIUS * Math.cos(initRad)).toFixed(2);
+  const initTipY = (160 + RADIUS * Math.sin(initRad)).toFixed(2);
 
   return (
     <motion.div
@@ -62,7 +132,7 @@ export default function Loader() {
       aria-label="正在载入朱星宇作品集"
       className={styles.preloaderRoot}
     >
-      {/* Anodized Obsidian Dual Shutters (part cleanly along the equator at 100%) */}
+      {/* Hardware-Composited Dual Shutters (GPU transform-only exit at 120fps) */}
       <motion.div
         variants={shutterTopExit}
         initial="initial"
@@ -88,15 +158,15 @@ export default function Loader() {
         exit="exit"
         className={styles.hudStage}
       >
-        {/* Center-Outward Optical Horizon Filament (slices the screen at 100%!) */}
         <div className={styles.equatorGuide} aria-hidden />
         <div
+          ref={laserRef}
           className={styles.equatorLaser}
-          style={{ transform: `translateY(-50%) scaleX(${Math.max(0.08, clamped / 100)})` }}
+          style={{ transform: "translate3d(0, -50%, 0) scaleX(0.06)" }}
           aria-hidden
         />
 
-        {/* Top Editorial Masthead — Restrained Swiss Typography */}
+        {/* Top Editorial Masthead */}
         <header className="relative z-10 flex items-center justify-between px-6 sm:px-12 pt-7 sm:pt-10">
           <div className="flex items-center gap-3">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-300 shadow-[0_0_10px_rgba(125,211,252,0.9)]" />
@@ -135,16 +205,8 @@ export default function Loader() {
                   <stop offset="55%" stopColor="#7dd3fc" stopOpacity="0.9" />
                   <stop offset="100%" stopColor="#f8fafc" stopOpacity="1" />
                 </linearGradient>
-                <filter id="jewelGlow" x="-150%" y="-150%" width="400%" height="400%">
-                  <feGaussianBlur stdDeviation="3.5" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
               </defs>
 
-              {/* Outer Ultra-Fine Reference Ring + Slow Orbital Hairline */}
               <circle
                 cx="160"
                 cy="160"
@@ -165,73 +227,73 @@ export default function Loader() {
 
               {/* 72 Machined Chronometer Ticks */}
               <g>
-                {TICKS.map((t) => {
-                  const lit = t.i <= activeTickIndex;
-                  const isHead = t.i === activeTickIndex && clamped > 0;
-                  return (
-                    <line
-                      key={t.i}
-                      x1={t.x1}
-                      y1={t.y1}
-                      x2={t.x2}
-                      y2={t.y2}
-                      stroke={
-                        isHead
-                          ? "#bae6fd"
-                          : lit
-                          ? "rgba(226, 232, 240, 0.78)"
-                          : "rgba(255, 255, 255, 0.09)"
-                      }
-                      strokeWidth={t.isMajor ? "1.15" : "0.75"}
-                      strokeLinecap="round"
-                    />
-                  );
-                })}
+                {TICKS.map((t, idx) => (
+                  <line
+                    key={t.i}
+                    ref={(el) => {
+                      tickRefs.current[idx] = el;
+                    }}
+                    x1={t.x1}
+                    y1={t.y1}
+                    x2={t.x2}
+                    y2={t.y2}
+                    stroke={
+                      idx <= 4
+                        ? "rgba(226, 232, 240, 0.78)"
+                        : "rgba(255, 255, 255, 0.09)"
+                    }
+                    strokeWidth={t.isMajor ? "1.15" : "0.75"}
+                    strokeLinecap="round"
+                  />
+                ))}
               </g>
 
               {/* Inner Precision Arc Track + Specular Progress Arc */}
               <circle
                 cx="160"
                 cy="160"
-                r={radius}
+                r={RADIUS}
                 stroke="rgba(255, 255, 255, 0.06)"
                 strokeWidth="1"
               />
               <circle
+                ref={arcRef}
                 cx="160"
                 cy="160"
-                r={radius}
+                r={RADIUS}
                 stroke="url(#specularArc)"
                 strokeWidth="1.6"
                 strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={dashOffset}
+                strokeDasharray={CIRCUMFERENCE}
+                strokeDashoffset={initOffset}
                 transform="rotate(-90 160 160)"
-                style={{ transition: "stroke-dashoffset 90ms linear" }}
               />
 
-              {/* Leading-Edge Specular Jewel Point */}
-              {clamped > 0 && (
-                <circle
-                  cx={tipX}
-                  cy={tipY}
-                  r="2.4"
-                  fill="#ffffff"
-                  filter="url(#jewelGlow)"
-                  style={{ transition: "cx 90ms linear, cy 90ms linear" }}
-                />
-              )}
+              {/* Leading-Edge Specular Jewel Point (lightweight CSS drop-shadow, no heavy SVG feGaussianBlur) */}
+              <circle
+                ref={jewelRef}
+                cx={initTipX}
+                cy={initTipY}
+                r="2.6"
+                fill="#ffffff"
+              />
             </svg>
 
             {/* Dark-Glass Anodized Inner Lens */}
             <div className={styles.opticalLens}>
-              <span className="font-mono text-[8.5px] sm:text-[9px] font-medium uppercase tracking-[0.34em] text-slate-400/85">
-                {phase.step}
+              <span
+                ref={stepRef}
+                className="font-mono text-[8.5px] sm:text-[9px] font-medium uppercase tracking-[0.34em] text-slate-400/85"
+              >
+                01 / 03
               </span>
 
               <div className="mt-1.5 flex items-start font-display tabular-nums leading-none">
-                <span className="text-[48px] sm:text-[58px] font-light tracking-[-0.04em] bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                  {clamped}
+                <span
+                  ref={numRef}
+                  className="text-[48px] sm:text-[58px] font-light tracking-[-0.04em] bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent"
+                >
+                  6
                 </span>
                 <span className="mt-2 ml-1 font-mono text-xs font-medium text-sky-300/85">
                   %
@@ -240,8 +302,11 @@ export default function Loader() {
 
               <span className="mt-2.5 h-px w-7 bg-gradient-to-r from-transparent via-slate-500/50 to-transparent" />
 
-              <span className="mt-2 text-[10px] sm:text-[11px] font-normal tracking-[0.12em] text-slate-400">
-                {phase.label}
+              <span
+                ref={labelRef}
+                className="mt-2 text-[10px] sm:text-[11px] font-normal tracking-[0.12em] text-slate-400"
+              >
+                载入三维几何模型
               </span>
             </div>
           </div>

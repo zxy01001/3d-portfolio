@@ -191,7 +191,10 @@ export function createKeyboardMotion(
   const resize = () => { if (revealed) applySection(syncSection(), true); };
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", onVisibility);
-  api.setNodeVisible(scene.boardId, false);
+  // Keep board visible at microscopic scale (0.001) behind the opaque preloader so WebGL
+  // pre-compiles all shaders & uploads all GPU textures BEFORE the shutters ever open!
+  setTransform(scene.revealId, { scale: [0.001, 0.001, 0.001] });
+  api.setNodeVisible(scene.boardId, true);
   return {
     // hide until socket connected + counts received
     setCounterEnabled(enabled: boolean) {

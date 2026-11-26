@@ -7,6 +7,7 @@ import {
   useContext,
   useRef,
   useCallback,
+  useMemo,
 } from "react";
 import { AnimatePresence } from "motion/react";
 import { usePathname } from "next/navigation";
@@ -15,9 +16,13 @@ import Loader from "./loader";
 import gsap from "gsap";
 import { usePerfProfile } from "@/hooks/use-perf-profile";
 
+type ProgressListener = (pct: number) => void;
+
 type PreloaderContextType = {
   isLoading: boolean;
+  /** Static compatibility field; live frames flow via subscribeProgress with 0 React re-renders. */
   loadingPercent: number;
+  subscribeProgress: (fn: ProgressListener) => () => void;
   bypassLoading: () => void;
   forceDismiss: () => void;
 };
@@ -25,6 +30,7 @@ type PreloaderContextType = {
 const INITIAL: PreloaderContextType = {
   isLoading: true,
   loadingPercent: 0,
+  subscribeProgress: () => () => {},
   bypassLoading: () => {},
   forceDismiss: () => {},
 };
@@ -44,31 +50,41 @@ export const usePreloader = () => {
   return context;
 };
 
-// Crisp ~1.45s minimum cinematic showcase so fast GPUs still display the 3D holographic
-// ring-lock & dual-shutter blast reveal, with an instant SKIP button always available.
-const MIN_SHOWCASE_MS = 1450;
-const HARD_FAILSAFE_MS = 3800;
+const MIN_SHOWCASE_MS = 1350;
+const HARD_FAILSAFE_MS = 3600;
 
 function Preloader({ children, disabled = false }: PreloaderProps) {
   const pathname = usePathname();
   const skip = disabled || Boolean(pathname && pathname !== "/");
 
   const [isLoading, setIsLoading] = useState(!skip);
-  const [loadingPercent, setLoadingPercent] = useState(skip ? 100 : 6);
   const loadingTween = useRef<gsap.core.Tween | null>(null);
   const finishingRef = useRef(false);
   const mountedAtRef = useRef<number>(Date.now());
-  const loadingPercentRef = useRef<{ value: number }>({ value: skip ? 100 : 6 });
+  const progressRef = useRef<{ value: number }>({ value: skip ? 100 : 6 });
+  const listenersRef = useRef<Set<ProgressListener>>(new Set());
 
   const { disable3D, ready: perfReady } = usePerfProfile();
+
+  const emitProgress = useCallback((val: number) => {
+    listenersRef.current.forEach((fn) => fn(val));
+  }, []);
+
+  const subscribeProgress = useCallback((fn: ProgressListener) => {
+    listenersRef.current.add(fn);
+    fn(progressRef.current.value);
+    return () => {
+      listenersRef.current.delete(fn);
+    };
+  }, []);
 
   const forceDismiss = useCallback(() => {
     finishingRef.current = true;
     loadingTween.current?.kill();
-    loadingPercentRef.current.value = 100;
-    setLoadingPercent(100);
+    progressRef.current.value = 100;
+    emitProgress(100);
     setIsLoading(false);
-  }, []);
+  }, [emitProgress]);
 
   const bypassLoading = useCallback(() => {
     if (finishingRef.current) return;
@@ -78,27 +94,26 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
     const elapsed = Date.now() - mountedAtRef.current;
     const remainingMinSec = Math.max(0.42, (MIN_SHOWCASE_MS - elapsed) / 1000);
 
-    loadingTween.current = gsap.to(loadingPercentRef.current, {
+    loadingTween.current = gsap.to(progressRef.current, {
       value: 100,
-      duration: Math.min(1.15, remainingMinSec),
+      duration: Math.min(1.05, remainingMinSec),
       ease: "power2.inOut",
       onUpdate: () => {
-        setLoadingPercent(loadingPercentRef.current.value);
+        emitProgress(progressRef.current.value);
       },
       onComplete: () => {
-        setLoadingPercent(100);
-        // Brief 90ms lock at 100% so the user sees PORTAL LOCKED before the blast doors split!
-        window.setTimeout(() => {
+        emitProgress(100);
+        requestAnimationFrame(() => {
           setIsLoading(false);
-        }, 90);
+        });
       },
     });
-  }, []);
+  }, [emitProgress]);
 
   useEffect(() => {
     if (skip) {
       setIsLoading(false);
-      setLoadingPercent(100);
+      progressRef.current.value = 100;
       return;
     }
     if (perfReady && disable3D) {
@@ -110,14 +125,15 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
     if (skip) return;
     mountedAtRef.current = Date.now();
     finishingRef.current = false;
-    loadingPercentRef.current.value = 6;
+    progressRef.current.value = 6;
+    emitProgress(6);
 
-    loadingTween.current = gsap.to(loadingPercentRef.current, {
+    loadingTween.current = gsap.to(progressRef.current, {
       value: 88,
-      duration: 2.3,
+      duration: 2.2,
       ease: "power1.out",
       onUpdate: () => {
-        setLoadingPercent(loadingPercentRef.current.value);
+        emitProgress(progressRef.current.value);
       },
     });
 
@@ -129,13 +145,22 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
       window.clearTimeout(failsafeTimer);
       loadingTween.current?.kill();
     };
-  }, [skip, bypassLoading]);
+  }, [skip, bypassLoading, emitProgress]);
+
+  const ctxValue = useMemo<PreloaderContextType>(
+    () => ({
+      isLoading,
+      loadingPercent: isLoading ? 0 : 100,
+      subscribeProgress,
+      bypassLoading,
+      forceDismiss,
+    }),
+    [isLoading, subscribeProgress, bypassLoading, forceDismiss]
+  );
 
   return (
-    <preloaderContext.Provider
-      value={{ isLoading, bypassLoading, forceDismiss, loadingPercent }}
-    >
-      <AnimatePresence mode="wait">{isLoading && <Loader />}</AnimatePresence>
+    <preloaderContext.Provider value={ctxValue}>
+      <AnimatePresence>{isLoading && <Loader />}</AnimatePresence>
       {children}
     </preloaderContext.Provider>
   );
