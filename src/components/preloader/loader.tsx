@@ -7,6 +7,7 @@ import {
   hudContentExit,
   rootExit,
   shutterBottomExit,
+  shutterLipExit,
   shutterTopExit,
 } from "./anim";
 import { usePreloader } from ".";
@@ -41,7 +42,6 @@ function getPhaseCaption(pct: number): { step: string; label: string } {
 export default function Loader() {
   const { subscribeProgress, forceDismiss } = usePreloader();
 
-  const laserRef = useRef<HTMLDivElement | null>(null);
   const arcRef = useRef<SVGCircleElement | null>(null);
   const jewelRef = useRef<SVGCircleElement | null>(null);
   const numRef = useRef<HTMLSpanElement | null>(null);
@@ -51,19 +51,12 @@ export default function Loader() {
   const lastIntRef = useRef<number>(-1);
   const lastTickRef = useRef<number>(-1);
 
-  // Zero-React-Rerender Direct GPU/SVG Mutation Loop (120fps butter-smooth!)
+  // Zero-React-Rerender Direct GPU/SVG Mutation Loop (120fps butter-smooth)
   useEffect(() => {
     return subscribeProgress((rawPct) => {
       const pct = Math.max(0, Math.min(100, rawPct));
       const rounded = Math.round(pct);
 
-      // Continuous sub-pixel updates for arc, jewel point, and equator laser
-      if (laserRef.current) {
-        laserRef.current.style.transform = `translate3d(0, -50%, 0) scaleX(${Math.max(
-          0.06,
-          pct / 100
-        ).toFixed(4)})`;
-      }
       if (arcRef.current) {
         const offset = CIRCUMFERENCE * (1 - pct / 100);
         arcRef.current.setAttribute("stroke-dashoffset", offset.toFixed(2));
@@ -95,7 +88,7 @@ export default function Loader() {
         }
       }
 
-      // Incremental tick highlight (only update ticks whose state changed!)
+      // Incremental tick highlight (only update ticks whose state changed)
       const activeTick = Math.round((pct / 100) * (TOTAL_TICKS - 1));
       if (activeTick !== lastTickRef.current) {
         const prev = lastTickRef.current;
@@ -132,7 +125,7 @@ export default function Loader() {
       aria-label="正在载入朱星宇作品集"
       className={styles.preloaderRoot}
     >
-      {/* Hardware-Composited Dual Shutters (GPU transform-only exit at 120fps) */}
+      {/* Seamless Monolithic Dual Shutters — zero seam while loading, crisp anodized lip on split */}
       <motion.div
         variants={shutterTopExit}
         initial="initial"
@@ -140,6 +133,12 @@ export default function Loader() {
         className={styles.shutterTop}
       >
         <div className={styles.dotMatrixTop} />
+        <motion.div
+          variants={shutterLipExit}
+          initial="initial"
+          exit="exit"
+          className={styles.shutterLipBottom}
+        />
       </motion.div>
 
       <motion.div
@@ -149,23 +148,21 @@ export default function Loader() {
         className={styles.shutterBottom}
       >
         <div className={styles.dotMatrixBottom} />
+        <motion.div
+          variants={shutterLipExit}
+          initial="initial"
+          exit="exit"
+          className={styles.shutterLipTop}
+        />
       </motion.div>
 
-      {/* Minimalist Optical Instrument & Equator Light Horizon */}
+      {/* Pure Single-Focus Optical Chronometer Stage */}
       <motion.div
         variants={hudContentExit}
         initial="initial"
         exit="exit"
         className={styles.hudStage}
       >
-        <div className={styles.equatorGuide} aria-hidden />
-        <div
-          ref={laserRef}
-          className={styles.equatorLaser}
-          style={{ transform: "translate3d(0, -50%, 0) scaleX(0.06)" }}
-          aria-hidden
-        />
-
         {/* Top Editorial Masthead */}
         <header className="relative z-10 flex items-center justify-between px-6 sm:px-12 pt-7 sm:pt-10">
           <div className="flex items-center gap-3">
@@ -188,8 +185,8 @@ export default function Loader() {
           </div>
         </header>
 
-        {/* Centerpiece: Precision Machined Optical Chronometer Dial */}
-        <div className="relative z-10 mx-auto flex flex-col items-center">
+        {/* True Geometric (50%, 50%) Centerpiece: Self-Contained Machined Chronometer */}
+        <div className={styles.dialAnchor}>
           <div className={styles.dialWrapper}>
             <div className={styles.dialAmbient} />
 
@@ -205,22 +202,29 @@ export default function Loader() {
                   <stop offset="55%" stopColor="#7dd3fc" stopOpacity="0.9" />
                   <stop offset="100%" stopColor="#f8fafc" stopOpacity="1" />
                 </linearGradient>
+                <radialGradient id="bezelPlate" cx="50%" cy="35%" r="65%">
+                  <stop offset="0%" stopColor="#0b1020" />
+                  <stop offset="100%" stopColor="#05070e" />
+                </radialGradient>
               </defs>
+
+              {/* Solid Anodized Bezel Backing Plate — isolates the gauge cleanly from the stage */}
+              <circle cx="160" cy="160" r="150" fill="url(#bezelPlate)" />
 
               <circle
                 cx="160"
                 cy="160"
                 r="150"
-                stroke="rgba(255, 255, 255, 0.05)"
-                strokeWidth="0.75"
+                stroke="rgba(255, 255, 255, 0.06)"
+                strokeWidth="0.85"
               />
               <g className={styles.subtleOrbit}>
                 <circle
                   cx="160"
                   cy="160"
                   r="150"
-                  stroke="rgba(186, 230, 253, 0.22)"
-                  strokeWidth="0.85"
+                  stroke="rgba(186, 230, 253, 0.24)"
+                  strokeWidth="0.9"
                   strokeDasharray="36 200"
                 />
               </g>
@@ -262,14 +266,14 @@ export default function Loader() {
                 cy="160"
                 r={RADIUS}
                 stroke="url(#specularArc)"
-                strokeWidth="1.6"
+                strokeWidth="1.65"
                 strokeLinecap="round"
                 strokeDasharray={CIRCUMFERENCE}
                 strokeDashoffset={initOffset}
                 transform="rotate(-90 160 160)"
               />
 
-              {/* Leading-Edge Specular Jewel Point (lightweight CSS drop-shadow, no heavy SVG feGaussianBlur) */}
+              {/* Leading-Edge Specular Jewel Point */}
               <circle
                 ref={jewelRef}
                 cx={initTipX}

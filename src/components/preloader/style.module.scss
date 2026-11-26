@@ -11,13 +11,12 @@
   contain: layout style paint;
 }
 
-/* Dedicated GPU Compositor Layers for Butter-Smooth 120fps Split-Shutter Exit */
+/* Dedicated GPU Compositor Layers — completely seamless while closed, splits at 120fps */
 .shutterTop,
 .shutterBottom {
   position: absolute;
   left: 0;
   right: 0;
-  height: 50.2dvh;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
@@ -29,40 +28,67 @@
 
 .shutterTop {
   top: 0;
+  height: calc(50dvh + 1px);
   background:
-    radial-gradient(ellipse 62% 85% at 50% 0%, rgba(148, 163, 184, 0.09), transparent 70%),
-    radial-gradient(ellipse 46% 65% at 50% 100%, rgba(99, 102, 241, 0.12), transparent 72%),
+    radial-gradient(ellipse 62% 85% at 50% 0%, rgba(148, 163, 184, 0.08), transparent 70%),
+    radial-gradient(ellipse 40% 65% at 50% 100%, rgba(99, 102, 241, 0.09), transparent 72%),
     #05070e;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.08);
 }
 
 .shutterBottom {
   bottom: 0;
+  height: 50dvh;
   background:
-    radial-gradient(ellipse 46% 65% at 50% 0%, rgba(56, 189, 248, 0.1), transparent 72%),
-    radial-gradient(ellipse 60% 80% at 50% 100%, rgba(30, 41, 59, 0.22), transparent 75%),
+    radial-gradient(ellipse 40% 65% at 50% 0%, rgba(99, 102, 241, 0.09), transparent 72%),
+    radial-gradient(ellipse 60% 80% at 50% 100%, rgba(30, 41, 59, 0.2), transparent 75%),
     #05070e;
 }
 
-/* Linear / Vercel-style 1px Precision Architectural Dot Matrix */
+/* Subtle Anodized Shutter Lips — invisible (opacity: 0) while loading, revealed ONLY on split */
+.shutterLipBottom,
+.shutterLipTop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(186, 230, 253, 0.24) 22%,
+    rgba(226, 232, 240, 0.45) 50%,
+    rgba(186, 230, 253, 0.24) 78%,
+    transparent 100%
+  );
+  will-change: opacity;
+}
+
+.shutterLipBottom {
+  bottom: 0;
+}
+
+.shutterLipTop {
+  top: 0;
+}
+
+/* Linear / Vercel-style 1px Precision Architectural Dot Matrix (masked away from center) */
 .dotMatrixTop,
 .dotMatrixBottom {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(226, 232, 240, 0.11) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(226, 232, 240, 0.085) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .dotMatrixTop {
   background-position: center bottom;
-  mask-image: radial-gradient(ellipse 52% 85% at 50% 100%, #000 10%, transparent 78%);
-  -webkit-mask-image: radial-gradient(ellipse 52% 85% at 50% 100%, #000 10%, transparent 78%);
+  mask-image: radial-gradient(ellipse 64% 90% at 50% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 64% 90% at 50% 0%, #000 0%, transparent 72%);
 }
 
 .dotMatrixBottom {
   background-position: center top;
-  mask-image: radial-gradient(ellipse 52% 85% at 50% 0%, #000 10%, transparent 78%);
-  -webkit-mask-image: radial-gradient(ellipse 52% 85% at 50% 0%, #000 10%, transparent 78%);
+  mask-image: radial-gradient(ellipse 64% 90% at 50% 100%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 64% 90% at 50% 100%, #000 0%, transparent 72%);
 }
 
 /* Foreground Editorial & Optical Stage */
@@ -78,66 +104,37 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* Horizontal Equator Seam — driven directly by rAF without conflicting CSS transitions */
-.equatorGuide {
+/* Exact Mathematical (50%, 50%) Centering independent of header/footer heights */
+.dialAnchor {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  transform: translate3d(0, -50%, 0);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.06) 15%,
-    rgba(255, 255, 255, 0.06) 85%,
-    transparent 100%
-  );
+  inset: 0;
+  display: grid;
+  place-items: center;
   pointer-events: none;
-  z-index: 2;
-}
-
-.equatorLaser {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  transform-origin: center center;
-  will-change: transform;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(99, 102, 241, 0.55) 12%,
-    rgba(186, 230, 253, 0.95) 50%,
-    rgba(99, 102, 241, 0.55) 88%,
-    transparent 100%
-  );
-  box-shadow: 0 0 16px 1px rgba(125, 211, 252, 0.38);
-  pointer-events: none;
-  z-index: 3;
+  z-index: 6;
 }
 
 /* Central Optical Chronometer Assembly */
 .dialWrapper {
   position: relative;
-  z-index: 6;
   width: min(308px, 78vw);
   height: min(308px, 78vw);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 9999px;
+  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.9);
 }
 
 .dialAmbient {
   position: absolute;
-  inset: 8%;
+  inset: -6%;
   border-radius: 9999px;
   background: radial-gradient(
     circle,
-    rgba(125, 211, 252, 0.14) 0%,
-    rgba(99, 102, 241, 0.09) 46%,
-    transparent 70%
+    rgba(125, 211, 252, 0.12) 0%,
+    rgba(99, 102, 241, 0.07) 48%,
+    transparent 72%
   );
   pointer-events: none;
 }
@@ -164,7 +161,7 @@
   }
 }
 
-/* Machined Dark-Glass Inner Optical Lens (zero expensive backdrop-filter blur pass!) */
+/* Machined Dark-Glass Inner Optical Lens */
 .opticalLens {
   position: relative;
   width: 61%;
@@ -184,7 +181,7 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
     inset 0 -1px 0 rgba(125, 211, 252, 0.14),
-    0 24px 60px -12px rgba(0, 0, 0, 0.85);
+    0 20px 50px -10px rgba(0, 0, 0, 0.85);
 }
 
 /* Subtle Specular Rim Sweep on the Lens Bezel */

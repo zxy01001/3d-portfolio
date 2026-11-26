@@ -20,7 +20,7 @@ export const shutterTopExit = {
     transition: {
       duration: 0.74,
       ease: [0.76, 0, 0.24, 1] as const,
-      delay: 0.04,
+      delay: 0.05,
     },
   },
 };
@@ -34,7 +34,20 @@ export const shutterBottomExit = {
     transition: {
       duration: 0.74,
       ease: [0.76, 0, 0.24, 1] as const,
-      delay: 0.04,
+      delay: 0.05,
+    },
+  },
+};
+
+export const shutterLipExit = {
+  initial: {
+    opacity: 0,
+  },
+  exit: {
+    opacity: 1,
+    transition: {
+      duration: 0.16,
+      ease: "easeOut" as const,
     },
   },
 };
@@ -48,7 +61,7 @@ export const hudContentExit = {
     opacity: 0,
     scale: 0.96,
     transition: {
-      duration: 0.26,
+      duration: 0.24,
       ease: [0.33, 1, 0.68, 1] as const,
     },
   },
