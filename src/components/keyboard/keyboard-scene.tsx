@@ -53,6 +53,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     null
   );
   const [loadVersion, setLoadVersion] = useState(0);
+  const [texturesVersion, setTexturesVersion] = useState(0);
   const ready = loadVersion > 0;
   const [section, setSection] = useState<KeyboardSection>("hero");
   const [selected, setSelected] = useState<KeyboardSkill | null>(null);
@@ -73,10 +74,12 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     ready && !isLoading
   );
   const { shadows, softShadows, ao, bloom, lighting } = graphics;
+  // Keep `preset` and `toneMapping` invariant across Light/Dark modes so Three.js
+  // NEVER recompiles 50+ PBR shaders or regenerates PMREM HDR maps on theme toggle!
   const environment = useMemo(
     () => ({
       ...scene.document.environment,
-      exposure: isLight ? 0.96 : 0.88,
+      exposure: isLight ? 1.02 : 0.88,
       shadows,
       softShadows,
       ao,
@@ -113,6 +116,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
       (u) => blobUrls.push(u)
     ).then(() => {
       if (cancelled) return;
+      setTexturesVersion((v) => v + 1);
       markActive();
       // Give WebGL 2 frames to upload textures & compile shaders behind the closed preloader,
       // then trigger smooth 100% completion & shutter reveal with zero GPU hitch!
@@ -148,16 +152,109 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
 
   useEffect(() => {
     if (!ready || !api.current) return;
-    api.current.setMaterial(scene.textMaterialId, {
-      color: isLight ? "#0f172a" : "#ffffff",
-    });
-    for (const desc of scene.descriptions) {
-      api.current.setMaterial(desc.materialId, {
-        color: isLight ? "#334155" : "#f1f5f9",
+    let frame = 0;
+    // Defer GPU uniform updates by 1 rAF so DOM CSS theme flip completes in <1ms on Frame 0
+    frame = requestAnimationFrame(() => {
+      const host = api.current;
+      if (!host) return;
+
+      // 1. Toggle dedicated Daylight Softbox Studio Fill Lights (0.01ms visibility flag)
+      host.setNodeVisible(scene.lightStudioFillId, isLight);
+
+      // 2. Switch CNC Aluminum Chassis & Switch Plate (Silver-Porcelain vs Stealth Obsidian)
+      host.setMaterial(
+        scene.caseMaterialId,
+        isLight
+          ? {
+              color: "#e9eef5",
+              roughness: 0.36,
+              metalness: 0.08,
+              emissive: "#f8fafc",
+              emissiveIntensity: 0.1,
+            }
+          : {
+              color: "#171819",
+              roughness: 0.64,
+              metalness: 0,
+              emissive: "#000000",
+              emissiveIntensity: 0,
+            }
+      );
+
+      host.setMaterial(
+        scene.plateMaterialId,
+        isLight
+          ? {
+              color: "#cbd5e1",
+              roughness: 0.5,
+              metalness: 0.1,
+              emissive: "#e2e8f0",
+              emissiveIntensity: 0.08,
+            }
+          : {
+              color: "#101213",
+              roughness: 0.82,
+              metalness: 0,
+              emissive: "#000000",
+              emissiveIntensity: 0,
+            }
+      );
+
+      // 3. Switch Embedded Mechanical Counter Frame
+      host.setMaterial(scene.counter.rimMaterialId, {
+        color: isLight ? "#cbd5e1" : "#343638",
+        roughness: isLight ? 0.35 : 0.46,
       });
-    }
-    markActive();
-  }, [ready, loadVersion, scene, isLight, markActive]);
+      host.setMaterial(scene.counter.insetMaterialId, {
+        color: isLight ? "#64748b" : "#070809",
+      });
+      host.setMaterial(scene.counter.drumMaterialId, {
+        color: isLight ? "#1e293b" : "#161819",
+      });
+
+      // 4. Switch 23 Sculpted Custom PBT Keycaps & Dye-Sub Legends
+      for (const key of scene.keys) {
+        if (isLight) {
+          const isAccentHero = key.lightBodyColor === "#4f46e5";
+          host.setMaterial(key.materialId, {
+            color: key.lightBodyColor,
+            emissive: key.lightBodyColor,
+            emissiveIntensity: isAccentHero ? 0.06 : 0.11,
+          });
+          if (key.logoMaterialId) {
+            host.setMaterial(key.logoMaterialId, {
+              color: key.lightLegendColor,
+            });
+          }
+        } else {
+          host.setMaterial(key.materialId, {
+            color: key.darkBodyColor,
+            emissive: "#000000",
+            emissiveIntensity: 0,
+          });
+          if (key.logoMaterialId) {
+            host.setMaterial(key.logoMaterialId, {
+              color: "#ffffff",
+            });
+          }
+        }
+      }
+
+      // 5. Switch 3D Floating Skill Headings & Descriptions
+      host.setMaterial(scene.textMaterialId, {
+        color: isLight ? "#0f172a" : "#ffffff",
+      });
+      for (const desc of scene.descriptions) {
+        host.setMaterial(desc.materialId, {
+          color: isLight ? "#334155" : "#f1f5f9",
+        });
+      }
+
+      markActive();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [ready, loadVersion, texturesVersion, scene, isLight, markActive]);
 
   useEffect(() => {
     if (!ready) return;

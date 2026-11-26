@@ -8,6 +8,8 @@ import RadialMenu from "@/components/radial-menu/index";
 import MotionNudge from "@/components/motion-nudge";
 import DomainNotice from "@/components/domain-notice";
 import Analytics from "@/components/analytics";
+import ChapterRail from "@/components/ui/chapter-rail";
+import CommandPalette from "@/components/ui/command-palette";
 import { usePerfProfile } from "@/hooks/use-perf-profile";
 
 export default function AppOverlays() {
@@ -31,6 +33,8 @@ export default function AppOverlays() {
       {!disableDecorative && <EasterEggs />}
       {isHome && <RadialMenu />}
       {isHome && <MotionNudge />}
+      {isHome && <ChapterRail />}
+      <CommandPalette />
       <DomainNotice />
       <Analytics />
     </>

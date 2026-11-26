@@ -6,6 +6,24 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Global Zero-Scrollbar Policy — keeps wheel/trackpad/touch scrolling 100% intact
+   while removing browser & container scrollbar chrome across every viewport and modal */
+html,
+body,
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
 @layer base {
   :root {
     --font-sans: "Inter", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, -apple-system, sans-serif;

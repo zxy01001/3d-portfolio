@@ -8,6 +8,7 @@ import { opacity, background } from "./anim";
 import Nav from "./nav";
 import { cn } from "@/lib/utils";
 import FunnyThemeToggle from "../theme/funny-theme-toggle";
+import { triggerCommandPalette } from "../ui/command-palette";
 import { Button } from "../ui/button";
 import { config } from "@/data/config";
 import OnlineUsers from "../realtime/online-users";
@@ -57,6 +58,18 @@ const Header = ({ loader, githubStars }: HeaderProps) => {
             {config.author}
           </Button>
         </Link>
+
+        <button
+          type="button"
+          onClick={triggerCommandPalette}
+          aria-label="打开全局快速检索面板"
+          className="mr-2.5 hidden sm:inline-flex h-7 items-center gap-1.5 rounded-full border border-border/80 bg-background/85 px-2.5 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-md transition-colors hover:border-sky-500/45 hover:text-foreground"
+        >
+          <span>快速检索</span>
+          <kbd className="rounded border border-border/80 bg-secondary/70 px-1 py-0.2 font-mono text-[10px] text-foreground/80">
+            ⌘K
+          </kbd>
+        </button>
 
         <FunnyThemeToggle className="mr-3 flex" />
         {isHome && process.env.NEXT_PUBLIC_WS_URL && (

@@ -5,6 +5,9 @@ export const COUNTER_WIDTH = 2.65;
 export const COUNTER_SLOTS = 16;
 export type CounterModel = {
   slots: { id: string; drumId: string; symbols: string[] }[];
+  rimMaterialId: string;
+  insetMaterialId: string;
+  drumMaterialId: string;
 };
 
 export function counterDigits(total: number, available: boolean) {
@@ -76,5 +79,10 @@ export function addCounterModel(doc: ChibiDocument, parent: string, position: Ve
     box("Drum seam", id, inset, [0, 0, 0.05], [0.94, 0.009, 0.005]);
     return { id, drumId, symbols };
   });
-  return { slots };
+  return {
+    slots,
+    rimMaterialId: rim,
+    insetMaterialId: inset,
+    drumMaterialId: drum,
+  };
 }

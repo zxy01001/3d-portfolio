@@ -9,7 +9,6 @@ import {
 import ContactForm from "../ContactForm";
 import { config } from "@/data/config";
 import { decodeProtectedEmail, getMaskedEmail } from "@/lib/contact-shield";
-import { SectionHeader } from "./section-header";
 import SectionWrapper from "../ui/section-wrapper";
 import {
   ArrowUpRight,
@@ -79,12 +78,20 @@ const ContactSection = () => {
       id="contact"
       className="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24"
     >
-      <SectionHeader
-        id="contact"
-        className="static mb-8 md:mb-12"
-        title="联系与合作"
-        desc="欢迎探讨 AI-Native UX 设计、产品经理（PM）及 FDE（前线部署工程师）岗位机会"
-      />
+      <div className="relative z-[20] mb-8 md:mb-10 rounded-3xl border border-border/85 bg-card/90 px-5 sm:px-8 py-6 shadow-[0_12px_36px_-14px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          04 / INITIATE DIALOGUE
+        </div>
+        <div className="mt-2 flex flex-col md:flex-row md:items-end justify-between gap-3">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
+            联系与合作
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-xl md:text-right">
+            欢迎探讨 AI-Native UX 设计、产品经理（PM）及 FDE（前线部署工程师）岗位机会
+          </p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch z-[20] relative">
         {/* Left Column: Direct Contact & Real Web-to-Inbox Form */}

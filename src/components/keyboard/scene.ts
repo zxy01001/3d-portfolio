@@ -30,6 +30,9 @@ export type KeyboardKey = {
   motionId: string;
   materialId: string;
   logoMaterialId?: string;
+  darkBodyColor: string;
+  lightBodyColor: string;
+  lightLegendColor: string;
   pressedStateId: string;
   labelId: string;
 };
@@ -46,6 +49,9 @@ export type KeyboardScene = {
   boardId: string;
   spinId: string;
   revealId: string;
+  caseMaterialId: string;
+  plateMaterialId: string;
+  lightStudioFillId: string;
   catId: string;
   frameIds: [string, string];
   labelsId: string;
@@ -250,6 +256,29 @@ export function createKeyboardScene(
       transform: transform([...position]),
       light: { kind: "directional", color: "#ffffff", intensity, castShadow },
     });
+  }
+
+  // Dedicated Daylight Studio Softbox Fill Rig — invisible in Dark Mode,
+  // enabled in Light Mode so Ceramic-White PBT keycaps & Silver CNC chassis look crisp and airy.
+  const lightStudioFillId = group("Daylight studio fill");
+  doc.nodes[lightStudioFillId].visible = false;
+  for (const [name, position, color, intensity] of [
+    ["Daylight front fill", [5, 7, 8], "#f8fafc", 1.35],
+    ["Daylight top bounce", [0, 9, 4], "#ffffff", 0.72],
+    ["Daylight ice rim", [2, 4, -8], "#e0f2fe", 0.62],
+  ] as const) {
+    add(
+      {
+        id: newId("nd"),
+        name,
+        type: "light",
+        visible: true,
+        children: [],
+        transform: transform([...position]),
+        light: { kind: "directional", color, intensity, castShadow: false },
+      },
+      lightStudioFillId
+    );
   }
 
   const boardId = group("Keyboard placement");
@@ -484,12 +513,22 @@ export function createKeyboardScene(
           [nodeId]: { "transform.position": [0, -KIT.keyHeight * 0.6, 0] },
         },
       };
+      const lightPalette = resolveLightKeycapPalette(
+        skill.name,
+        col,
+        cols,
+        isHero,
+        isWide
+      );
       return {
         skill,
         nodeId,
         motionId,
         materialId,
         logoMaterialId,
+        darkBodyColor: color,
+        lightBodyColor: lightPalette.body,
+        lightLegendColor: lightPalette.legend,
         pressedStateId,
         labelId: label(skill.label, skill.shortDescription),
       };
@@ -537,6 +576,9 @@ export function createKeyboardScene(
     boardId,
     spinId,
     revealId,
+    caseMaterialId: caseMaterial,
+    plateMaterialId: plateMaterial,
+    lightStudioFillId,
     catId,
     frameIds,
     labelsId,
@@ -547,6 +589,37 @@ export function createKeyboardScene(
     columns: cols,
     pointerTargets: keys.map((k) => k.nodeId),
   };
+}
+
+function resolveLightKeycapPalette(
+  name: string,
+  col: number,
+  cols: number,
+  isHero: boolean,
+  isWide: boolean
+): { body: string; legend: string } {
+  // 1. Signature 2x2 Hero Accent Keycap (GMK Iceberg / Teenage Engineering Cobalt Esc)
+  if (isHero) {
+    return { body: "#4f46e5", legend: "#ffffff" };
+  }
+  // 2. 6 x [2x1] Nordic Glacier-Mist Modifier Keycaps with Deep Dye-Sub Ink Legends
+  if (isWide) {
+    if (name === "state") {
+      return { body: "#ccfbf1", legend: "#134e4a" };
+    }
+    if (name === "ia") {
+      return { body: "#e0f2fe", legend: "#0c4a6e" };
+    }
+    if (name === "designsystem" || name === "dataviz") {
+      return { body: "#dbeafe", legend: "#1e3a8a" };
+    }
+    return { body: "#e0e7ff", legend: "#312e81" };
+  }
+  // 3. 16 x [1x1] Matte Ceramic Alabaster Alpha Keycaps (+ Cool Silver right column)
+  if (col === cols - 1) {
+    return { body: "#e8eef5", legend: "#1e293b" };
+  }
+  return { body: "#f8fafc", legend: "#1e293b" };
 }
 
 export const resolveKeyboardAsset = async (

@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { flushSync } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,50 +26,13 @@ export default function FunnyThemeToggle({
 
   const isLight = mounted && resolvedTheme === "light";
 
-  const handleToggle = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  // Zero-stall theme switch: avoids `document.startViewTransition` + `flushSync`,
+  // which previously forced synchronous Retina WebGL framebuffer readbacks (`glReadPixels`).
+  const handleToggle = () => {
     const nextTheme = isLight ? "dark" : "light";
-    const doc = document as Document & {
-      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
-    };
-
-    if (!doc.startViewTransition) {
+    React.startTransition(() => {
       setTheme(nextTheme);
-      return;
-    }
-
-    const { top, left, width, height } =
-      event.currentTarget.getBoundingClientRect();
-    const x = left + width / 2;
-    const y = top + height / 2;
-    const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    const transition = doc.startViewTransition(() => {
-      flushSync(() => {
-        setTheme(nextTheme);
-      });
     });
-
-    try {
-      await transition.ready;
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${maxRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 460,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          pseudoElement: "::view-transition-new(root)",
-        }
-      );
-    } catch {
-      // Fallback gracefully if view transition is interrupted
-    }
   };
 
   return (
@@ -97,7 +59,7 @@ export default function FunnyThemeToggle({
         </Button>
       </TooltipTrigger>
       <TooltipContent side="bottom">
-        <p>{isLight ? "点击切换深邃暗色主题" : "点击预览瑞士瓷白亮色主题"}</p>
+        <p>{isLight ? "切换为深邃黑曜石主题" : "切换为瑞士白瓷浅色主题"}</p>
       </TooltipContent>
     </Tooltip>
   );

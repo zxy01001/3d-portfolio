@@ -30,7 +30,15 @@ const SkillsSection = () => {
     >
       <SectionHeader
         id="skills"
-        title="设计能力体系"
+        title={
+          <span className="inline-flex flex-col items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/85 px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400 shadow-sm backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
+              01 / CAPABILITY MATRIX
+            </span>
+            <span>设计能力体系</span>
+          </span>
+        }
         desc={
           showGrid
             ? "支撑复杂业务系统与 AI 产品落地的专业方法论及工具链"
